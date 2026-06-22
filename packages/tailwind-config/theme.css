@@ -1,0 +1,13 @@
+/* Grounded Art shared theme tokens.
+   Starting values for the minimalist paper-and-ink direction.
+   These are a scaffold. Refine the exact colors and fonts as the brand develops. */
+@theme {
+  --color-paper: #f6f4ef;
+  --color-ink: #17140f;
+  --color-muted: #6f6757;
+  --color-line: #e4ddcf;
+  --color-accent: #d6452f;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+}

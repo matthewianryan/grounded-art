@@ -1,0 +1,24 @@
+[project]
+name = "grounded-art-api"
+version = "0.0.0"
+description = "Grounded Art web app backend"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlalchemy>=2.0",
+    "alembic>=1.13",
+    "psycopg[binary]>=3.2",
+    "pydantic-settings>=2.5",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.7",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.uv]
+package = false

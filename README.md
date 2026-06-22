@@ -1,0 +1,71 @@
+# Grounded Art
+
+Grounded Art connects people in Cape Town with local art, galleries, and artists.
+
+This is a pnpm and Turborepo monorepo. The landing page and the web app are separate
+Next.js apps stitched into one site under one domain using Next.js multi-zones.
+
+## Structure
+
+- `apps/landing` - Next.js landing site. Owns the domain root.
+- `apps/web` - Next.js web app (atlas, feed). Served under `/app` via multi-zones.
+- `apps/api` - FastAPI and PostgreSQL backend.
+- `packages/tailwind-config` - shared Tailwind theme tokens.
+- `packages/tsconfig` - shared TypeScript base config.
+
+## Documentation
+
+- [Planning overview](docs/PLANNING.md) - product definition, scope, and index
+- [Architecture](docs/architecture.md) - stack and team workflow
+- [Design](docs/design.md) - aesthetic and visual decisions
+- [Home page](docs/pages/home.md) - landing page sections
+- [Posts feed](docs/pages/posts.md) - the content feed
+- [Maps](docs/pages/maps.md) - the Cape Town gallery atlas
+- [About](docs/pages/about.md) - the about page
+- [Content pipeline](docs/content-pipeline.md) - how content is gathered
+
+## Local development
+
+### Prerequisites
+
+- Node 22 and pnpm 10
+- Python 3.12 or newer and uv
+- Docker (for Postgres)
+
+### Frontend
+
+```bash
+pnpm install
+pnpm dev
+```
+
+This runs both Next apps together:
+
+- Landing: http://localhost:3000
+- Web app: http://localhost:3000/app (the landing app proxies `/app` to the web app on
+  port 3001)
+
+### Database
+
+```bash
+docker compose up -d db
+```
+
+### API
+
+```bash
+cd apps/api
+cp .env.example .env
+uv sync
+uv run uvicorn app.main:app --reload --port 8000
+```
+
+Health check: http://localhost:8000/health
+
+### Migrations
+
+```bash
+cd apps/api
+uv run alembic revision --autogenerate -m "describe the change"
+uv run alembic upgrade head
+```

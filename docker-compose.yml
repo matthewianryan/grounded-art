@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:17
+    container_name: grounded-art-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: grounded
+      POSTGRES_PASSWORD: grounded
+      POSTGRES_DB: grounded_art
+    ports:
+      - "5432:5432"
+    volumes:
+      - grounded-art-db-data:/var/lib/postgresql/data
+
+volumes:
+  grounded-art-db-data:
