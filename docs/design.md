@@ -22,14 +22,22 @@ interface never competes with the art, galleries, and posts it presents.
 ## Visual mode
 
 Grounded Art ships in both a light mode and a dark mode, with a user toggle between them.
-Light is the warm paper-and-ink mode. Dark is a low-light gallery mode that lets artwork
-glow. Both modes draw from the same shared theme tokens so the landing app and the web app
-stay consistent.
+Light is the warm cream-and-black mode. Dark is a low-light gallery mode, a black ground with
+cream text, that lets artwork glow. Both modes draw from the same shared theme tokens so the
+landing app and the web app stay consistent.
 
 ## Palette direction
 
-In the light mode, a neutral base of paper and ink. The interface stays low-chroma so that
-gallery images and posts carry the color. Accent is restrained and used sparingly.
+The palette is cream, black, and rust. Cream is the light base, black is the ink, and rust is
+the single accent, used sparingly. In dark mode the ground is black with cream text, and rust
+remains the accent. The interface stays low-chroma so that gallery images and posts carry the
+colour.
+
+## Typography
+
+The typefaces are Instrument Serif for display and DM Sans for body and interface text.
+Instrument Serif carries the headlines, the section openers, and the wordmark. DM Sans carries
+running text and the denser app screens.
 
 ## Copy
 

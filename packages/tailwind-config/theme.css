@@ -1,13 +1,33 @@
-/* Grounded Art shared theme tokens.
-   Starting values for the minimalist paper-and-ink direction.
-   These are a scaffold. Refine the exact colors and fonts as the brand develops. */
-@theme {
-  --color-paper: #f6f4ef;
-  --color-ink: #17140f;
-  --color-muted: #6f6757;
-  --color-line: #e4ddcf;
-  --color-accent: #d6452f;
+@custom-variant dark (&:where(.dark, .dark *));
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+/* Grounded Art palette: cream, black, rust.
+   Token names are semantic. paper is the ground, ink is the foreground and text,
+   accent is rust. In dark mode the ground becomes black and the text becomes cream,
+   while rust stays the accent. Components reference these tokens, so flipping the
+   values under .dark switches the whole interface between modes. */
+:root {
+  --ga-paper: #f4efe2;
+  --ga-ink: #16130e;
+  --ga-accent: #a24b2c;
+  --ga-muted: #6e6452;
+  --ga-line: #e4dbc9;
+}
+
+.dark {
+  --ga-paper: #16130e;
+  --ga-ink: #f1ead9;
+  --ga-accent: #c2613b;
+  --ga-muted: #968a75;
+  --ga-line: #2a2419;
+}
+
+@theme inline {
+  --color-paper: var(--ga-paper);
+  --color-ink: var(--ga-ink);
+  --color-accent: var(--ga-accent);
+  --color-muted: var(--ga-muted);
+  --color-line: var(--ga-line);
+
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
 }
