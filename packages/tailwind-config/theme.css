@@ -29,5 +29,5 @@
   --color-line: var(--ga-line);
 
   --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-display: var(--font-noto-serif), ui-serif, Georgia, serif;
 }

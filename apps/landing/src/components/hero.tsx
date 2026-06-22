@@ -70,8 +70,8 @@ export function Hero() {
           <span className="mt-1.5 h-px w-8 bg-accent" aria-hidden="true" />
         </Link>
         <nav className="flex items-center gap-6 text-sm text-muted">
-          <a href="/app/atlas" className="transition hover:text-ink">
-            Atlas
+          <a href="/app/map" className="transition hover:text-ink">
+            Map
           </a>
           <a href="/app/feed" className="transition hover:text-ink">
             Feed
@@ -87,8 +87,8 @@ export function Hero() {
         <p className="hero-kicker mb-6 text-sm uppercase tracking-[0.22em] text-muted">
           Cape Town
         </p>
-        <h1 className="hero-headline max-w-3xl font-display text-5xl leading-[1.05] sm:text-7xl">
-          A living atlas of local art, galleries, and artists.
+        <h1 className="hero-headline max-w-3xl font-display text-5xl leading-[1.15] sm:text-7xl">
+          Where the city&apos;s art lives.
         </h1>
         <svg
           className="hero-rule mt-8 w-40 max-w-full text-accent"
@@ -104,10 +104,10 @@ export function Hero() {
         </p>
         <div className="mt-10 flex flex-wrap gap-4">
           <a
-            href="/app/atlas"
+            href="/app/map"
             className="hero-cta rounded-full bg-ink px-6 py-3 text-sm font-medium text-paper transition hover:bg-accent"
           >
-            Explore the atlas
+            Explore the map
           </a>
           <a
             href="/app/feed"

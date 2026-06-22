@@ -35,9 +35,9 @@ colour.
 
 ## Typography
 
-The typefaces are Instrument Serif for display and DM Sans for body and interface text.
-Instrument Serif carries the headlines, the section openers, and the wordmark. DM Sans carries
-running text and the denser app screens.
+The typefaces are Noto Serif for display and DM Sans for body and interface text. Noto Serif
+carries the headlines, the section openers, and the wordmark. DM Sans carries running text and
+the denser app screens.
 
 ## Where expression lives
 
@@ -51,7 +51,7 @@ and remains a real, legible map. It is not abstracted, desaturated, or turned bl
 
 ## Wordmark
 
-The wordmark is "Grounded Art" set in Instrument Serif, with a short rust rule beneath it.
+The wordmark is "Grounded Art" set in Noto Serif, with a short rust rule beneath it.
 There is no pictorial mark.
 
 ## Landing motion
@@ -60,7 +60,7 @@ The landing page carries a restrained signature of motion: a compositional load-
 headline settles in line by line and a rust hairline draws beneath it, plus gentle
 cross-dissolves between featured works. Motion is slow and intentional, never competes with the
 art, and is disabled when the visitor prefers reduced motion. The data-driven motion, the live
-feed line and the breathing atlas, arrives with the web app in v2.
+feed line and the breathing map preview, arrives with the web app in v2.
 
 ## Copy
 

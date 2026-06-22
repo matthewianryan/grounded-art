@@ -8,7 +8,7 @@ Next.js apps stitched into one site under one domain using Next.js multi-zones.
 ## Structure
 
 - `apps/landing` - Next.js landing site. Owns the domain root.
-- `apps/web` - Next.js web app (atlas, feed). Served under `/app` via multi-zones.
+- `apps/web` - Next.js web app (map, feed). Served under `/app` via multi-zones.
 - `apps/api` - FastAPI and PostgreSQL backend.
 - `packages/tailwind-config` - shared Tailwind theme tokens.
 - `packages/tsconfig` - shared TypeScript base config.
@@ -21,9 +21,10 @@ Next.js apps stitched into one site under one domain using Next.js multi-zones.
 - [Design](docs/design.md) - aesthetic and visual decisions
 - [Home page](docs/pages/home.md) - landing page sections
 - [Posts feed](docs/pages/posts.md) - the content feed
-- [Maps](docs/pages/maps.md) - the Cape Town gallery atlas
+- [Maps](docs/pages/maps.md) - the Cape Town gallery map
 - [About](docs/pages/about.md) - the about page
 - [Content pipeline](docs/content-pipeline.md) - how content is gathered
+- [v1 status](docs/v1-status.md) - ongoing v1 implementation notes
 
 ## Local development
 

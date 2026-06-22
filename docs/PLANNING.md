@@ -32,7 +32,7 @@ decisions are recorded in [Product](product.md).
 
 - Landing page and home sections - see [Home page](pages/home.md)
 - Posts feed - see [Posts feed](pages/posts.md)
-- Maps atlas - see [Maps](pages/maps.md)
+- Map - see [Maps](pages/maps.md)
 - About - see [About](pages/about.md)
 
 ## How content is gathered
@@ -50,6 +50,7 @@ documented in [Content pipeline](content-pipeline.md).
 - [Maps](pages/maps.md)
 - [About](pages/about.md)
 - [Content pipeline](content-pipeline.md)
+- [v1 status](v1-status.md)
 
 ## Writing rule for all surfaces
 

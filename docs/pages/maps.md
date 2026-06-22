@@ -1,6 +1,6 @@
 # Maps
 
-The maps page is a dedicated page in the web app. It is the Cape Town gallery atlas.
+The maps page is a dedicated page in the web app. It is the Cape Town gallery map.
 
 ## Base map
 

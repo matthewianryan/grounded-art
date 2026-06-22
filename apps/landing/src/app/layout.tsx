@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, Instrument_Serif } from "next/font/google";
+import { DM_Sans, Noto_Serif } from "next/font/google";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -8,16 +8,17 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-const instrumentSerif = Instrument_Serif({
+const notoSerif = Noto_Serif({
   subsets: ["latin"],
-  weight: "400",
-  variable: "--font-instrument-serif",
+  weight: ["400", "700"],
+  variable: "--font-noto-serif",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "Grounded Art",
-  description: "Cape Town's living atlas of local art, galleries, and artists.",
+  description:
+    "Cape Town's galleries, exhibitions, and artists, in one place and kept current.",
 };
 
 const themeScript = `(function(){try{var t=localStorage.getItem('ga-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');}}catch(e){}})();`;
@@ -29,7 +30,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${dmSans.variable} ${instrumentSerif.variable}`}
+      className={`${dmSans.variable} ${notoSerif.variable}`}
     >
       <body className="min-h-screen bg-paper text-ink font-sans antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

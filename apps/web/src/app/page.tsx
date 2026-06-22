@@ -9,10 +9,10 @@ export default function AppHome() {
       <p className="mt-4 text-muted">The web app.</p>
       <div className="mt-8 flex flex-wrap gap-4">
         <Link
-          href="/atlas"
+          href="/map"
           className="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition hover:bg-accent"
         >
-          Atlas
+          Map
         </Link>
         <Link
           href="/feed"

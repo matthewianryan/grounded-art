@@ -15,7 +15,7 @@ served together as one site under one domain.
 
 - `apps/landing` - Next.js + TypeScript. The marketing and information site. Owns the root
   routes. Built by Dylan.
-- `apps/web` - Next.js + TypeScript. The web app, including the atlas and the feed. Owns
+- `apps/web` - Next.js + TypeScript. The web app, including the map and the feed. Owns
   the app routes. Built by Matthew.
 - `apps/api` - FastAPI + Python. The web app backend. Built by Matthew.
 - `packages/` - shared configuration and the shared Tailwind theme.

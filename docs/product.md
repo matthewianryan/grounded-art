@@ -23,15 +23,15 @@ in an underlying directory, and a human-curated editorial layer of highlights si
 
 ## Primary surfaces
 
-The atlas and the feed are co-equal primary surfaces. The map gives the geographic view of
+The map and the feed are co-equal primary surfaces. The map gives the geographic view of
 galleries. The feed gives the time-ordered view of what is happening. Neither is subordinate
 to the other.
 
 ## Data model
 
-The atlas and the feed run on two separate setups that cross-link where relevant.
+The map and the feed run on two separate setups that cross-link where relevant.
 
-The atlas is built around galleries. A gallery is a physical place. Only galleries with a
+The map is built around galleries. A gallery is a physical place. Only galleries with a
 physical location are rendered as nodes on the map.
 
 The feed is built around events and posts. Feed items are not required to have a physical
