@@ -6,6 +6,10 @@ that we want to communicate. The sections appear in this order.
 The landing page opens directly into the live app. Its calls to action lead into the working
 atlas and feed.
 
+The landing page is the expressive surface of Grounded Art. Within the minimalist philosophy,
+it is where distinctive visuals and animation are integrated, kept restrained so they never
+clash with the art on display. The web app stays professional, sleek, and minimalist.
+
 ## 1. Hero
 
 States what Grounded Art is and who it is for: Cape Town's living atlas of local art,

@@ -23,3 +23,8 @@ The feed is populated in two ways:
 The feed is kept recent and regularly refreshed, so it reflects what is happening in
 the city now. It gathers content that is otherwise scattered across many separate
 sources into one place.
+
+## Presentation
+
+The feed is minimalist and professional. The presentation stays restrained so the posts and
+the work lead.

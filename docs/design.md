@@ -39,6 +39,16 @@ The typefaces are Instrument Serif for display and DM Sans for body and interfac
 Instrument Serif carries the headlines, the section openers, and the wordmark. DM Sans carries
 running text and the denser app screens.
 
+## Where expression lives
+
+The landing page is the expressive surface. It carries the creative, distinctive visuals and
+the animation, while still following the minimalist philosophy so it never clashes with the
+art it shows.
+
+The web app is professional, sleek, and minimalist. The feed and the maps page stay restrained
+and functional, with no decorative stylization. The map renders only the information we need
+and remains a real, legible map. It is not abstracted, desaturated, or turned black and white.
+
 ## Copy
 
 All user-facing copy reads as human-written. AI tells are stripped, including em dashes.

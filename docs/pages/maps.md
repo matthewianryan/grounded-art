@@ -21,6 +21,9 @@ Extraneous map interface is stripped away. Standard Google Maps points of intere
 labels, and controls that are not relevant are removed, leaving a clean custom-styled
 map focused on the galleries.
 
+The map stays a real, legible map. It is professional, sleek, and minimal, rendering only the
+information we need. It is not abstracted, desaturated, or turned black and white.
+
 ## Gallery card
 
 Selecting a node renders a card for that gallery beside the map, in a side panel. The
