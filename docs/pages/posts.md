@@ -3,6 +3,14 @@
 The posts feed is a page that presents recent art content from across Cape Town:
 exhibitions, openings, events, and gallery posts.
 
+## Feed items
+
+Feed items are events and posts. They are not required to have a physical location. They can
+come from galleries, and also from creatives, curators, and artists who have no physical
+space, linking to a digital presence such as a website or a social profile. A feed item can
+optionally be tied to a physical location, in which case it cross-links to that gallery's node
+on the map.
+
 ## How it is populated
 
 The feed is populated in two ways:

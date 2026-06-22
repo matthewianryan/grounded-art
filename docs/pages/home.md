@@ -3,6 +3,9 @@
 The home page is the landing page. Each section covers one core aspect of Grounded Art
 that we want to communicate. The sections appear in this order.
 
+The landing page opens directly into the live app. Its calls to action lead into the working
+atlas and feed.
+
 ## 1. Hero
 
 States what Grounded Art is and who it is for: Cape Town's living atlas of local art,

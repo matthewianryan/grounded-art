@@ -11,6 +11,10 @@ Town.
 
 The map is populated with real Cape Town art galleries, rendered as nodes on the map.
 
+Only galleries, which are physical places, are rendered as nodes. Events, posts, and creatives
+without a physical location are not nodes. They live in the feed and cross-link to a gallery
+node when relevant.
+
 ## Stripped interface
 
 Extraneous map interface is stripped away. Standard Google Maps points of interest,

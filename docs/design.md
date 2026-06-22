@@ -19,10 +19,17 @@ interface never competes with the art, galleries, and posts it presents.
 - The art leads. Color, contrast, and movement come from the content. The frame stays
   restrained so featured work always reads first.
 
+## Visual mode
+
+Grounded Art ships in both a light mode and a dark mode, with a user toggle between them.
+Light is the warm paper-and-ink mode. Dark is a low-light gallery mode that lets artwork
+glow. Both modes draw from the same shared theme tokens so the landing app and the web app
+stay consistent.
+
 ## Palette direction
 
-A neutral base of paper and ink. The interface stays low-chroma so that gallery images
-and posts carry the color. Accent is restrained and used sparingly.
+In the light mode, a neutral base of paper and ink. The interface stays low-chroma so that
+gallery images and posts carry the color. Accent is restrained and used sparingly.
 
 ## Copy
 

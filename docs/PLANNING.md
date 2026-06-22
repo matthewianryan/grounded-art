@@ -21,12 +21,11 @@ space, kept current and refreshed. It is curated and human-made.
 
 ## Current focus
 
-The first build is the landing page. It houses our information and communicates what
-Grounded Art is. The landing page is the priority before the wider web app.
-
-The web app is planned alongside the landing page. Once the core scaffolding and shared
-environment are in place, Dylan builds the landing page and Matthew builds the web app in
-parallel. The stack and team workflow are recorded in [Architecture](architecture.md).
+The build is moving toward a single live launch. The landing page opens directly into a
+working atlas and feed, so the landing page and the web app are built together rather than in
+sequence. Dylan builds the landing page and Matthew builds the web app in parallel, on the
+shared scaffolding and environment now in place. The stack and team workflow are recorded in
+[Architecture](architecture.md). Core product decisions are recorded in [Product](product.md).
 
 ## Surfaces
 
@@ -43,6 +42,7 @@ documented in [Content pipeline](content-pipeline.md).
 ## Document index
 
 - [Architecture](architecture.md)
+- [Product](product.md)
 - [Design](design.md)
 - [Home page](pages/home.md)
 - [Posts feed](pages/posts.md)

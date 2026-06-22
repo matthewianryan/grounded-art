@@ -17,6 +17,7 @@ Next.js apps stitched into one site under one domain using Next.js multi-zones.
 
 - [Planning overview](docs/PLANNING.md) - product definition, scope, and index
 - [Architecture](docs/architecture.md) - stack and team workflow
+- [Product](docs/product.md) - core product decisions
 - [Design](docs/design.md) - aesthetic and visual decisions
 - [Home page](docs/pages/home.md) - landing page sections
 - [Posts feed](docs/pages/posts.md) - the content feed

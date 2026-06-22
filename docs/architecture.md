@@ -42,7 +42,9 @@ The site is served from www.grounded-art.co.za.
 
 ## Build order
 
-The landing page is built first. The web app is planned alongside it.
+Grounded Art launches as a live app, so the landing page and the web app are built toward one
+launch rather than in sequence. The landing page opens directly into a working atlas and
+feed. The web app and its seeded content are functional before launch.
 
 ## Team and workflow
 
