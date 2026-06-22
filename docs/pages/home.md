@@ -34,7 +34,8 @@ across separate accounts, and information that is recent rather than outdated.
 ## 5. For galleries and artists
 
 Speaks to the two sides of the app. People discovering Cape Town art, and the local
-galleries and artists being discovered. An invitation to local creatives.
+galleries and artists being discovered. An invitation to local creatives. This section
+captures gallery interest with a simple email signup, alongside a short POPIA privacy notice.
 
 ## 6. Human and local
 
@@ -44,3 +45,12 @@ Town. Links through to the about page.
 ## 7. Closing call to action
 
 Invites people to explore the atlas and the feed.
+
+## Navigation and footer
+
+The top navigation is the Grounded Art wordmark with links to Atlas, Feed, and About, and a
+light or dark toggle. In v1 the Atlas and Feed links lead to in-page previews on the landing,
+and they become live links into the web app when v2 ships.
+
+The footer carries a short blurb, a contact email, links to social profiles, and a clear
+takedown and opt-out contact.

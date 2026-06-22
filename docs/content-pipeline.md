@@ -35,3 +35,9 @@ Content is gathered from:
 
 - Automatic ingestion, running the sources and methods above.
 - Manual entry, by us, for content that is added or corrected by hand.
+
+## Attribution and opt-out
+
+Grounded Art attributes content and links back to each gallery and its digital presence. The
+site carries a clear takedown and opt-out contact, and we act on those requests. We store
+public business information, not individuals' personal data.

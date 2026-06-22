@@ -26,13 +26,15 @@ whole site is served from one domain.
 
 ## Domain
 
-The site is served from www.grounded-art.co.za.
+The site is served from www.grounded-art.co.za. The landing app is deployed on Vercel.
 
 ## Frontend tooling
 
 - The monorepo is managed with pnpm workspaces and Turborepo.
 - Styling uses Tailwind CSS v4 with a custom theme. The theme tokens are shared across the
   landing app and the web app so the stitched site stays visually consistent.
+- Landing page animation uses Motion and GSAP, with the SplitText and DrawSVG plugins, gated
+  by the visitor's reduced-motion preference.
 
 ## Backend tooling
 

@@ -2,7 +2,7 @@
 
 The about page sells the human-made angle of Grounded Art. It makes clear that Grounded
 Art is curated by people, built on real relationships with Cape Town galleries and
-artists, rather than assembled by an algorithm.
+artists, rather than assembled by an algorithm. The about page is a dedicated page in v1.
 
 ## Copy
 

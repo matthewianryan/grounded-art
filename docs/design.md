@@ -49,6 +49,20 @@ The web app is professional, sleek, and minimalist. The feed and the maps page s
 and functional, with no decorative stylization. The map renders only the information we need
 and remains a real, legible map. It is not abstracted, desaturated, or turned black and white.
 
+## Wordmark
+
+The wordmark is "Grounded Art" set in Instrument Serif, with a short rust rule beneath it.
+There is no pictorial mark.
+
+## Landing motion
+
+The landing page carries a restrained signature of motion: a compositional load-in where the
+headline settles in line by line and a rust hairline draws beneath it, plus gentle
+cross-dissolves between featured works. Motion is slow and intentional, never competes with the
+art, and is disabled when the visitor prefers reduced motion. The data-driven motion, the live
+feed line and the breathing atlas, arrives with the web app in v2.
+
 ## Copy
 
-All user-facing copy reads as human-written. AI tells are stripped, including em dashes.
+User-facing copy is warm, plainspoken, and local. It reads as written by a person. AI tells,
+including em dashes, are stripped.
