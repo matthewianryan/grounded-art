@@ -21,11 +21,12 @@ space, kept current and refreshed. It is curated and human-made.
 
 ## Current focus
 
-The build is moving toward a single live launch. The landing page opens directly into a
-working atlas and feed, so the landing page and the web app are built together rather than in
-sequence. Dylan builds the landing page and Matthew builds the web app in parallel, on the
-shared scaffolding and environment now in place. The stack and team workflow are recorded in
-[Architecture](architecture.md). Core product decisions are recorded in [Product](product.md).
+The build ships in phases. v1 is the landing page, with every page filled with available
+content, copy, and images. v2 is the web app: the feed and the maps page, saturated with
+scraped Cape Town data. Dylan builds the landing page and Matthew builds the web app in
+parallel on the shared scaffolding now in place, with the landing page shipping first as v1.
+The stack and team workflow are recorded in [Architecture](architecture.md). Core product
+decisions are recorded in [Product](product.md).
 
 ## Surfaces
 

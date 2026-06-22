@@ -2,11 +2,19 @@
 
 This document records core product decisions for Grounded Art.
 
-## Launch
+## Launch and phases
 
-Grounded Art launches as a live app. At launch the landing page opens directly into a
-working atlas and feed. There is no waitlist. The web app is functional and seeded with
-content before launch.
+Grounded Art ships in phases.
+
+v1 is the landing page. Every page of the landing site is built and filled with available
+content, copy, and images, and it launches publicly using available content, including scraped
+images and information.
+
+v2 is the web app: the events and posts feed and the maps page, saturated with real Cape Town
+locations and information using scraped data and efficient ingestion. The landing page leads
+into this app once v2 ships.
+
+There is no waitlist.
 
 ## Curation model
 

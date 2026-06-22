@@ -42,9 +42,11 @@ The site is served from www.grounded-art.co.za.
 
 ## Build order
 
-Grounded Art launches as a live app, so the landing page and the web app are built toward one
-launch rather than in sequence. The landing page opens directly into a working atlas and
-feed. The web app and its seeded content are functional before launch.
+Grounded Art ships in phases. v1 is the landing page in `apps/landing`, built and filled with
+available content, copy, and images. v2 is the web app in `apps/web`: the feed and the maps
+page, saturated with scraped Cape Town data. The landing page leads into the app once v2 ships.
+Dylan and Matthew still build in parallel on the shared scaffolding, with the landing page
+shipping first.
 
 ## Team and workflow
 

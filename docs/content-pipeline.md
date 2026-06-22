@@ -5,13 +5,14 @@ entry and the automated system.
 
 ## Purpose and phases
 
-The automated system exists to fast-forward content population during initial, local
-setup. This is a seeding step for getting the product off the ground locally.
+The automated system fast-forwards content population so Grounded Art can launch with real,
+useful Cape Town content. v1 launches the landing page publicly with available content,
+including scraped images and information. v2 saturates the feed and the maps page with scraped
+data.
 
-After seeding, we move to a permissions phase: we approach real galleries directly,
-establish communication, and obtain proper permission to use their information, posts,
-and images. Accurate, permissioned content from galleries replaces seeded content
-before it is relied on in production.
+In parallel, and as an ongoing effort, we pursue direct gallery relationships and proper
+permission to use their information, posts, and images. Scraped content is confirmed or
+replaced as those relationships are established.
 
 ## Sources
 
