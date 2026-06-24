@@ -1,0 +1,12 @@
+# Auto-requests a review from the area owner on each PR. A heads-up, not a merge gate.
+# Replace DYLAN_GITHUB_HANDLE with Dylan's GitHub username once he is added as a collaborator.
+
+# Shared areas: both owners
+*                   @matthewianryan @DYLAN_GITHUB_HANDLE
+
+# Landing page: Dylan
+/apps/landing/      @DYLAN_GITHUB_HANDLE
+
+# Web app and API: Matthew
+/apps/web/          @matthewianryan
+/apps/api/          @matthewianryan

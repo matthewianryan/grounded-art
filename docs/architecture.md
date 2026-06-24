@@ -26,9 +26,10 @@ whole site is served from one domain.
 
 ## Domain
 
-The site is served from www.grounded-art.co.za. The landing app is deployed to Cloudflare Pages
-as a static export (`pnpm pages:build`, output `apps/landing/out`). The `/app` multi-zone proxy
-is a server feature, so it is omitted from the static export until the web zone is deployed.
+The site is served from www.grounded-art.co.za. The landing app is deployed to Cloudflare as a
+static-assets Worker: a static Next.js export (`pnpm pages:build`, output `apps/landing/out`)
+served from `apps/landing/wrangler.toml`. The `/app` multi-zone proxy is a server feature, so it
+is omitted from the static export until the web zone is deployed.
 
 ## Frontend tooling
 

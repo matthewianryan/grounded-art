@@ -1,6 +1,13 @@
-# Cloudflare Pages configuration for the Grounded Art landing app.
+# Cloudflare Worker (static assets) config for the Grounded Art landing app.
 # The landing site is a fully static Next.js export (`pnpm pages:build`),
-# emitted to the `out/` directory that Cloudflare Pages deploys.
+# emitted to ./out, which Cloudflare serves directly as static assets.
+# `name` must match the Worker created in the Cloudflare dashboard.
 name = "grounded-art"
 compatibility_date = "2025-06-24"
-pages_build_output_dir = "out"
+
+[assets]
+directory = "./out"
+# Next's static export emits about.html, etc. Auto HTML handling maps
+# /about -> /about.html, and misses fall through to the exported 404 page.
+html_handling = "auto-trailing-slash"
+not_found_handling = "404-page"
