@@ -2,6 +2,32 @@
 
 This document records core product decisions for Grounded Art.
 
+## Mission and intention
+
+Grounded Art is the connective tissue of Cape Town's art scene. It makes the scene
+legible and accessible to the people who love it, and it gives visibility to the
+artists who make it.
+
+Helping emerging Cape Town artists be seen is a core part of the mission. Many local
+artists work without a physical space or gallery representation, and the feed exists
+to give them a place to be found, alongside the city's galleries and events.
+
+Grounded Art serves distinct audiences: locals looking for what is on, visitors
+finding the scene, artists who want to be discovered, and galleries that want reach
+while staying current.
+
+## Beyond the directory
+
+The directory, the map, and the feed are the base. Two further layers are decided
+directions that deepen the product.
+
+- Editorial stories. A curated layer of short gallery and artist stories sits over
+  the directory. This is where the human curation becomes visible and where Grounded
+  Art reads as a cultural publication rather than a listings utility.
+- Temporal feed views. The feed is sliced by time so people can see what is on this
+  weekend, what is opening this week, and what is closing soon. This is what makes
+  "kept current" a felt benefit and gives people a reason to return.
+
 ## Launch and phases
 
 Grounded Art ships in phases.

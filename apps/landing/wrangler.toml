@@ -1,0 +1,6 @@
+# Cloudflare Pages configuration for the Grounded Art landing app.
+# The landing site is a fully static Next.js export (`pnpm pages:build`),
+# emitted to the `out/` directory that Cloudflare Pages deploys.
+name = "grounded-art"
+compatibility_date = "2025-06-24"
+pages_build_output_dir = "out"

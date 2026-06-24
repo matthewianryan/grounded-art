@@ -18,6 +18,13 @@ The feed is populated in two ways:
 - Manually, by us.
 - Automatically, through the content pipeline. See [Content pipeline](../content-pipeline.md).
 
+## Temporal views
+
+The feed is sliced by time so people can see what is on now and what is coming. The
+views include what is on this weekend, what is opening this week, and what is closing
+soon. These views make the feed a reason to return and turn "kept current" into a
+felt benefit rather than a claim.
+
 ## Intent
 
 The feed is kept recent and regularly refreshed, so it reflects what is happening in

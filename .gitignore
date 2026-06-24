@@ -25,6 +25,10 @@ __pycache__/
 # Turbo
 .turbo/
 
+# Cloudflare / next-on-pages
+.vercel/
+.wrangler/
+
 # Logs
 *.log
 npm-debug.log*

@@ -28,7 +28,10 @@ v1 and v2 scope is recorded in [Product](product.md).
 ## Next, for v1 landing
 
 - Swap placeholder imagery for real, cleared Cape Town gallery and artist images.
-- Register grounded-art.co.za and deploy the landing to Vercel.
+  v1 launches on the current placeholders and these are swapped in as they clear.
+- Register grounded-art.co.za and deploy the landing to Cloudflare Pages.
+
+See [Follow-ups](follow-ups.md) for the running worklist.
 
 ## Decisions
 

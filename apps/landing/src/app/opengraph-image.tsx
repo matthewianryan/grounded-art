@@ -4,6 +4,9 @@ export const alt = "Grounded Art | Cape Town's living atlas of art";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+// Generated at build time so the route works with the static export.
+export const dynamic = "force-static";
+
 // The share card mirrors the wordmark: cream ground, ink text, a short rust rule.
 export default function OpengraphImage() {
   return new ImageResponse(
