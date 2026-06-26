@@ -1,0 +1,123 @@
+[
+  {
+    "slug": "blank-projects-mukwazhi-hlatshwayo-2026",
+    "type": "exhibition",
+    "title": "Kresiah Mukwazhi and Thembinkosi Hlatshwayo",
+    "body": "A two-person exhibition at blank projects bringing together new work by Kresiah Mukwazhi and Thembinkosi Hlatshwayo.",
+    "gallery_slug": "blank-projects",
+    "starts_on": "2026-05-28",
+    "ends_on": "2026-07-04",
+    "featured": true,
+    "source": "gallery_site",
+    "source_url": "https://blankprojects.com/Gallery"
+  },
+  {
+    "slug": "goodman-masamvu-naked-2026",
+    "type": "exhibition",
+    "title": "Misheck Masamvu: Naked",
+    "body": "A solo exhibition of new paintings by Misheck Masamvu at Goodman Gallery Cape Town.",
+    "gallery_slug": "goodman-gallery-cape-town",
+    "starts_on": "2026-05-30",
+    "ends_on": "2026-07-11",
+    "featured": true,
+    "source": "gallery_site",
+    "source_url": "https://goodman-gallery.com/exhibitions"
+  },
+  {
+    "slug": "thk-i-find-you-all-around-me-2026",
+    "type": "exhibition",
+    "title": "I Find You All Around Me",
+    "body": "A group exhibition at THK Gallery in the city centre.",
+    "gallery_slug": "thk-gallery",
+    "starts_on": "2026-06-03",
+    "ends_on": "2026-07-27",
+    "featured": false,
+    "source": "listing_site",
+    "source_url": "https://ocula.com/art-galleries/thk-gallery/exhibitions/i-find-you-all-around-me/"
+  },
+  {
+    "slug": "norval-zvavahera-tanda-rima-2026",
+    "type": "exhibition",
+    "title": "Portia Zvavahera: Tanda rima",
+    "body": "A major exhibition by the Zimbabwean artist Portia Zvavahera at the Norval Foundation, presented as part of the Investec Cape Town Art Fair programme.",
+    "gallery_slug": "norval-foundation",
+    "starts_on": "2026-02-17",
+    "ends_on": "2026-09-06",
+    "featured": true,
+    "source": "gallery_site",
+    "source_url": "https://www.norvalfoundation.org/exhibitions/"
+  },
+  {
+    "slug": "norval-coopoo-tears-now-2026",
+    "type": "exhibition",
+    "title": "Githan Coopoo: Tears Now But Heaven Tomorrow",
+    "body": "An exhibition at the Norval Foundation honouring the South African artist Githan Coopoo and his work with clay.",
+    "gallery_slug": "norval-foundation",
+    "starts_on": null,
+    "ends_on": "2026-10-04",
+    "featured": false,
+    "source": "gallery_site",
+    "source_url": "https://www.norvalfoundation.org/exhibitions/"
+  },
+  {
+    "slug": "norval-brett-murray-wild-life-2026",
+    "type": "exhibition",
+    "title": "Brett Murray: Wild Life",
+    "body": "A solo exhibition of more than eighty sculptures spanning four decades of Brett Murray's career, at the Norval Foundation.",
+    "gallery_slug": "norval-foundation",
+    "starts_on": null,
+    "ends_on": "2026-11-22",
+    "featured": false,
+    "source": "gallery_site",
+    "source_url": "https://www.norvalfoundation.org/exhibitions/"
+  },
+  {
+    "slug": "stevenson-both-and-2026",
+    "type": "opening",
+    "title": "Both, and",
+    "body": "A group exhibition opening at Stevenson Cape Town, spilling beyond the main gallery into private and administrative spaces, with work by current gallery artists and guests. Opening Thursday 5 July, 6 to 8pm.",
+    "gallery_slug": "stevenson-cape-town",
+    "starts_on": "2026-07-05",
+    "ends_on": null,
+    "featured": false,
+    "source": "gallery_site",
+    "source_url": "https://www.stevenson.info/exhibitions-upcoming"
+  },
+  {
+    "slug": "first-thursdays-cape-town-july-2026",
+    "type": "event",
+    "title": "First Thursdays: Cape Town city centre",
+    "body": "On the first Thursday of the month, galleries and cultural spaces across the city centre stay open into the evening. Walk between shows on foot through the City Bowl.",
+    "gallery_slug": null,
+    "location_text": "Cape Town city centre",
+    "external_url": "https://first-thursdays.co.za",
+    "starts_on": "2026-07-02",
+    "ends_on": "2026-07-02",
+    "featured": false,
+    "source": "listing_site",
+    "source_url": "https://first-thursdays.co.za"
+  },
+  {
+    "slug": "ga-winter-art-walk-guide-2026",
+    "type": "post",
+    "title": "Where to start with Cape Town art this winter",
+    "body": "A short Grounded Art guide to the shows worth a trip across the city right now, from the Woodstock galleries to the city centre and the Waterfront.",
+    "gallery_slug": null,
+    "featured": false,
+    "source": "manual"
+  },
+  {
+    "slug": "sample-emerging-artist-spotlight",
+    "type": "post",
+    "title": "Studio spotlight: emerging Cape Town artist",
+    "body": "Placeholder seed post for an emerging artist working without gallery representation, linking to their own digital presence. Replace with curated content. This item exists to exercise the location-less feed path.",
+    "gallery_slug": null,
+    "creative_name": "Sample Emerging Artist",
+    "external_url": "https://example.com",
+    "location_text": "Salt River, Cape Town",
+    "starts_on": "2026-06-30",
+    "ends_on": "2026-07-01",
+    "featured": false,
+    "source": "sample_seed"
+  }
+]
