@@ -6,6 +6,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "@grounded-art/landing", "dev"],
       "port": 3000
+    },
+    {
+      "name": "web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@grounded-art/web", "dev"],
+      "port": 3001
     }
   ]
 }

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { DM_Sans, Noto_Serif } from "next/font/google";
 import "./globals.css";
+import { SiteNav } from "@/components/site-nav";
+import { SiteFooter } from "@/components/site-footer";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -32,9 +34,11 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${dmSans.variable} ${notoSerif.variable}`}
     >
-      <body className="min-h-screen bg-paper text-ink font-sans antialiased">
+      <body className="flex min-h-screen flex-col bg-paper text-ink font-sans antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        {children}
+        <SiteNav />
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
       </body>
     </html>
   );
