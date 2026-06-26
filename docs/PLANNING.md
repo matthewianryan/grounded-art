@@ -75,6 +75,7 @@ documented in [Content pipeline](content-pipeline.md).
 - [Content pipeline](content-pipeline.md)
 - [v1 status](v1-status.md)
 - [Follow-ups](follow-ups.md)
+- [Screencast](screencast.md)
 
 ## Writing rule for all surfaces
 

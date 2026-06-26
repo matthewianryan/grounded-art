@@ -1,0 +1,13 @@
+{
+  "name": "@grounded-art/screencast",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "record": "node record.mjs",
+    "install-browser": "playwright install chromium"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}

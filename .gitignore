@@ -33,6 +33,12 @@ __pycache__/
 *.log
 npm-debug.log*
 
+# Screencast recordings
+tooling/screencast/recordings/
+# Playwright
+test-results/
+playwright-report/
+
 # OS
 .DS_Store
 
