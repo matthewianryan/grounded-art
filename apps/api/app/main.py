@@ -6,11 +6,13 @@ from app.routers import feed, galleries
 
 app = FastAPI(title="Grounded Art API")
 
+# The API is public and read-only. It serves no credentials or cookies, so CORS is scoped to
+# the known web origins and to safe read methods rather than left open.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "OPTIONS"],
     allow_headers=["*"],
 )
 

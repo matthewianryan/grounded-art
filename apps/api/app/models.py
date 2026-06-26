@@ -15,16 +15,19 @@ from enum import StrEnum
 
 from sqlalchemy import (
     Boolean,
+    CheckConstraint,
     Date,
     DateTime,
     Float,
     ForeignKey,
+    Index,
     Integer,
     String,
     Text,
     UniqueConstraint,
     Uuid,
     func,
+    text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -103,6 +106,18 @@ class Gallery(Base, TimestampMixin):
     """
 
     __tablename__ = "gallery"
+    # Coordinates are seeded and scraped from outside sources, so guard against out-of-range
+    # values landing in the system of record. Null is allowed (a gallery may have no coordinates).
+    __table_args__ = (
+        CheckConstraint(
+            "latitude IS NULL OR latitude BETWEEN -90 AND 90",
+            name="ck_gallery_latitude_range",
+        ),
+        CheckConstraint(
+            "longitude IS NULL OR longitude BETWEEN -180 AND 180",
+            name="ck_gallery_longitude_range",
+        ),
+    )
 
     id: Mapped[uuid.UUID] = _uuid_pk()
     slug: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
@@ -174,6 +189,15 @@ class GalleryImage(Base, TimestampMixin):
     """
 
     __tablename__ = "gallery_image"
+    # At most one image per gallery may be the primary (the hero shown on cards and the map).
+    __table_args__ = (
+        Index(
+            "uq_gallery_image_one_primary",
+            "gallery_id",
+            unique=True,
+            postgresql_where=text("is_primary"),
+        ),
+    )
 
     id: Mapped[uuid.UUID] = _uuid_pk()
     gallery_id: Mapped[uuid.UUID] = mapped_column(
