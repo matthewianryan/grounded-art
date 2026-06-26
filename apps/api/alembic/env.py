@@ -18,7 +18,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Import models here so Alembic autogenerate can see them.
-# from app import models  # noqa: F401
+from app import models  # noqa: E402, F401
 
 # Use the application's database URL rather than a hardcoded value in alembic.ini.
 config.set_main_option("sqlalchemy.url", settings.database_url)

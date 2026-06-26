@@ -9,7 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "pages:build": "STATIC_EXPORT=true next build",
-    "pages:preview": "wrangler dev"
+    "pages:preview": "wrangler pages dev out"
   },
   "dependencies": {
     "@grounded-art/tailwind-config": "workspace:*",

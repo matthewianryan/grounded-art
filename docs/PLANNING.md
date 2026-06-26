@@ -65,6 +65,8 @@ documented in [Content pipeline](content-pipeline.md).
 
 - [Architecture](architecture.md)
 - [Product](product.md)
+- [Data model](data-model.md)
+- [External dependencies](external-dependencies.md)
 - [Design](design.md)
 - [Home page](pages/home.md)
 - [Posts feed](pages/posts.md)
