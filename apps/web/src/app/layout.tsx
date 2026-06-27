@@ -3,6 +3,7 @@ import { DM_Sans, Noto_Serif } from "next/font/google";
 import "./globals.css";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
+import { UserActionsProvider } from "@/components/user-actions-provider";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -36,9 +37,11 @@ export default function RootLayout({
     >
       <body className="flex min-h-screen flex-col bg-paper text-ink font-sans antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <SiteNav />
-        <div className="flex-1">{children}</div>
-        <SiteFooter />
+        <UserActionsProvider>
+          <SiteNav />
+          <div className="flex-1">{children}</div>
+          <SiteFooter />
+        </UserActionsProvider>
       </body>
     </html>
   );
