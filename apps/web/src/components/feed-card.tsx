@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { FeedItem, FeedItemType } from "@/lib/types";
 import { formatDateRange } from "@/lib/format";
 
@@ -26,30 +27,40 @@ export function FeedCard({
 
   return (
     <article className="border-t border-line py-6 first:border-t-0 first:pt-0">
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs text-muted">
-        <span className="uppercase tracking-[0.16em]">{TYPE_LABELS[item.type]}</span>
-        {dates && (
-          <>
-            <span aria-hidden="true">·</span>
-            <span>{dates}</span>
-          </>
+      <Link href={`/feed/${item.slug}`} className="group block">
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs text-muted">
+          <span className="uppercase tracking-[0.16em]">{TYPE_LABELS[item.type]}</span>
+          {dates && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{dates}</span>
+            </>
+          )}
+        </div>
+
+        <h3 className="mt-2 font-display text-2xl leading-snug tracking-tight transition group-hover:text-accent">
+          {item.title}
+        </h3>
+
+        <Attribution item={item} gallery={gallery} />
+
+        {item.body && (
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted line-clamp-3">
+            {item.body}
+          </p>
         )}
-      </div>
 
-      <h3 className="mt-2 font-display text-2xl leading-snug tracking-tight">{item.title}</h3>
-
-      <Attribution item={item} gallery={gallery} />
-
-      {item.body && (
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">{item.body}</p>
-      )}
+        <span className="mt-3 inline-block text-sm text-accent transition group-hover:text-ink">
+          View post
+        </span>
+      </Link>
 
       {item.external_url && (
         <a
           href={item.external_url}
           target="_blank"
           rel="noreferrer"
-          className="mt-3 inline-block text-sm text-accent transition hover:text-ink"
+          className="mt-2 inline-block text-sm text-muted transition hover:text-accent"
         >
           More
         </a>

@@ -20,10 +20,15 @@ const TYPE_OPTIONS: { label: string; value: FeedItemType | undefined }[] = [
   { label: "Posts", value: "post" },
 ];
 
-function hrefFor(view: FeedView | undefined, type: FeedItemType | undefined): string {
+function hrefFor(
+  view: FeedView | undefined,
+  type: FeedItemType | undefined,
+  saved: boolean,
+): string {
   const params = new URLSearchParams();
   if (view) params.set("view", view);
   if (type) params.set("type", type);
+  if (saved) params.set("saved", "1");
   const query = params.toString();
   return query ? `/feed?${query}` : "/feed";
 }
@@ -47,9 +52,11 @@ function Pill({ href, active, label }: { href: string; active: boolean; label: s
 export function FeedFilters({
   view,
   type,
+  saved,
 }: {
   view: FeedView | undefined;
   type: FeedItemType | undefined;
+  saved: boolean;
 }) {
   return (
     <div className="space-y-3">
@@ -57,18 +64,23 @@ export function FeedFilters({
         {VIEW_OPTIONS.map((opt) => (
           <Pill
             key={opt.label}
-            href={hrefFor(opt.value, type)}
-            active={view === opt.value}
+            href={hrefFor(opt.value, type, saved)}
+            active={!saved && view === opt.value}
             label={opt.label}
           />
         ))}
+        <Pill
+          href={saved ? hrefFor(view, type, false) : hrefFor(view, type, true)}
+          active={saved}
+          label="Saved"
+        />
       </div>
       <div className="flex flex-wrap gap-2" role="group" aria-label="Item types">
         {TYPE_OPTIONS.map((opt) => (
           <Pill
             key={opt.label}
-            href={hrefFor(view, opt.value)}
-            active={type === opt.value}
+            href={hrefFor(view, opt.value, saved)}
+            active={!saved && type === opt.value}
             label={opt.label}
           />
         ))}

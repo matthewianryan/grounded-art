@@ -30,6 +30,9 @@ and replaceable.
 - Role: Live. The base map canvas, tiles, and pan and zoom only.
 - Provides: the rendered base map on the maps page. Everything drawn on top, the gallery
   nodes and the side-panel cards, is rendered from our own data.
+- Browser key setup: restrict to the Maps JavaScript API and to HTTP referrers. For local
+  development, allow `http://localhost:3000/*` and `http://localhost:3001/*`. The landing
+  app proxies `/app` to the web app, but the browser referer stays on port 3000.
 - Decoupling path: the map is accessed through an internal provider boundary, so the base
   layer can be swapped to MapLibre with vector tiles later without touching the node and
   card code.
