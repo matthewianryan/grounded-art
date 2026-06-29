@@ -1,47 +1,78 @@
 # AGENTS.md
 
-## Cursor Cloud specific instructions
+Context for AI coding agents working in this repo. Read this first, then the docs it points to.
 
-Grounded Art is a pnpm + Turborepo monorepo with three services:
+## What this is
 
-- `apps/landing` — Next.js landing site, owns the domain root, dev on port 3000.
-- `apps/web` — Next.js web app (map + feed), served under `/app`, dev on port 3001.
-  The landing app proxies `/app` to the web app via Next.js multi-zones, so browse the
-  web app through `http://localhost:3000/app/...` (e.g. `/app/feed`, `/app/map`).
-- `apps/api` — FastAPI + PostgreSQL backend, run on port 8000.
+Grounded Art connects people in Cape Town with local art, galleries, and artists. It is a pnpm
+and Turborepo monorepo with Next.js multi-zones.
 
-Standard commands live in `README.md`, root `package.json` (`pnpm dev|build|lint|typecheck`,
-which fan out via Turbo), and `apps/api` (`uv run ...`). Prefer those over duplicating here.
+- `apps/landing`: Next.js landing site. Owns the domain root.
+- `apps/web`: Next.js web app (map and feed). Served under `/app`.
+- `apps/api`: FastAPI and PostgreSQL backend.
+- `packages/tailwind-config`: shared Tailwind v4 theme tokens.
+- `packages/tsconfig`: shared TypeScript base config.
 
-### Environment specifics (already provisioned in the VM snapshot)
+## Current focus
 
-- `uv` is installed at `/usr/local/bin/uv` (the API uses uv, not pip/venv directly).
-- PostgreSQL 16 is installed natively instead of via Docker (the repo's `docker-compose.yml`
-  expects Postgres 17, but Docker is not available here; native 16 is compatible for dev).
-  A `grounded` role (password `grounded`) and `grounded_art` database already exist, matching
-  `docker-compose.yml` / `apps/api/.env.example`, so `DATABASE_URL` defaults work unchanged.
+We are building the v2 web app redesign. Start with `docs/redesign.md`, and build by phase from
+`docs/redesign-plan.md`. The interaction and animation rules are in `docs/interactions.md`. The
+verified check-in, points wallet, and accounts are in `docs/wallet-and-presence.md`.
 
-### Starting services (the update script does NOT start anything)
+Do not pull work from a later phase into an earlier one. Each phase ends at a review gate. Plan
+the work, map it to that gate, and stop there.
 
-1. Start Postgres (no init system, so start the cluster manually each boot; data persists):
-   `sudo pg_ctlcluster 16 main start`
-2. API: from `apps/api`, run `uv run uvicorn app.main:app --reload --port 8000`.
-   `apps/api/app/config.py` defaults `DATABASE_URL` to the local Postgres, so a `.env` is
-   optional; copy `.env.example` to `.env` only if you need to override it.
-3. Frontend (both Next apps together): from the repo root, run `pnpm dev`.
+## Hard rules
 
-### Database setup (only needed on a fresh DB)
+- Tokens only. The theme is in `packages/tailwind-config` (`theme.css`): `paper` (cream), `ink`
+  (black), `accent` (rust, used sparingly), `muted`, `line`. No other accent colours. No blue,
+  no orange. Both light and dark mode come from these tokens.
+- Type: Noto Serif for display, DM Sans for body and interface.
+- No em dashes anywhere, in code, copy, or docs. This is strict.
+- Motion is gated by `prefers-reduced-motion` with a static fallback, using `useReducedMotion`
+  from `motion/react`. See `apps/web/src/components/check-in-celebration.tsx` and
+  `apps/landing/src/components/reveal.tsx`. `motion` is a dependency of both apps. GSAP is
+  landing-only.
+- Accessibility: keyboard operable, managed focus, sensible labels.
+- The art leads. The frame stays quiet and never competes with the work. The map stays a real,
+  legible map, never abstracted or desaturated.
 
-From `apps/api`: `uv run alembic upgrade head` then `uv run python -m app.seed`
-(seeds ~14 real Cape Town galleries and ~10 feed items; the seed is idempotent by slug).
-The seeded data survives in the snapshot, so this is usually a no-op on later boots.
+## Where things are (apps/web)
 
-### Notes
+- API client: `src/lib/api.ts` (gallery and feed fetchers, for example `getFeedItem`,
+  `getGallery`, `listGalleries`). Types in `src/lib/types.ts`. Check the file for exact names.
+- Map provider boundary: `src/lib/maps.ts`.
+- On-device state: `src/lib/user-actions.ts` and `src/components/user-actions-provider.tsx`,
+  using the `ga-saved` and `ga-checkins` cookies. Theme persists via `ga-theme` in
+  `localStorage`.
+- Check-in: `src/lib/check-in.ts`, with `CHECK_IN_RADIUS_METRES = 100`.
+- Feed: `src/components/feed-card.tsx`, `feed-list-client.tsx`, `feed-filters.tsx`, and the
+  shared `src/components/detail-card.tsx`.
 
-- Lint uses `next lint` (prints a deprecation warning that is harmless) for the frontend and
-  `uv run ruff check .` for the API.
-- The web app's saved-items / check-in user actions persist in first-party cookies scoped to
-  the `/app` path (see `apps/web/src/lib/user-actions.ts`); check-in additionally needs
-  browser geolocation. `NEXT_PUBLIC_API_URL` defaults to `http://localhost:8000`.
-- The Google Maps key (`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in `apps/web`) is optional; the map
-  page degrades gracefully to "map not configured" when it is unset.
+## Working agreement
+
+- Plan before editing on anything non-trivial. Map the plan to the relevant phase gate in
+  `docs/redesign-plan.md`, and stop at that gate.
+- Keep changes scoped to the current phase. Flag scope you would need to expand, do not expand
+  it silently.
+- Update the status rows in `docs/feature-list.md` when a feature lands.
+- Run `pnpm typecheck` and `pnpm lint` in the app you touched.
+
+## Documentation map
+
+Current redesign:
+
+- `docs/redesign.md`: the v2 redesign brief and decisions.
+- `docs/redesign-plan.md`: the phased build with review gates.
+- `docs/interactions.md`: carousel, unmask reveal, gesture model, map styling.
+- `docs/wallet-and-presence.md`: verified check-in, points wallet, accounts.
+- `docs/pages/profile.md`, `docs/pages/contact.md`: the new surfaces.
+
+Canonical references:
+
+- `docs/PLANNING.md`: planning index and what Grounded Art is.
+- `docs/design.md`, `docs/product.md`, `docs/data-model.md`, `docs/architecture.md`,
+  `docs/external-dependencies.md`.
+- `docs/pages/`: per-page specs (home, posts, maps, about, profile, contact).
+- `docs/build-spec.md`: history of the v1 client-only check-in layer, superseded by the redesign
+  where they overlap.

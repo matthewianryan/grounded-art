@@ -29,6 +29,14 @@ Next.js apps stitched into one site under one domain using Next.js multi-zones.
 - [Content pipeline](docs/content-pipeline.md) - how content is gathered
 - [v1 status](docs/v1-status.md) - ongoing v1 implementation notes
 
+### Current focus: the v2 redesign
+
+- [Redesign](docs/redesign.md) - the v2 web app redesign brief and decisions
+- [Redesign plan](docs/redesign-plan.md) - the phased build with review gates
+- [Interactions](docs/interactions.md) - carousel, unmask reveal, gesture model, map styling
+- [Wallet and presence](docs/wallet-and-presence.md) - verified check-in, points wallet, accounts
+- [Profile and account](docs/pages/profile.md) and [Contact](docs/pages/contact.md) - new surfaces
+
 ## Local development
 
 ### Prerequisites

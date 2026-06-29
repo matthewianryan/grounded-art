@@ -34,6 +34,13 @@ isProject: false
 
 # Increment: Check-in and save (client-only delight layer)
 
+> Status note: this spec documents the v1 client-only check-in and save layer, most of which is
+> now built. The v2 redesign supersedes its scope where they overlap. In v2, check-in gains
+> server-side verification and awards points to a wallet, behind an account. See
+> [Redesign](redesign.md), [Wallet and presence](wallet-and-presence.md), and
+> [Interactions](interactions.md). Read this file as the history of the client-only layer, not
+> as the current plan for check-in.
+
 **Sequencing:** Last increment. Ships only after the **map surface** and **feed-as-posts** increments land. Does not block them. First cut if the week runs short.
 
 **Path note:** No prior increment spec files exist in [`docs/`](docs/). This plan follows the shape requested in the brief. All file paths below were opened and confirmed in the `grounded-art` repo unless marked *planned (new)*.
@@ -138,9 +145,9 @@ No porting from MVP proof-of-presence: no challenge tokens, server verification,
 
 **New files (planned):**
 
-- `apps/web/src/lib/user-actions.ts` — read/write cookie helpers, slug set types
-- `apps/web/src/components/user-actions-provider.tsx` — `"use client"` React context at root layout, hydrates from cookies on mount, exposes `isSaved(key)`, `toggleSave(key)`, `isCheckedIn(gallerySlug)`, `markCheckedIn(gallerySlug)`
-- Cookie names (suggestion): `ga-saved`, `ga-checkins` — compact JSON arrays, `SameSite=Lax`, `Path=/app`, long `Max-Age`, no `HttpOnly` (client-only writes)
+- `apps/web/src/lib/user-actions.ts`: read/write cookie helpers, slug set types
+- `apps/web/src/components/user-actions-provider.tsx`: `"use client"` React context at root layout, hydrates from cookies on mount, exposes `isSaved(key)`, `toggleSave(key)`, `isCheckedIn(gallerySlug)`, `markCheckedIn(gallerySlug)`
+- Cookie names (suggestion): `ga-saved`, `ga-checkins`: compact JSON arrays, `SameSite=Lax`, `Path=/app`, long `Max-Age`, no `HttpOnly` (client-only writes)
 
 **Checked-in key:** gallery slug only (check-in is always at a physical gallery).
 
@@ -232,9 +239,9 @@ Tokens: reuse [`theme.css`](packages/tailwind-config/theme.css) (`paper`, `ink`,
 
 ### Explicitly untouched
 
-- [`apps/api/`](apps/api/) — no new endpoints
-- [`packages/tailwind-config/theme.css`](packages/tailwind-config/theme.css) — no token changes
-- Older MVP repo (`groundedart`) — reference only for radius rationale, no code port
+- [`apps/api/`](apps/api/): no new endpoints
+- [`packages/tailwind-config/theme.css`](packages/tailwind-config/theme.css): no token changes
+- Older MVP repo (`groundedart`): reference only for radius rationale, no code port
 
 ---
 

@@ -14,6 +14,9 @@ them as they are done. This is a worklist, not a place for open questions.
 
 ## v2 web app
 
+The v2 redesign is tracked in [Redesign plan](redesign-plan.md), with the design direction in
+[Redesign](redesign.md). The items below remain the baseline web app worklist.
+
 Built so far: the read API for galleries and the feed, the curated seed of real Cape Town
 galleries and feed items, the typed web API client, the app shell, and the Feed page with its
 temporal views.

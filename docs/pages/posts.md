@@ -11,6 +11,16 @@ space, linking to a digital presence such as a website or a social profile. A fe
 optionally be tied to a physical location, in which case it cross-links to that gallery's node
 on the map.
 
+## A single stream
+
+The feed is one stream of all items. It is not split into categories or type filters. Every
+feed item is shown, presented image-led so the work leads. The feed item type is kept in the
+data for internal use, but it is not exposed as a filter. The only slicing is by time, through
+the temporal views below.
+
+In the web app, the feed browses as an image carousel that shows every item. See
+[Redesign](../redesign.md).
+
 ## How it is populated
 
 The feed is populated in two ways:
@@ -34,4 +44,4 @@ sources into one place.
 ## Presentation
 
 The feed is minimalist and professional. The presentation stays restrained so the posts and
-the work lead.
+the work lead, with the one expressive exception of the image carousel browse described above.
