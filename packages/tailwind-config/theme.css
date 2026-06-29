@@ -11,6 +11,28 @@
   --ga-accent: #a24b2c;
   --ga-muted: #6e6452;
   --ga-line: #e4dbc9;
+
+  /* Card surfaces */
+  --ga-card-bg: var(--ga-paper);
+  --ga-radius-card: 0.125rem;
+  --ga-shadow-card: 0 1px 3px rgb(22 19 14 / 0.06);
+
+  /* Badge (monochrome by default) */
+  --ga-badge-bg: rgb(110 100 82 / 0.08);
+  --ga-badge-fg: var(--ga-muted);
+  --ga-badge-border: var(--ga-line);
+  --ga-radius-badge: 9999px;
+
+  /* Action row pills */
+  --ga-action-border: var(--ga-line);
+  --ga-action-fg: var(--ga-muted);
+  --ga-action-active-bg: rgb(110 100 82 / 0.08);
+  --ga-radius-action: 9999px;
+
+  /* Wallet */
+  --ga-wallet-balance: var(--ga-ink);
+  --ga-wallet-credit: var(--ga-accent);
+  --ga-wallet-muted: var(--ga-muted);
 }
 
 .dark {
@@ -19,6 +41,21 @@
   --ga-accent: #c2613b;
   --ga-muted: #968a75;
   --ga-line: #2a2419;
+
+  --ga-card-bg: var(--ga-paper);
+  --ga-shadow-card: 0 1px 3px rgb(0 0 0 / 0.24);
+
+  --ga-badge-bg: rgb(150 138 117 / 0.12);
+  --ga-badge-fg: var(--ga-muted);
+  --ga-badge-border: var(--ga-line);
+
+  --ga-action-border: var(--ga-line);
+  --ga-action-fg: var(--ga-muted);
+  --ga-action-active-bg: rgb(150 138 117 / 0.12);
+
+  --ga-wallet-balance: var(--ga-ink);
+  --ga-wallet-credit: var(--ga-accent);
+  --ga-wallet-muted: var(--ga-muted);
 }
 
 @theme inline {
@@ -27,6 +64,24 @@
   --color-accent: var(--ga-accent);
   --color-muted: var(--ga-muted);
   --color-line: var(--ga-line);
+
+  --color-card-bg: var(--ga-card-bg);
+  --radius-card: var(--ga-radius-card);
+  --shadow-card: var(--ga-shadow-card);
+
+  --color-badge-bg: var(--ga-badge-bg);
+  --color-badge-fg: var(--ga-badge-fg);
+  --color-badge-border: var(--ga-badge-border);
+  --radius-badge: var(--ga-radius-badge);
+
+  --color-action-border: var(--ga-action-border);
+  --color-action-fg: var(--ga-action-fg);
+  --color-action-active-bg: var(--ga-action-active-bg);
+  --radius-action: var(--ga-radius-action);
+
+  --color-wallet-balance: var(--ga-wallet-balance);
+  --color-wallet-credit: var(--ga-wallet-credit);
+  --color-wallet-muted: var(--ga-wallet-muted);
 
   --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-noto-serif), ui-serif, Georgia, serif;

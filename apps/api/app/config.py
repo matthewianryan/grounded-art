@@ -17,6 +17,10 @@ class Settings(BaseSettings):
         "http://localhost:3001",
     ]
 
+    # When true, the redesign schema (accounts, sessions, check-ins, wallet, contact) is
+    # expected to be present. No API routes use these tables until Phase 3+.
+    redesign_schema_enabled: bool = True
+
     @field_validator("database_url")
     @classmethod
     def _normalize_database_url(cls, value: str) -> str:

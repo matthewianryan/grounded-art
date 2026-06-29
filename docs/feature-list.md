@@ -57,6 +57,9 @@ starting point for the redesign build.
 
 | Feature | Status | Notes |
 |---------|--------|-------|
+| Shared redesign tokens (card, badge, action row, wallet) | Built | Phase 0; packages/tailwind-config |
+| Circular gallery shell (preview) | Built | Phase 0 isolated shell; /app/preview/patterns |
+| Unmask reveal shell (preview) | Built | Phase 0 isolated shell; sticky scroll layering |
 | Circular gallery feed browse | Not built | Shows all feed items, no category split; reduced-motion fallback to list |
 | Unmask-on-scroll post detail | Not built | Re-skinned from framer.university pattern |
 | Post-led card with artist name | Not built | Replaces text-led card; image_url already exists |
@@ -87,6 +90,7 @@ starting point for the redesign build.
 | Feed seed (10 items) | Built | No image URLs yet |
 | Gallery image records | Not built | Model exists; no seed images |
 | Feed image URLs | Not built | image_url field exists; no seeded values |
+| Redesign schema migrations | Built | Phase 0; account, session, check-in, wallet, contact, gallery brand |
 | Auth and sessions | Not built | Sign in, create account, session; redesign scope |
 | POST /check-ins (verify and award) | Not built | Verifies presence, awards a point atomically |
 | Challenge token on gallery card open | Not built | Proof-of-presence binding for verification |

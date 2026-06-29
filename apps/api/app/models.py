@@ -79,6 +79,11 @@ class FeedItemStatus(StrEnum):
     OPTED_OUT = "opted_out"
 
 
+class WalletTransactionReason(StrEnum):
+    VERIFIED_CHECK_IN = "verified_check_in"
+    SHOP_SPEND = "shop_spend"
+
+
 def _uuid_pk() -> Mapped[uuid.UUID]:
     return mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
 
@@ -147,6 +152,10 @@ class Gallery(Base, TimestampMixin):
     provenance: Mapped[dict | None] = mapped_column(JSONB)
     last_refreshed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
+    # Optional brand for badge and pin rendering on post cards and the map.
+    brand_name: Mapped[str | None] = mapped_column(String(255))
+    brand_logo_url: Mapped[str | None] = mapped_column(String(512))
+
     external_refs: Mapped[list["GalleryExternalRef"]] = relationship(
         back_populates="gallery", cascade="all, delete-orphan"
     )
@@ -154,6 +163,7 @@ class Gallery(Base, TimestampMixin):
         back_populates="gallery", cascade="all, delete-orphan"
     )
     feed_items: Mapped[list["FeedItem"]] = relationship(back_populates="gallery")
+    check_ins: Mapped[list["CheckIn"]] = relationship(back_populates="gallery")
 
 
 class GalleryExternalRef(Base, TimestampMixin):
@@ -268,3 +278,124 @@ class FeedItem(Base, TimestampMixin):
     last_refreshed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     gallery: Mapped["Gallery | None"] = relationship(back_populates="feed_items")
+
+
+class Account(Base, TimestampMixin):
+    """A signed-in user. Check in, profile, and wallet require an account."""
+
+    __tablename__ = "account"
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    display_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    title: Mapped[str | None] = mapped_column(String(255))
+    avatar_url: Mapped[str | None] = mapped_column(String(512))
+    bio: Mapped[str | None] = mapped_column(Text)
+    first_name: Mapped[str | None] = mapped_column(String(255))
+    last_name: Mapped[str | None] = mapped_column(String(255))
+    phone: Mapped[str | None] = mapped_column(String(64))
+    joined_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+    sessions: Mapped[list["Session"]] = relationship(
+        back_populates="account", cascade="all, delete-orphan"
+    )
+    check_ins: Mapped[list["CheckIn"]] = relationship(
+        back_populates="account", cascade="all, delete-orphan"
+    )
+    wallet_transactions: Mapped[list["WalletTransaction"]] = relationship(
+        back_populates="account", cascade="all, delete-orphan"
+    )
+
+
+class Session(Base, TimestampMixin):
+    """A server-issued sign-in session for an account."""
+
+    __tablename__ = "session"
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    account_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("account.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    token_hash: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    check_in_challenge_token: Mapped[str | None] = mapped_column(String(255))
+    check_in_challenge_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    check_in_challenge_gallery_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("gallery.id", ondelete="SET NULL"), index=True
+    )
+
+    account: Mapped["Account"] = relationship(back_populates="sessions")
+    check_in_challenge_gallery: Mapped["Gallery | None"] = relationship()
+
+
+class CheckIn(Base, TimestampMixin):
+    """A record that an account checked in at a gallery."""
+
+    __tablename__ = "check_in"
+    __table_args__ = (
+        Index(
+            "ix_check_in_account_gallery_checked_in_at",
+            "account_id",
+            "gallery_id",
+            "checked_in_at",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    account_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("account.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    gallery_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("gallery.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    latitude: Mapped[float] = mapped_column(Float, nullable=False)
+    longitude: Mapped[float] = mapped_column(Float, nullable=False)
+    checked_in_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    verified: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
+    point_awarded: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
+
+    account: Mapped["Account"] = relationship(back_populates="check_ins")
+    gallery: Mapped["Gallery"] = relationship(back_populates="check_ins")
+    wallet_transaction: Mapped["WalletTransaction | None"] = relationship(
+        back_populates="check_in", uselist=False
+    )
+
+
+class WalletTransaction(Base, TimestampMixin):
+    """One entry in an account's append-only points ledger."""
+
+    __tablename__ = "wallet_transaction"
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    account_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("account.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    delta: Mapped[int] = mapped_column(Integer, nullable=False)
+    # One of WalletTransactionReason.
+    reason: Mapped[str] = mapped_column(String(32), nullable=False)
+    check_in_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("check_in.id", ondelete="SET NULL"), unique=True, index=True
+    )
+
+    account: Mapped["Account"] = relationship(back_populates="wallet_transactions")
+    check_in: Mapped["CheckIn | None"] = relationship(back_populates="wallet_transaction")
+
+
+class ContactMessage(Base):
+    """A message sent through the contact page."""
+
+    __tablename__ = "contact_message"
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    email: Mapped[str] = mapped_column(String(255), nullable=False)
+    subject: Mapped[str] = mapped_column(String(512), nullable=False)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    received_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now(), index=True
+    )
