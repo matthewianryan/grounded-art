@@ -49,6 +49,11 @@ parallel on the shared scaffolding now in place, with the landing page shipping 
 The stack and team workflow are recorded in [Architecture](architecture.md). Core product
 decisions are recorded in [Product](product.md).
 
+A v2 redesign is now underway: a stronger feed and map experience, plus accounts, a points
+wallet earned by verified check-ins, a profile and account area, and a contact page. It is
+recorded in [Redesign](redesign.md) and built by phase from [Redesign plan](redesign-plan.md).
+Dylan and Matthew build it collaboratively across the repo.
+
 ## Surfaces
 
 - Landing page and home sections - see [Home page](pages/home.md)
@@ -76,6 +81,15 @@ documented in [Content pipeline](content-pipeline.md).
 - [v1 status](v1-status.md)
 - [Follow-ups](follow-ups.md)
 - [Screencast](screencast.md)
+
+### v2 redesign (current)
+
+- [Redesign](redesign.md)
+- [Redesign plan](redesign-plan.md)
+- [Interactions](interactions.md)
+- [Wallet and presence](wallet-and-presence.md)
+- [Profile and account](pages/profile.md)
+- [Contact](pages/contact.md)
 
 ## Writing rule for all surfaces
 

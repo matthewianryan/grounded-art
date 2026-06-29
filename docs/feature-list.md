@@ -1,4 +1,4 @@
-# Grounded Art — Feature list
+# Grounded Art feature list
 
 ## Surfaces
 
@@ -13,6 +13,7 @@
 | Galleries and artists invitation | Built | mailto CTA, POPIA note |
 | Human and local teaser | Built | Links to About |
 | Closing CTA section | Built | |
+| App CTA (deep link to web app) | Not built | Opens /app feed carousel; nav Map/Feed links go live |
 | About page | Built | Values grid, full editorial layout |
 | Shared nav with wordmark and rust rule | Built | Links to in-page anchors in v1 |
 | Shared footer with takedown contact | Built | |
@@ -25,7 +26,7 @@
 | Feature | Status | Notes |
 |---------|--------|-------|
 | Feed page with temporal views | Built | This weekend, opening this week, closing soon |
-| Feed type filters | Built | Exhibition, opening, event, post |
+| Feed type filters | Removed | Categories dropped; feed shows all items, sliced only by temporal views |
 | Feed card (text layout) | Built | Links to post detail; image layout still pending |
 | Feed card image layout (post-led) | Not built | image_url field exists; needs rendering |
 | Feed loading skeleton | Built | Pulse animation, mirrors page frame |
@@ -49,6 +50,31 @@
 | Light/dark toggle | Built | Mirrors landing mechanism |
 | App home (entry point) | Built | Minimal; may be folded into multi-zone |
 
+### Web app redesign (v2)
+
+Planned in [Redesign](redesign.md) and [Redesign plan](redesign-plan.md). Status is the
+starting point for the redesign build.
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Circular gallery feed browse | Not built | Shows all feed items, no category split; reduced-motion fallback to list |
+| Unmask-on-scroll post detail | Not built | Re-skinned from framer.university pattern |
+| Post-led card with artist name | Not built | Replaces text-led card; image_url already exists |
+| Brand and pin badges on post cards | Not built | Optional gallery brand and tied-location pin |
+| Custom cream/black map style | Not built | Port the MVP preset |
+| Map action row (Directions, Save, Check in, Share) | Partial | Save and Check in exist; add Directions and Share |
+| Accounts and sign-in | Not built | Was deferred; now in scope |
+| Account gate on Check in, profile, wallet | Not built | Map and feed browsing stay open |
+| Cookie-to-account merge on first sign-in | Not built | Migrates ga-saved state |
+| Server-side check-in verification | Not built | Was deferred; challenge token, 100 m radius |
+| Points wallet (append-only ledger) | Not built | Was deferred; +1 per verified check-in |
+| Anti-farming (one award per gallery per 24h) | Not built | Written in the same transaction as the check-in |
+| Profile (avatar, display name, bio) | Not built | |
+| Profile sections (Wallet, Saved, Check-ins, Account) | Not built | Wix My Programs/Notifications/Settings dropped |
+| Account editor (display vs personal info) | Not built | No orange; rust only on the primary action |
+| Artist and gallery account card | Not built | Profile-as-card; no scroll-up expansion for v1 |
+| Contact page and form | Not built | Posts to API, stored and notified; "Send" not "Book Now" |
+
 ### API (apps/api)
 
 | Feature | Status | Notes |
@@ -61,14 +87,23 @@
 | Feed seed (10 items) | Built | No image URLs yet |
 | Gallery image records | Not built | Model exists; no seed images |
 | Feed image URLs | Not built | image_url field exists; no seeded values |
+| Auth and sessions | Not built | Sign in, create account, session; redesign scope |
+| POST /check-ins (verify and award) | Not built | Verifies presence, awards a point atomically |
+| Challenge token on gallery card open | Not built | Proof-of-presence binding for verification |
+| GET /me, PATCH /me (profile and account) | Not built | Per-account read and edit |
+| GET /me/wallet | Not built | Balance and recent transactions |
+| POST /contact | Not built | Stores the message and notifies us |
 | API test suite | Not built | |
 
 ## Deferred (post-v1)
 
+The redesign pulls auth and accounts, points and profiles, the proof-of-presence backend, and
+server-side check-in verification into scope. They are now in the redesign table above. What
+remains deferred:
+
 - Content ingestion pipeline beyond manual seed
 - Image hosting pipeline with source and attribution tracking
-- Auth, accounts, admin UI
+- Curator admin UI
 - Editorial stories layer
-- Points, leaderboard, profiles
-- Proof-of-presence backend (challenge tokens, rank gating)
-- Server-side check-in verification
+- Leaderboard and ranking
+- The shop that spends wallet points, and stored payment methods

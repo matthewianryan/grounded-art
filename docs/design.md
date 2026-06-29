@@ -41,13 +41,16 @@ the denser app screens.
 
 ## Where expression lives
 
-The landing page is the expressive surface. It carries the creative, distinctive visuals and
-the animation, while still following the minimalist philosophy so it never clashes with the
+The landing page is the most expressive surface. It carries the creative, distinctive visuals
+and the animation, while still following the minimalist philosophy so it never clashes with the
 art it shows.
 
-The web app is professional, sleek, and minimalist. The feed and the maps page stay restrained
-and functional, with no decorative stylization. The map renders only the information we need
-and remains a real, legible map. It is not abstracted, desaturated, or turned black and white.
+The web app is professional, sleek, and minimalist, with one expressive browse affordance: the
+feed's image carousel. The carousel is held to the same restraint as the landing. The art
+leads, motion is slow and intentional and reduced-motion gated, and it never competes with the
+work it shows. Apart from the carousel, the feed and the maps page stay restrained and
+functional, with no decorative stylization. The map renders only the information we need and
+remains a real, legible map. It is not abstracted, desaturated, or turned black and white.
 
 ## Wordmark
 
@@ -60,7 +63,8 @@ The landing page carries a restrained signature of motion: a compositional load-
 headline settles in line by line and a rust hairline draws beneath it, plus gentle
 cross-dissolves between featured works. Motion is slow and intentional, never competes with the
 art, and is disabled when the visitor prefers reduced motion. The data-driven motion, the live
-feed line and the breathing map preview, arrives with the web app in v2.
+feed line and the breathing map preview, arrives with the web app in v2, alongside the feed's
+image carousel.
 
 ## Copy
 
