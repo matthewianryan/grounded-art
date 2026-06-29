@@ -36,8 +36,9 @@ is omitted from the static export until the web zone is deployed.
 - The monorepo is managed with pnpm workspaces and Turborepo.
 - Styling uses Tailwind CSS v4 with a custom theme. The theme tokens are shared across the
   landing app and the web app so the stitched site stays visually consistent.
-- Landing page animation uses Motion and GSAP, with the SplitText and DrawSVG plugins, gated
-  by the visitor's reduced-motion preference.
+- Animation uses Motion in both the landing app and the web app, gated by the visitor's
+  reduced-motion preference. The landing app additionally uses GSAP with the SplitText and
+  DrawSVG plugins for the hero. GSAP is landing-only.
 
 ## Backend tooling
 

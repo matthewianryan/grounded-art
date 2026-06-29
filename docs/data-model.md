@@ -24,7 +24,7 @@ Identity is ours and does not depend on any external service.
 
 - Gallery: a physical place, rendered as a node on the map. Holds name, slug, address,
   suburb, coordinates, website, phone, hours, business status, and a human-written
-  description.
+  description. Optionally holds a brand (see below).
 - Gallery external reference: a source and external id pair linking a gallery to an entry
   in an outside system, with the time it was last synced.
 - Gallery image: an image belonging to a gallery, hosted by Grounded Art, with its source,
@@ -33,6 +33,28 @@ Identity is ours and does not depend on any external service.
 - Feed item: an event or post. Optionally linked to a gallery. When it comes from a creative
   with no physical space, it carries that creative's name and a link to their digital
   presence instead. Carries the dates that drive the temporal views.
+
+The redesign adds the following entities. See [Redesign](redesign.md) and
+[Wallet and presence](wallet-and-presence.md).
+
+- Account: a signed-in user. Holds the display name, an optional title, an avatar, an
+  optional short bio, the private personal fields (first name, last name, phone), and the
+  join date. Browsing the map and the feed needs no account. Check in, profile, and wallet
+  require one.
+- Session: a server-issued sign-in session for an account, used to gate the per-account
+  surfaces and to bind check-in challenge tokens.
+- Gallery brand: an optional attribute on a gallery, holding a brand name and a logo. When
+  present it can render as a badge beside a creative's name on a post card, and as a pin
+  marker on the map. A gallery without a brand renders the name alone.
+- Check-in: a record that an account checked in at a gallery. Holds the account, the gallery,
+  the reported coordinates and timestamp, whether the server verified presence, and whether a
+  point was awarded. Unverified check-ins are kept for history and award no point.
+- Wallet transaction: one entry in an account's append-only points ledger. Holds the account,
+  a signed delta, a reason (a verified check-in, and later a shop spend), an optional reference
+  to the check-in that produced it, and the time. The wallet balance is the sum of these
+  entries, never a single mutable number.
+- Contact message: a message sent through the contact page. Holds the name, email, subject,
+  body, and the time received.
 
 ## Source of truth by field
 
@@ -60,3 +82,12 @@ Grounded Art does not use ratings or reviews. They are not stored and not shown.
 
 Curation is represented by a featured flag and ordering on galleries and feed items. The
 richer editorial stories layer is a later addition and is not modelled yet.
+
+## Accounts, presence, and wallet
+
+The redesign adds a per-account layer. Identity stays ours, the same as galleries. Points are
+server-authoritative: a verified check-in writes both a check-in row and a positive wallet
+transaction in one database transaction, so a check-in and its point cannot drift apart. The
+balance is always derived from the ledger, which keeps it auditable and lets the future shop
+debit it later without rework. Verification and anti-farming are specified in
+[Wallet and presence](wallet-and-presence.md).

@@ -1,0 +1,72 @@
+---
+description: Grounded Art project context, design rules, and the v2 redesign plan. Applies to all work in this repo.
+globs:
+alwaysApply: true
+---
+
+# Grounded Art project rules
+
+Environment and run instructions live in AGENTS.md (ports, native Postgres, start commands,
+seed). This rule covers the product, the design system, and the current redesign. Read it before
+changing code.
+
+## What this is
+
+Grounded Art connects people in Cape Town with local art, galleries, and artists. It is a pnpm
+and Turborepo monorepo with Next.js multi-zones: apps/landing (the domain root), apps/web (the
+map and feed, served under /app), apps/api (FastAPI and PostgreSQL). Shared Tailwind v4 tokens
+live in packages/tailwind-config.
+
+## Current focus: the v2 redesign
+
+We are building the v2 web app redesign. Start with docs/redesign.md, and build by phase from
+docs/redesign-plan.md. The interaction and animation rules are in docs/interactions.md. The
+verified check-in, points wallet, and accounts are in docs/wallet-and-presence.md.
+
+Do not pull work from a later phase into an earlier one. Each phase ends at a review gate. Plan
+the work, map it to that gate, and stop there.
+
+## Design rules (hard)
+
+- Tokens only. The theme is in packages/tailwind-config (theme.css): paper (cream), ink (black),
+  accent (rust, used sparingly), muted, line. No other accent colours. No blue, no orange. Light
+  and dark both come from these tokens.
+- Type: Noto Serif for display, DM Sans for body and interface.
+- No em dashes anywhere, in code, copy, or docs. This is strict.
+- Motion is gated by prefers-reduced-motion with a static fallback, using useReducedMotion from
+  motion/react. See apps/web/src/components/check-in-celebration.tsx and
+  apps/landing/src/components/reveal.tsx. motion is a dependency of both apps. GSAP is
+  landing-only.
+- Accessibility: keyboard operable, managed focus, sensible labels.
+- The art leads. The frame stays quiet. The map stays a real, legible map, never abstracted or
+  desaturated.
+
+## Key files for the redesign (apps/web)
+
+- API client: src/lib/api.ts (gallery and feed fetchers). Types in src/lib/types.ts.
+- Map provider boundary: src/lib/maps.ts.
+- Check-in: src/lib/check-in.ts (CHECK_IN_RADIUS_METRES = 100). On-device state in
+  src/lib/user-actions.ts and src/components/user-actions-provider.tsx, using the ga-saved and
+  ga-checkins cookies scoped to /app.
+- Feed: src/components/feed-card.tsx, feed-list-client.tsx, feed-filters.tsx, and the shared
+  src/components/detail-card.tsx.
+
+## Working agreement
+
+- Plan before editing on anything non-trivial. Map the plan to the relevant phase gate in
+  docs/redesign-plan.md, and stop at that gate.
+- Keep changes scoped to the current phase. Flag scope you would need to expand, do not expand it
+  silently.
+- Update the status rows in docs/feature-list.md when a feature lands.
+- Run the typecheck and lint commands from AGENTS.md and README.md in the app you touched.
+
+## Documentation map
+
+Current redesign: docs/redesign.md, docs/redesign-plan.md, docs/interactions.md,
+docs/wallet-and-presence.md, docs/pages/profile.md, docs/pages/contact.md.
+
+Canonical: docs/PLANNING.md, docs/design.md, docs/product.md, docs/data-model.md,
+docs/architecture.md, docs/external-dependencies.md, and docs/pages/.
+
+History: docs/build-spec.md, the v1 client-only check-in layer, superseded by the redesign where
+they overlap.
