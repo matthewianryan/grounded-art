@@ -1,15 +1,26 @@
 # Posts feed
 
-The posts feed is a page that presents recent art content from across Cape Town:
-exhibitions, openings, events, and gallery posts.
+The posts feed is a page that presents recent art content from across Cape Town: art posts,
+events, and announcements.
 
 ## Feed items
 
-Feed items are events and posts. They are not required to have a physical location. They can
-come from galleries, and also from creatives, curators, and artists who have no physical
-space, linking to a digital presence such as a website or a social profile. A feed item can
-optionally be tied to a physical location, in which case it cross-links to that gallery's node
-on the map.
+Feed items are not required to have a physical location. They can come from galleries, and also
+from creatives, curators, and artists who have no physical space, linking to a digital presence
+such as a website or a social profile. A feed item can optionally be tied to a physical location,
+in which case it cross-links to that gallery's node on the map.
+
+A feed item is one of three kinds, which differ in who leads the card and what actions it offers:
+
+- Art post. Led by the artist or creative's name. It can scroll up to expand to the full post, it
+  offers View Map when it is tied to an associated gallery, and it offers Save and Share.
+- Event. Led by an event title, posted by an account. It behaves like an art post: scroll up to
+  expand, View Map when tied to a gallery, Save, and Share.
+- Announcement. Led by an announcement title, posted by an account. It does not expand and has no
+  View Map. It offers Save and Share only.
+
+The optional brand and pin badges sit beside the name or title. The pin badge and View Map appear
+only when the item is tied to a gallery.
 
 ## A single stream
 

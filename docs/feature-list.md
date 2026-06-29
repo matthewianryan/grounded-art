@@ -59,7 +59,7 @@ starting point for the redesign build.
 |---------|--------|-------|
 | Circular gallery feed browse | Not built | Shows all feed items, no category split; reduced-motion fallback to list |
 | Unmask-on-scroll post detail | Not built | Re-skinned from framer.university pattern |
-| Post-led card with artist name | Not built | Replaces text-led card; image_url already exists |
+| Post-led card (art, event, announcement) | Not built | Art and event expand and offer View Map; announcement is Save/Share only |
 | Brand and pin badges on post cards | Not built | Optional gallery brand and tied-location pin |
 | Custom cream/black map style | Not built | Port the MVP preset |
 | Map action row (Directions, Save, Check in, Share) | Partial | Save and Check in exist; add Directions and Share |
@@ -72,7 +72,7 @@ starting point for the redesign build.
 | Profile (avatar, display name, bio) | Not built | |
 | Profile sections (Wallet, Saved, Check-ins, Account) | Not built | Wix My Programs/Notifications/Settings dropped |
 | Account editor (display vs personal info) | Not built | No orange; rust only on the primary action |
-| Artist and gallery account card | Not built | Profile-as-card; no scroll-up expansion for v1 |
+| Artist and gallery account card | Not built | Profile-as-card; no unmask; gallery account click routes to map node focused |
 | Contact page and form | Not built | Posts to API, stored and notified; "Send" not "Book Now" |
 
 ### API (apps/api)

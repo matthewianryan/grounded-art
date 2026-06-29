@@ -23,6 +23,8 @@ The two reference sources give us behaviour and technique, not drop-in code:
 - Swiping or dragging sideways moves items through the carousel. The centre item is the active
   focus, larger and forward, with the neighbours receding. Touch carries momentum.
 - The active item is the one a swipe up will open (see the post reveal below).
+- When the active item is a gallery account card, it does not unmask. A click or activation opens
+  the map with that gallery's node focused and its information panel in view.
 - Desktop equivalents: pointer drag, the left and right arrow keys, and an optional horizontal
   wheel. The active item is always reachable by keyboard.
 - Reduced motion: the carousel falls back to a plain horizontal snap-scroll with no arc, no
@@ -41,6 +43,8 @@ The two reference sources give us behaviour and technique, not drop-in code:
 - Desktop equivalent: a normal scroll, or selecting the active post, reveals the same detail.
 - Reduced motion: the detail still reveals on scroll, without the layered masking flourish. A
   static expanded state is the fallback, so nothing depends on the animation to be usable.
+- Scope: the reveal applies to art posts and events. Announcements do not expand. Account cards
+  do not unmask either; a gallery account card routes to the map with its node focused instead.
 
 ## Gesture model
 

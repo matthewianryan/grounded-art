@@ -29,10 +29,11 @@ Grounded Art tokens, with rust used only for the primary action.
 
 ## Artist and gallery account
 
-An artist or gallery account is shown on the feed canvas as a card in place of a post, and
-unmasks to the account view. For artists in v1 the card shows their information without a
-"scroll up for more" expansion, since we are limiting what artists display for now. See
-[Redesign](../redesign.md).
+An artist or gallery account is shown on the feed canvas as a card in place of a post. An account
+card does not unmask. Clicking the focused gallery account card opens the map with that gallery's
+node focused, where the gallery information shows as a panel. An artist account with no gallery
+has no expansion and no map target in v1, since we are limiting what artists display for now. See
+[Redesign](../redesign.md) and [Maps](maps.md).
 
 ## Presentation
 

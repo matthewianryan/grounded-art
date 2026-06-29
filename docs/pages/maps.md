@@ -26,8 +26,13 @@ information we need. It is not abstracted, desaturated, or turned black and whit
 
 ## Gallery card
 
-Selecting a node renders a card for that gallery beside the map, in a side panel. The
-card presents that gallery's information and images.
+Selecting a node, or a node coming into focus, renders a panel for that gallery beside the map.
+The panel presents that gallery's information and images. The gallery information shows when the
+node is in focus or clicked.
+
+Arriving from a gallery account card in the feed carousel opens the map with that gallery's node
+already focused and its panel in view. The account card itself does not expand; it routes here
+instead.
 
 ## Intent
 

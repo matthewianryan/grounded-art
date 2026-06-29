@@ -30,9 +30,12 @@ Identity is ours and does not depend on any external service.
 - Gallery image: an image belonging to a gallery, hosted by Grounded Art, with its source,
   permission status, and attribution. Images are scraped during this phase and replaced by
   gallery-provided images as relationships form.
-- Feed item: an event or post. Optionally linked to a gallery. When it comes from a creative
-  with no physical space, it carries that creative's name and a link to their digital
-  presence instead. Carries the dates that drive the temporal views.
+- Feed item: a post, of one of three kinds, art post, event, or announcement. Optionally linked
+  to a gallery. An art post is led by the artist or creative's name; an event and an announcement
+  are led by a title and posted by an account. When it comes from a creative with no physical
+  space, it carries that creative's name and a link to their digital presence instead. Art posts
+  and events can expand and offer View Map when linked to a gallery; announcements do not expand
+  and offer only Save and Share. Carries the dates that drive the temporal views.
 
 The redesign adds the following entities. See [Redesign](redesign.md) and
 [Wallet and presence](wallet-and-presence.md).

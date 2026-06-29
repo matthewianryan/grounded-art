@@ -66,18 +66,20 @@ static fallback, and the map stays a real, legible map. The adopted wording in t
 
 - Feed. Circular gallery browse as the hero, showing all feed items as images. The category
   filters are removed. The only slicing is the temporal views (this weekend, opening this week,
-  closing soon). Post cards carry the artist name and optional brand and pin badges. Selecting
-  the centre card unmasks the full post.
+  closing soon). Post cards come in three kinds (art post, event, announcement) and carry the
+  name or title with optional brand and pin badges. Selecting the centre card unmasks the full
+  post for art posts and events. Announcements do not expand.
 - Landing entry. A primary call to action on the landing opens the web app directly, landing
   on the feed carousel. The nav Map and Feed links go live into the app at the same time.
 - Map. The existing side-panel card gains the full action row: Directions, Save, Check in,
   Share. Check in now verifies presence server-side and can award a point. The custom cream
   and black map style is applied.
 - Post detail. The full-display post via the unmask reveal.
-- Artist and gallery account. A profile rendered as a card on the feed canvas, unmasking to the
-  account view. For artists the card shows their information in place of a post. There is no
-  "scroll up for more" on the artist card in v1, since we are limiting what artists display
-  for now.
+- Artist and gallery account. A profile rendered as a card on the feed canvas in place of a
+  post. An account card does not unmask. Clicking the focused gallery account card opens the map
+  with that gallery's node focused, where the gallery information shows as a panel. An artist
+  account with no gallery has no expansion and no map target in v1, since we are limiting what
+  artists display for now.
 - Profile and account. A signed-in user has a profile with a bio and avatar, a wallet, a saved
   list, a check-in history, and an account editor. See [Profile](pages/profile.md).
 - Contact. A site-wide contact page with a form that reaches us. See [Contact](pages/contact.md).
@@ -130,6 +132,13 @@ want to revisit before Phase 0 closes.
   feed carousel. Map and Feed stay co-equal inside the app through the nav.
 - D13. The expressive image carousel is allowed in the web app feed. Design.md is updated. This
   closes the prior open question.
+- D14. Posts come in three kinds. An art post is led by the artist or creative's name. An event
+  and an announcement are led by a title and posted by an account. Art posts and events can
+  scroll up to expand and offer View Map when tied to a gallery. Announcements do not expand and
+  offer only Save and Share.
+- D15. An account card in the carousel does not unmask. Clicking a gallery account card opens the
+  map with that gallery's node focused, and the gallery information shows as a panel on the map.
+  An artist account with no gallery has no expansion and no map target in v1.
 
 ## Status of the doctrine question
 
