@@ -11,6 +11,23 @@
   --ga-accent: #a24b2c;
   --ga-muted: #6e6452;
   --ga-line: #e4dbc9;
+
+  /* Semantic tokens for v2 surfaces. Each is derived from the palette above. */
+  --ga-surface: var(--ga-paper);
+  --ga-surface-muted: color-mix(in srgb, var(--ga-line) 35%, var(--ga-paper));
+  --ga-overlay: color-mix(in srgb, var(--ga-ink) 40%, transparent);
+  --ga-card-border: var(--ga-line);
+  --ga-card-shadow: color-mix(in srgb, var(--ga-ink) 10%, transparent);
+  --ga-badge-bg: color-mix(in srgb, var(--ga-line) 40%, var(--ga-paper));
+  --ga-badge-border: var(--ga-line);
+  --ga-badge-fg: var(--ga-muted);
+  --ga-action-border: var(--ga-line);
+  --ga-action-fg: var(--ga-muted);
+  --ga-action-pressed-bg: color-mix(in srgb, var(--ga-ink) 5%, transparent);
+  --ga-action-pressed-border: var(--ga-ink);
+  --ga-action-pressed-fg: var(--ga-ink);
+  --ga-wallet-balance: var(--ga-accent);
+  --ga-wallet-muted: var(--ga-muted);
 }
 
 .dark {
@@ -19,6 +36,22 @@
   --ga-accent: #c2613b;
   --ga-muted: #968a75;
   --ga-line: #2a2419;
+
+  --ga-surface: var(--ga-paper);
+  --ga-surface-muted: color-mix(in srgb, var(--ga-line) 45%, var(--ga-paper));
+  --ga-overlay: color-mix(in srgb, var(--ga-ink) 40%, transparent);
+  --ga-card-border: var(--ga-line);
+  --ga-card-shadow: color-mix(in srgb, var(--ga-ink) 20%, transparent);
+  --ga-badge-bg: color-mix(in srgb, var(--ga-line) 50%, var(--ga-paper));
+  --ga-badge-border: var(--ga-line);
+  --ga-badge-fg: var(--ga-muted);
+  --ga-action-border: var(--ga-line);
+  --ga-action-fg: var(--ga-muted);
+  --ga-action-pressed-bg: color-mix(in srgb, var(--ga-ink) 8%, transparent);
+  --ga-action-pressed-border: var(--ga-ink);
+  --ga-action-pressed-fg: var(--ga-ink);
+  --ga-wallet-balance: var(--ga-accent);
+  --ga-wallet-muted: var(--ga-muted);
 }
 
 @theme inline {
@@ -27,6 +60,22 @@
   --color-accent: var(--ga-accent);
   --color-muted: var(--ga-muted);
   --color-line: var(--ga-line);
+
+  --color-surface: var(--ga-surface);
+  --color-surface-muted: var(--ga-surface-muted);
+  --color-overlay: var(--ga-overlay);
+  --color-card-border: var(--ga-card-border);
+  --color-card-shadow: var(--ga-card-shadow);
+  --color-badge-bg: var(--ga-badge-bg);
+  --color-badge-border: var(--ga-badge-border);
+  --color-badge-fg: var(--ga-badge-fg);
+  --color-action-border: var(--ga-action-border);
+  --color-action-fg: var(--ga-action-fg);
+  --color-action-pressed-bg: var(--ga-action-pressed-bg);
+  --color-action-pressed-border: var(--ga-action-pressed-border);
+  --color-action-pressed-fg: var(--ga-action-pressed-fg);
+  --color-wallet-balance: var(--ga-wallet-balance);
+  --color-wallet-muted: var(--ga-wallet-muted);
 
   --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-noto-serif), ui-serif, Georgia, serif;

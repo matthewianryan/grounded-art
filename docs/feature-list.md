@@ -59,6 +59,9 @@ starting point for the redesign build.
 |---------|--------|-------|
 | Circular gallery feed browse | Not built | Shows all feed items, no category split; reduced-motion fallback to list |
 | Unmask-on-scroll post detail | Not built | Re-skinned from framer.university pattern |
+| Phase 0 token sheet (card, badge, action, wallet) | Built | Semantic tokens in packages/tailwind-config |
+| Phase 0 carousel shell (/app/shells) | Built | Drag-driven, reduced-motion scroll-snap fallback |
+| Phase 0 unmask shell (/app/shells) | Built | Sticky reveal with dominant-axis gesture lock |
 | Post-led card (art, event, announcement) | Not built | Art and event expand and offer View Map; announcement is Save/Share only |
 | Brand and pin badges on post cards | Not built | Optional gallery brand and tied-location pin |
 | Custom cream/black map style | Not built | Port the MVP preset |
@@ -88,6 +91,7 @@ starting point for the redesign build.
 | Gallery image records | Not built | Model exists; no seed images |
 | Feed image URLs | Not built | image_url field exists; no seeded values |
 | Auth and sessions | Not built | Sign in, create account, session; redesign scope |
+| Account and wallet schema migrations | Built | account, session, check_in, wallet_transaction, contact_message, gallery_brand |
 | POST /check-ins (verify and award) | Not built | Verifies presence, awards a point atomically |
 | Challenge token on gallery card open | Not built | Proof-of-presence binding for verification |
 | GET /me, PATCH /me (profile and account) | Not built | Per-account read and edit |

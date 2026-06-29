@@ -14,11 +14,11 @@ data and migrations, then API, then frontend.
 
 - [x] Ratify the design doctrine change (the image carousel in the web app feed). Done, and
       design.md is updated. Lock decisions D1 to D13 in [Redesign](redesign.md).
-- [ ] Confirm the shared tokens cover the new screens. Add any missing tokens (badge, card,
+- [x] Confirm the shared tokens cover the new screens. Add any missing tokens (badge, card,
       action row, wallet) to `packages/tailwind-config`.
-- [ ] Re-skin the two reference patterns as isolated Grounded Art shells: the circular gallery
+- [x] Re-skin the two reference patterns as isolated Grounded Art shells: the circular gallery
       and the unmask reveal. No data yet.
-- [ ] Add the new migrations behind a flag: account, session, check-in, wallet transaction,
+- [x] Add the new migrations behind a flag: account, session, check-in, wallet transaction,
       contact message, and the optional gallery brand. See [Data model](data-model.md).
 
 Gate: the token sheet and the two re-skinned shells read as Grounded Art, not as the templates.
