@@ -38,9 +38,23 @@ export interface Gallery {
   hours: Record<string, string> | null;
   business_status: string | null;
   featured: boolean;
+  brand_name: string | null;
+  brand_logo_url: string | null;
   last_refreshed_at: string | null;
   images: GalleryImage[];
   external_refs: GalleryExternalRef[];
+}
+
+/** Gallery fields needed by the feed carousel and post cards. */
+export interface FeedGalleryContext {
+  id: string;
+  slug: string;
+  name: string;
+  brand_name: string | null;
+  brand_logo_url: string | null;
+  primary_image_url: string | null;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export interface FeedItem {

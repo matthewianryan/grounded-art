@@ -46,6 +46,8 @@ class GalleryRead(ORMModel):
     hours: dict | None
     business_status: str | None
     featured: bool
+    brand_name: str | None
+    brand_logo_url: str | None
     last_refreshed_at: datetime | None
     images: list[GalleryImageRead]
     external_refs: list[GalleryExternalRefRead]

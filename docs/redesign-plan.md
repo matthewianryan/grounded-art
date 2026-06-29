@@ -26,12 +26,12 @@ The migrations apply cleanly on a fresh database.
 
 ## Phase 1. Feed redesign
 
-- [ ] Replace the feed browse hero with the circular gallery, art-leading, showing all feed
+- [x] Replace the feed browse hero with the circular gallery, art-leading, showing all feed
       items, with a reduced-motion fallback to a static list.
-- [ ] Remove the feed category filters. The carousel shows every feed item as an image, sliced
+- [x] Remove the feed category filters. The carousel shows every feed item as an image, sliced
       only by the temporal views.
-- [ ] Build the post-led card with the artist name and optional brand and pin badges.
-- [ ] Wire the unmask reveal from the centre card to the full post detail.
+- [x] Build the post-led card with the artist name and optional brand and pin badges.
+- [x] Wire the unmask reveal from the centre card to the full post detail.
 
 Gate: feed browse and post detail match the mockup intent in the Grounded Art skin. Reduced
 motion shows a clean static feed. Keyboard and screen reader work.

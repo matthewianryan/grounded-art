@@ -12,13 +12,14 @@ export default function PatternPreviewPage() {
       <div className="mx-auto max-w-3xl px-6 py-16">
         <h1 className="font-display text-3xl tracking-tight">Pattern preview</h1>
         <p className="mt-2 text-sm text-muted">
-          Phase 0 shells for gate review. Not linked from navigation.
+          Phase 0 shells for gate review. The live feed uses the production components at
+          /feed.
         </p>
 
         <section className="mt-16">
-          <h2 className="font-display text-xl">Circular gallery</h2>
+          <h2 className="font-display text-xl">Circular gallery shell</h2>
           <p className="mt-2 text-sm text-muted">
-            Horizontal browse with centre focus. Reduced motion falls back to snap scroll.
+            Original isolated shell with placeholder data.
           </p>
           <div className="mt-8">
             <CircularGalleryShell />
@@ -26,10 +27,9 @@ export default function PatternPreviewPage() {
         </section>
 
         <section className="mt-24">
-          <h2 className="font-display text-xl">Unmask reveal</h2>
+          <h2 className="font-display text-xl">Unmask reveal shell</h2>
           <p className="mt-2 text-sm text-muted">
-            Sticky scroll layering from carousel card to full detail. Reduced motion shows a
-            static stack.
+            Original sticky scroll layering shell with placeholder data.
           </p>
           <div className="mt-8">
             <UnmaskRevealShell />

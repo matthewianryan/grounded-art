@@ -34,7 +34,7 @@ export default async function FeedItemPage({
       </Link>
 
       <div className="mt-8">
-        <DetailCard item={item} gallery={gallery} />
+        <DetailCard item={item} gallery={gallery} variant="feed" />
       </div>
     </main>
   );

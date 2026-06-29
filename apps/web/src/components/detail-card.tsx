@@ -4,6 +4,12 @@ import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import type { FeedItem, FeedItemType, Gallery } from "@/lib/types";
 import { formatDateRange } from "@/lib/format";
+import {
+  feedCarouselImage,
+  feedDisplayName,
+  postBadges,
+  toFeedGalleryContext,
+} from "@/lib/feed-display";
 import { resolveActionRowContext } from "@/lib/action-row";
 import {
   evaluateCheckIn,
@@ -17,6 +23,8 @@ import {
   CheckInStatus,
   type CheckInStatusVariant,
 } from "@/components/check-in-status";
+import { PostBadges } from "@/components/post-badges";
+import { FeedPostImage } from "@/components/feed-post-card";
 
 const TYPE_LABELS: Record<FeedItemType, string> = {
   exhibition: "Exhibition",
@@ -39,14 +47,24 @@ const DAY_LABELS: Record<(typeof DAY_ORDER)[number], string> = {
 export interface DetailCardProps {
   item?: FeedItem;
   gallery?: Gallery;
+  variant?: "default" | "feed";
 }
 
-export function DetailCard({ item, gallery }: DetailCardProps) {
+export function DetailCard({ item, gallery, variant = "default" }: DetailCardProps) {
   const actions = resolveActionRowContext(item, gallery);
+  const isFeed = variant === "feed" && item;
 
   return (
-    <article className="rounded-sm border border-line bg-paper p-5">
-      {item ? <FeedDetailContent item={item} gallery={gallery} /> : null}
+    <article
+      className={`${isFeed ? "rounded-card border border-line bg-card-bg p-5 shadow-card" : "rounded-sm border border-line bg-paper p-5"}`}
+    >
+      {item ? (
+        isFeed ? (
+          <FeedDetailContent item={item} gallery={gallery} />
+        ) : (
+          <LegacyFeedDetailContent item={item} gallery={gallery} />
+        )
+      ) : null}
       {gallery && !item ? <GalleryDetailContent gallery={gallery} /> : null}
 
       <ActionRow item={item} gallery={gallery} actions={actions} />
@@ -55,6 +73,53 @@ export function DetailCard({ item, gallery }: DetailCardProps) {
 }
 
 function FeedDetailContent({
+  item,
+  gallery,
+}: {
+  item: FeedItem;
+  gallery: Gallery | undefined;
+}) {
+  const galleryContext = gallery ? toFeedGalleryContext(gallery) : undefined;
+  const displayName = feedDisplayName(item);
+  const badges = postBadges(item, galleryContext);
+  const imageUrl = feedCarouselImage(item, galleryContext);
+  const dates = formatDateRange(item.starts_on, item.ends_on);
+
+  return (
+    <>
+      <div className="overflow-hidden rounded-card">
+        <FeedPostImage
+          imageUrl={imageUrl}
+          displayName={displayName}
+          className="aspect-[4/3] w-full object-cover"
+        />
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs text-muted">
+        <span className="uppercase tracking-[0.16em]">{TYPE_LABELS[item.type]}</span>
+        {dates && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>{dates}</span>
+          </>
+        )}
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <h1 className="font-display text-2xl leading-snug tracking-tight">{displayName}</h1>
+        <PostBadges badges={badges} />
+      </div>
+
+      {gallery && <p className="mt-2 text-sm text-muted">{gallery.name}</p>}
+
+      {item.body && (
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">{item.body}</p>
+      )}
+    </>
+  );
+}
+
+function LegacyFeedDetailContent({
   item,
   gallery,
 }: {
