@@ -3,13 +3,22 @@
 import { useCallback, useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import type { FeedCarouselItem } from "@/lib/feed-display";
-import { FeedPostCard, FeedPostImage } from "@/components/feed-post-card";
+import { FeedPostImage } from "@/components/feed-post-card";
+import { PolaroidCard } from "@/components/polaroid-frame";
 
 interface CircularGalleryProps {
   items: FeedCarouselItem[];
   activeIndex: number;
   onActiveIndexChange: (index: number) => void;
   onActiveSelect?: () => void;
+}
+
+const CARD_CLASS = "w-[clamp(15rem,28vw,22rem)]";
+const CARD_OFFSET_X = 200;
+const ARC_LIFT = 14;
+
+function arcOffsetY(offset: number): number {
+  return Math.abs(offset) ** 2 * ARC_LIFT;
 }
 
 export function CircularGallery({
@@ -43,15 +52,48 @@ export function CircularGallery({
   );
 }
 
+function PolaroidImage({
+  item,
+  active,
+}: {
+  item: FeedCarouselItem;
+  active: boolean;
+}) {
+  const image = (
+    <FeedPostImage
+      imageUrl={item.imageUrl}
+      displayName={item.displayName}
+      className="aspect-[4/5] w-full object-cover"
+    />
+  );
+
+  return (
+    <PolaroidCard active={active} showReflection>
+      {image}
+    </PolaroidCard>
+  );
+}
+
 function ReducedMotionGallery({
   items,
   activeIndex,
   onActiveIndexChange,
   onActiveSelect,
 }: CircularGalleryProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const activeEl = container.querySelector('[aria-current="true"]');
+    activeEl?.scrollIntoView({ inline: "center", block: "nearest", behavior: "auto" });
+  }, [activeIndex]);
+
   return (
     <div
-      className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4"
+      ref={containerRef}
+      className="flex h-[min(70svh,720px)] snap-x snap-mandatory items-center gap-8 overflow-x-auto px-[max(1rem,calc(50%-15rem))] pb-8"
       role="list"
       aria-label="Feed browse gallery"
     >
@@ -62,21 +104,22 @@ function ReducedMotionGallery({
             key={item.id}
             role="listitem"
             aria-current={isActive ? "true" : undefined}
-            className="w-56 shrink-0 snap-center"
+            className={`${CARD_CLASS} shrink-0 snap-center`}
           >
             <button
               type="button"
               className="w-full text-left"
+              aria-label={
+                isActive
+                  ? `Open ${item.displayName}`
+                  : `Show ${item.displayName} in centre`
+              }
               onClick={() => {
                 onActiveIndexChange(index);
                 if (isActive) onActiveSelect?.();
               }}
             >
-              <FeedPostCard
-                imageUrl={item.imageUrl}
-                displayName={item.displayName}
-                badges={item.badges}
-              />
+              <PolaroidImage item={item} active={isActive} />
             </button>
           </article>
         );
@@ -117,73 +160,83 @@ function MotionGallery({
       }
     }
 
+    function onWheel(event: WheelEvent) {
+      const delta =
+        Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+      if (Math.abs(delta) < 8) return;
+      event.preventDefault();
+      if (delta > 0) goTo(activeIndex + 1);
+      else goTo(activeIndex - 1);
+    }
+
     container.addEventListener("keydown", onKeyDown);
-    return () => container.removeEventListener("keydown", onKeyDown);
+    container.addEventListener("wheel", onWheel, { passive: false });
+    return () => {
+      container.removeEventListener("keydown", onKeyDown);
+      container.removeEventListener("wheel", onWheel);
+    };
   }, [activeIndex, goTo, onActiveSelect]);
 
   return (
     <div
       ref={containerRef}
-      className="relative flex h-[28rem] w-full touch-pan-y items-center justify-center overflow-hidden"
+      className="relative h-[min(70svh,720px)] w-full touch-pan-y overflow-hidden [perspective:1200px]"
+      style={{ perspectiveOrigin: "50% 40%" }}
       role="list"
       aria-label="Feed browse gallery"
       tabIndex={0}
     >
-      {items.map((item, index) => {
-        const offset = index - activeIndex;
-        const isActive = offset === 0;
-        const absOffset = Math.abs(offset);
+      <div className="absolute inset-0 flex items-center justify-center [transform-style:preserve-3d]">
+        {items.map((item, index) => {
+          const offset = index - activeIndex;
+          const isActive = offset === 0;
+          const absOffset = Math.abs(offset);
 
-        return (
-          <motion.article
-            key={item.id}
-            role="listitem"
-            aria-hidden={!isActive}
-            aria-current={isActive ? "true" : undefined}
-            aria-label={isActive ? item.displayName : undefined}
-            className="absolute w-48 cursor-grab active:cursor-grabbing sm:w-56"
-            style={{ zIndex: items.length - absOffset }}
-            animate={{
-              x: offset * 120,
-              rotate: offset * -8,
-              scale: isActive ? 1 : 0.82,
-              opacity: absOffset > 2 ? 0 : 1 - absOffset * 0.15,
-            }}
-            transition={{ type: "spring", stiffness: 260, damping: 28 }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.12}
-            onDragStart={(_, info) => {
-              dragStartX.current = info.point.x;
-            }}
-            onDragEnd={(_, info) => {
-              const delta = info.point.x - dragStartX.current;
-              if (delta < -40) goTo(activeIndex + 1);
-              else if (delta > 40) goTo(activeIndex - 1);
-            }}
-            onClick={() => {
-              if (!isActive) goTo(index);
-              else onActiveSelect?.();
-            }}
-          >
-            <div className="overflow-hidden rounded-card border border-line bg-card-bg shadow-card">
-              <FeedPostImage
-                imageUrl={item.imageUrl}
-                displayName={item.displayName}
-              />
-            </div>
-            {isActive && (
-              <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-                <p className="font-display text-sm text-ink">{item.displayName}</p>
-              </div>
-            )}
-          </motion.article>
-        );
-      })}
+          if (absOffset > 1) return null;
 
-      <p className="pointer-events-none absolute bottom-0 text-xs text-muted">
-        Drag or use arrow keys to browse. Select the centre card to open detail.
-      </p>
+          return (
+            <motion.article
+              key={item.id}
+              role="listitem"
+              aria-hidden={!isActive}
+              aria-current={isActive ? "true" : undefined}
+              aria-label={isActive ? item.displayName : undefined}
+              className={`absolute cursor-pointer ${CARD_CLASS}`}
+              style={{
+                transformStyle: "preserve-3d",
+                zIndex: 10 - absOffset,
+              }}
+              animate={{
+                x: offset * CARD_OFFSET_X,
+                y: arcOffsetY(offset),
+                rotateY: offset * -28,
+                rotateZ: offset * -4,
+                scale: 1 - absOffset * 0.08,
+                z: -absOffset * 40,
+                opacity: 1 - absOffset * 0.12,
+              }}
+              transition={{ type: "spring", stiffness: 220, damping: 26 }}
+              drag={isActive ? "x" : false}
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.1}
+              onDragStart={(_, info) => {
+                dragStartX.current = info.point.x;
+              }}
+              onDragEnd={(_, info) => {
+                const delta = info.point.x - dragStartX.current;
+                if (delta < -40) goTo(activeIndex + 1);
+                else if (delta > 40) goTo(activeIndex - 1);
+              }}
+              onClick={() => {
+                if (!isActive) goTo(index);
+                else onActiveSelect?.();
+              }}
+            >
+              <PolaroidImage item={item} active={isActive} />
+            </motion.article>
+          );
+        })}
+      </div>
     </div>
   );
 }

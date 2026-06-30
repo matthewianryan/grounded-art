@@ -20,17 +20,26 @@ export default async function FeedPage({
   const savedOnly = params.saved === "1";
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="font-display text-4xl font-semibold tracking-tight">Feed</h1>
-      <p className="mt-4 max-w-xl text-muted">
-        Recent exhibitions, openings, and gallery posts from across Cape Town, kept current.
-      </p>
-
-      <div className="mt-8">
-        <FeedFilters view={view} saved={savedOnly} />
+    <main>
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <label className="block flex-1 sm:max-w-md">
+            <span className="sr-only">Search feed</span>
+            <input
+              type="search"
+              disabled
+              placeholder="Search ..."
+              className="w-full rounded-full border border-line bg-paper px-4 py-2.5 text-sm text-muted"
+              aria-disabled="true"
+            />
+          </label>
+          <FeedFilters view={view} saved={savedOnly} />
+        </div>
       </div>
 
-      <FeedList view={view} savedOnly={savedOnly} />
+      <section className="mt-2 w-full">
+        <FeedList view={view} savedOnly={savedOnly} />
+      </section>
     </main>
   );
 }
@@ -59,7 +68,7 @@ async function FeedList({
     );
   } catch {
     return (
-      <p className="mt-10 text-sm text-muted">
+      <p className="mx-auto max-w-6xl px-4 text-sm text-muted sm:px-6">
         The feed could not be loaded right now. Please try again shortly.
       </p>
     );

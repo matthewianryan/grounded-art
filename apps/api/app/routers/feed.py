@@ -9,13 +9,15 @@ from enum import StrEnum
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.db import get_db
 from app.models import FeedItem, FeedItemStatus, FeedItemType
 from app.schemas import FeedItemRead, FeedPage
 
 router = APIRouter(prefix="/feed", tags=["feed"])
+
+_eager = (selectinload(FeedItem.images), selectinload(FeedItem.links))
 
 
 class FeedView(StrEnum):
@@ -67,6 +69,7 @@ def list_feed(
     stmt = (
         select(FeedItem)
         .where(*filters)
+        .options(*_eager)
         .order_by(
             FeedItem.featured.desc(),
             func.coalesce(FeedItem.published_at, FeedItem.created_at).desc(),
@@ -80,8 +83,10 @@ def list_feed(
 
 @router.get("/{slug}", response_model=FeedItemRead)
 def get_feed_item(slug: str, db: Session = Depends(get_db)) -> FeedItem:
-    stmt = select(FeedItem).where(
-        FeedItem.slug == slug, FeedItem.status == FeedItemStatus.ACTIVE
+    stmt = (
+        select(FeedItem)
+        .where(FeedItem.slug == slug, FeedItem.status == FeedItemStatus.ACTIVE)
+        .options(*_eager)
     )
     item = db.scalars(stmt).first()
     if item is None:

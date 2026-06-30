@@ -73,6 +73,19 @@ class FeedItemType(StrEnum):
     POST = "post"
 
 
+class FeedItemKind(StrEnum):
+    """The reveal behaviour kind, distinct from the internal type.
+
+    Art posts and events open the two-stage reveal to a full detail page. Announcements stop
+    at the expanded card with Save and Share only. Kind is set explicitly at creation; it is
+    never inferred from content shape.
+    """
+
+    ART_POST = "art_post"
+    EVENT = "event"
+    ANNOUNCEMENT = "announcement"
+
+
 class FeedItemStatus(StrEnum):
     ACTIVE = "active"
     HIDDEN = "hidden"
@@ -245,6 +258,10 @@ class FeedItem(Base, TimestampMixin):
     slug: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
     # One of FeedItemType.
     type: Mapped[str] = mapped_column(String(32), nullable=False)
+    # One of FeedItemKind. Drives the reveal behaviour; set explicitly at creation, never null.
+    kind: Mapped[str] = mapped_column(
+        String(32), nullable=False, server_default=FeedItemKind.ART_POST
+    )
     title: Mapped[str] = mapped_column(String(512), nullable=False)
     body: Mapped[str | None] = mapped_column(Text)
 
@@ -278,6 +295,72 @@ class FeedItem(Base, TimestampMixin):
     last_refreshed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     gallery: Mapped["Gallery | None"] = relationship(back_populates="feed_items")
+    images: Mapped[list["FeedItemImage"]] = relationship(
+        back_populates="feed_item", cascade="all, delete-orphan"
+    )
+    links: Mapped[list["FeedItemLink"]] = relationship(
+        back_populates="feed_item", cascade="all, delete-orphan"
+    )
+
+
+class FeedItemImage(Base, TimestampMixin):
+    """An image belonging to a feed item, hosted by Grounded Art.
+
+    Mirrors GalleryImage. A post can carry several images shown full-dimension in the detail
+    page. Width and height are required for new images so the detail page can reserve an aspect
+    box and avoid layout shift; legacy or external images without them fall back to natural size.
+    """
+
+    __tablename__ = "feed_item_image"
+    # At most one image per feed item may be the primary.
+    __table_args__ = (
+        Index(
+            "uq_feed_item_image_one_primary",
+            "feed_item_id",
+            unique=True,
+            postgresql_where=text("is_primary"),
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    feed_item_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("feed_item.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    url: Mapped[str] = mapped_column(String(512), nullable=False)
+    # One of ImageSource.
+    source: Mapped[str] = mapped_column(String(32), nullable=False)
+    source_url: Mapped[str | None] = mapped_column(String(512))
+    # One of ImagePermission.
+    permission_status: Mapped[str] = mapped_column(
+        String(32), nullable=False, server_default=ImagePermission.UNCONFIRMED
+    )
+    attribution: Mapped[str | None] = mapped_column(String(255))
+    width: Mapped[int | None] = mapped_column(Integer)
+    height: Mapped[int | None] = mapped_column(Integer)
+    is_primary: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
+    sort_rank: Mapped[int | None] = mapped_column(Integer)
+
+    feed_item: Mapped["FeedItem"] = relationship(back_populates="images")
+
+
+class FeedItemLink(Base, TimestampMixin):
+    """An optional social or site link on a feed item.
+
+    Per-post for now; there is no account entity for creatives yet. This moves cleanly to a
+    per-account home when accounts arrive.
+    """
+
+    __tablename__ = "feed_item_link"
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    feed_item_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("feed_item.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    label: Mapped[str] = mapped_column(String(128), nullable=False)
+    url: Mapped[str] = mapped_column(String(512), nullable=False)
+    sort_rank: Mapped[int | None] = mapped_column(Integer)
+
+    feed_item: Mapped["FeedItem"] = relationship(back_populates="links")
 
 
 class Account(Base, TimestampMixin):

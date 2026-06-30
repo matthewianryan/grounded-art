@@ -23,7 +23,13 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 from app.db import SessionLocal
-from app.models import FeedItem, Gallery, GalleryExternalRef
+from app.models import (
+    FeedItem,
+    FeedItemImage,
+    FeedItemLink,
+    Gallery,
+    GalleryExternalRef,
+)
 
 SEED_DIR = Path(__file__).resolve().parent.parent / "seed"
 
@@ -46,6 +52,7 @@ _GALLERY_FIELDS = (
 # Scalar columns copied straight from the feed item fixture.
 _FEED_FIELDS = (
     "type",
+    "kind",
     "title",
     "body",
     "creative_name",
@@ -143,6 +150,39 @@ def seed_feed_items(session, now: datetime) -> int:
         item.source_url = row.get("source_url")
         item.provenance = _provenance(row.get("source"), row.get("source_url"), now.date())
         item.last_refreshed_at = now
+
+        # Replace any existing images and links so a re-run stays idempotent. Flush the deletes
+        # first so re-inserting a primary image cannot collide on the one-primary unique index.
+        for image in list(item.images):
+            session.delete(image)
+        for link in list(item.links):
+            session.delete(link)
+        session.flush()
+
+        for index, image in enumerate(row.get("images", [])):
+            item.images.append(
+                FeedItemImage(
+                    url=image["url"],
+                    source=image.get("source", "manual"),
+                    source_url=image.get("source_url"),
+                    permission_status=image.get("permission_status", "unconfirmed"),
+                    attribution=image.get("attribution"),
+                    width=image.get("width"),
+                    height=image.get("height"),
+                    is_primary=image.get("is_primary", index == 0),
+                    sort_rank=image.get("sort_rank", index),
+                )
+            )
+
+        for index, link in enumerate(row.get("links", [])):
+            item.links.append(
+                FeedItemLink(
+                    label=link["label"],
+                    url=link["url"],
+                    sort_rank=link.get("sort_rank", index),
+                )
+            )
+
         count += 1
 
     session.flush()
