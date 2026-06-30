@@ -1,16 +1,16 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Grounded Art palette: cream, black, rust.
+/* Grounded Art palette: off-white, black, rust.
    Token names are semantic. paper is the ground, ink is the foreground and text,
-   accent is rust. In dark mode the ground becomes black and the text becomes cream,
+   accent is rust. In dark mode the ground becomes black and the text becomes off-white,
    while rust stays the accent. Components reference these tokens, so flipping the
    values under .dark switches the whole interface between modes. */
 :root {
-  --ga-paper: #f4efe2;
+  --ga-paper: #f8f8f4;
   --ga-ink: #16130e;
   --ga-accent: #a24b2c;
-  --ga-muted: #6e6452;
-  --ga-line: #e4dbc9;
+  --ga-muted: #64615a;
+  --ga-line: #e3e1da;
 
   /* Card surfaces */
   --ga-card-bg: var(--ga-paper);
@@ -37,7 +37,7 @@
 
 .dark {
   --ga-paper: #16130e;
-  --ga-ink: #f1ead9;
+  --ga-ink: #f8f8f4;
   --ga-accent: #c2613b;
   --ga-muted: #968a75;
   --ga-line: #2a2419;

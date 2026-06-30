@@ -2,6 +2,8 @@ import type { FeedItem, Gallery } from "@/lib/types";
 
 export interface ActionRowVisibility {
   save: true;
+  directions: boolean;
+  share: boolean;
   goToArtist: boolean;
   viewOnMap: boolean;
   checkIn: boolean;
@@ -16,13 +18,18 @@ export function resolveActionRowContext(
 ): ActionRowVisibility {
   const hasCoords =
     gallery != null && gallery.latitude != null && gallery.longitude != null;
+  const hasDirectionsTarget =
+    gallery != null &&
+    (hasCoords || gallery.formatted_address != null || gallery.name.length > 0);
 
   const artistUrl = item?.external_url ?? null;
 
   return {
     save: true,
+    directions: hasDirectionsTarget,
+    share: true,
     goToArtist: artistUrl != null,
-    viewOnMap: hasCoords,
+    viewOnMap: item != null && hasCoords,
     checkIn: hasCoords,
     artistUrl,
     mapGallerySlug: hasCoords ? gallery!.slug : null,
