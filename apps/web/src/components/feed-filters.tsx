@@ -11,10 +11,11 @@ const VIEW_OPTIONS: { label: string; value: FeedView | undefined }[] = [
   { label: "Closing soon", value: "closing_soon" },
 ];
 
-function hrefFor(view: FeedView | undefined, saved: boolean): string {
+function hrefFor(view: FeedView | undefined, saved: boolean, q: string): string {
   const params = new URLSearchParams();
   if (view) params.set("view", view);
   if (saved) params.set("saved", "1");
+  if (q) params.set("q", q);
   const query = params.toString();
   return query ? `/feed?${query}` : "/feed";
 }
@@ -38,22 +39,24 @@ function Pill({ href, active, label }: { href: string; active: boolean; label: s
 export function FeedFilters({
   view,
   saved,
+  q = "",
 }: {
   view: FeedView | undefined;
   saved: boolean;
+  q?: string;
 }) {
   return (
     <div className="flex flex-wrap gap-2" role="group" aria-label="Temporal views">
       {VIEW_OPTIONS.map((opt) => (
         <Pill
           key={opt.label}
-          href={hrefFor(opt.value, saved)}
+          href={hrefFor(opt.value, saved, q)}
           active={!saved && view === opt.value}
           label={opt.label}
         />
       ))}
       <Pill
-        href={saved ? hrefFor(view, false) : hrefFor(view, true)}
+        href={saved ? hrefFor(view, false, q) : hrefFor(view, true, q)}
         active={saved}
         label="Saved"
       />

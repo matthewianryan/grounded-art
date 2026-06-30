@@ -13,32 +13,43 @@ function asView(value: string | undefined): FeedView | undefined {
 export default async function FeedPage({
   searchParams,
 }: {
-  searchParams: Promise<{ view?: string; type?: string; saved?: string }>;
+  searchParams: Promise<{ view?: string; type?: string; saved?: string; q?: string }>;
 }) {
   const params = await searchParams;
   const view = asView(params.view);
   const savedOnly = params.saved === "1";
+  const q = params.q?.trim() ?? "";
 
   return (
     <main>
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <label className="block flex-1 sm:max-w-md">
-            <span className="sr-only">Search feed</span>
-            <input
-              type="search"
-              disabled
-              placeholder="Search ..."
-              className="w-full rounded-full border border-line bg-paper px-4 py-2.5 text-sm text-muted"
-              aria-disabled="true"
-            />
-          </label>
-          <FeedFilters view={view} saved={savedOnly} />
+          <form method="get" className="flex flex-1 gap-2 sm:max-w-md">
+            {view ? <input type="hidden" name="view" value={view} /> : null}
+            {savedOnly ? <input type="hidden" name="saved" value="1" /> : null}
+            <label className="block flex-1">
+              <span className="sr-only">Search feed</span>
+              <input
+                type="search"
+                name="q"
+                defaultValue={q}
+                placeholder="Search feed"
+                className="w-full rounded-full border border-line bg-paper px-4 py-2.5 text-sm text-ink placeholder:text-muted"
+              />
+            </label>
+            <button
+              type="submit"
+              className="rounded-full border border-line px-4 py-2.5 text-sm text-muted transition hover:border-ink hover:text-ink"
+            >
+              Search
+            </button>
+          </form>
+          <FeedFilters view={view} saved={savedOnly} q={q} />
         </div>
       </div>
 
       <section className="mt-2 w-full">
-        <FeedList view={view} savedOnly={savedOnly} />
+        <FeedList view={view} savedOnly={savedOnly} q={q} />
       </section>
     </main>
   );
@@ -47,9 +58,11 @@ export default async function FeedPage({
 async function FeedList({
   view,
   savedOnly,
+  q,
 }: {
   view: FeedView | undefined;
   savedOnly: boolean;
+  q: string;
 }) {
   try {
     const [feed, galleries] = await Promise.all([
@@ -64,6 +77,7 @@ async function FeedList({
         galleriesById={galleriesById}
         fullGalleriesById={fullGalleriesById}
         savedOnly={savedOnly}
+        searchTerm={q}
       />
     );
   } catch {

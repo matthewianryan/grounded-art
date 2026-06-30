@@ -19,11 +19,13 @@ export function FeedBrowse({
   galleriesById,
   fullGalleriesById,
   savedOnly,
+  searchTerm,
 }: {
   items: FeedItem[];
   galleriesById: Map<string, FeedGalleryContext>;
   fullGalleriesById: Map<string, Gallery>;
   savedOnly: boolean;
+  searchTerm: string;
 }) {
   const { ready, isSaved } = useUserActions();
   const reduce = useReducedMotion();
@@ -36,21 +38,43 @@ export function FeedBrowse({
   // scroll (which momentarily sits at the fold) apart from a genuine scroll back to the top.
   const armedRef = useRef(false);
   const sheetHeadingId = "feed-detail-title";
+  const normalizedSearch = searchTerm.trim().toLowerCase();
 
   useEffect(() => {
     setActiveIndex(0);
     setMode("browse");
-  }, [items, savedOnly]);
+  }, [items, savedOnly, normalizedSearch]);
 
   const visible = useMemo(() => {
-    if (!savedOnly) return items;
-    if (!ready) return [];
-    return items.filter((item) => {
-      if (isSaved(feedKey(item.slug))) return true;
+    const savedFiltered = !savedOnly
+      ? items
+      : !ready
+        ? []
+        : items.filter((item) => {
+            if (isSaved(feedKey(item.slug))) return true;
+            const gallery = item.gallery_id ? galleriesById.get(item.gallery_id) : undefined;
+            return gallery ? isSaved(galleryKey(gallery.slug)) : false;
+          });
+
+    if (!normalizedSearch) return savedFiltered;
+
+    return savedFiltered.filter((item) => {
       const gallery = item.gallery_id ? galleriesById.get(item.gallery_id) : undefined;
-      return gallery ? isSaved(galleryKey(gallery.slug)) : false;
+      const haystack = [
+        item.title,
+        item.body,
+        item.creative_name,
+        item.location_text,
+        gallery?.name,
+        gallery?.brand_name,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return haystack.includes(normalizedSearch);
     });
-  }, [items, savedOnly, ready, isSaved, galleriesById]);
+  }, [items, savedOnly, ready, isSaved, galleriesById, normalizedSearch]);
 
   const carouselItems = useMemo(
     () =>
@@ -187,9 +211,13 @@ export function FeedBrowse({
   if (visible.length === 0) {
     return (
       <p className="text-sm text-muted">
-        {savedOnly
-          ? "Nothing saved yet. Save exhibitions and posts as you browse."
-          : "Nothing in this view yet. Try another filter, or check back soon."}
+        {normalizedSearch
+          ? savedOnly
+            ? "No saved items match that search. Try another term or clear Saved."
+            : "No feed items match that search. Try another term or filter."
+          : savedOnly
+            ? "Nothing saved yet. Save exhibitions and posts as you browse."
+            : "Nothing in this view yet. Try another filter, or check back soon."}
       </p>
     );
   }
