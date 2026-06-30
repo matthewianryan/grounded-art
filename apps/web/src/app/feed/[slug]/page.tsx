@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getFeedItem, listGalleries } from "@/lib/api";
 import type { Gallery } from "@/lib/types";
-import { DetailCard } from "@/components/detail-card";
+import { PostDetail } from "@/components/post-detail";
 
 export default async function FeedItemPage({
   params,
@@ -34,7 +34,7 @@ export default async function FeedItemPage({
       </Link>
 
       <div className="mt-8">
-        <DetailCard item={item} gallery={gallery} />
+        <PostDetail item={item} gallery={gallery} />
       </div>
     </main>
   );

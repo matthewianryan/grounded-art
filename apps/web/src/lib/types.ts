@@ -4,6 +4,8 @@
 
 export type FeedItemType = "exhibition" | "opening" | "event" | "post";
 
+export type FeedItemKind = "art_post" | "event" | "announcement";
+
 export type FeedView = "this_weekend" | "opening_this_week" | "closing_soon";
 
 export interface GalleryImage {
@@ -38,15 +40,47 @@ export interface Gallery {
   hours: Record<string, string> | null;
   business_status: string | null;
   featured: boolean;
+  brand_name: string | null;
+  brand_logo_url: string | null;
   last_refreshed_at: string | null;
   images: GalleryImage[];
   external_refs: GalleryExternalRef[];
+}
+
+/** Gallery fields needed by the feed carousel and post cards. */
+export interface FeedGalleryContext {
+  id: string;
+  slug: string;
+  name: string;
+  brand_name: string | null;
+  brand_logo_url: string | null;
+  primary_image_url: string | null;
+  latitude: number | null;
+  longitude: number | null;
+}
+
+export interface FeedItemImage {
+  id: string;
+  url: string;
+  attribution: string | null;
+  width: number | null;
+  height: number | null;
+  is_primary: boolean;
+  sort_rank: number | null;
+}
+
+export interface FeedItemLink {
+  id: string;
+  label: string;
+  url: string;
+  sort_rank: number | null;
 }
 
 export interface FeedItem {
   id: string;
   slug: string;
   type: FeedItemType;
+  kind: FeedItemKind;
   title: string;
   body: string | null;
   gallery_id: string | null;
@@ -60,6 +94,8 @@ export interface FeedItem {
   featured: boolean;
   published_at: string | null;
   last_refreshed_at: string | null;
+  images: FeedItemImage[];
+  links: FeedItemLink[];
 }
 
 export interface Page<T> {

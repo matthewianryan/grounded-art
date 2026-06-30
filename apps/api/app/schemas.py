@@ -46,15 +46,35 @@ class GalleryRead(ORMModel):
     hours: dict | None
     business_status: str | None
     featured: bool
+    brand_name: str | None
+    brand_logo_url: str | None
     last_refreshed_at: datetime | None
     images: list[GalleryImageRead]
     external_refs: list[GalleryExternalRefRead]
+
+
+class FeedItemImageRead(ORMModel):
+    id: uuid.UUID
+    url: str
+    attribution: str | None
+    width: int | None
+    height: int | None
+    is_primary: bool
+    sort_rank: int | None
+
+
+class FeedItemLinkRead(ORMModel):
+    id: uuid.UUID
+    label: str
+    url: str
+    sort_rank: int | None
 
 
 class FeedItemRead(ORMModel):
     id: uuid.UUID
     slug: str
     type: str
+    kind: str
     title: str
     body: str | None
     gallery_id: uuid.UUID | None
@@ -67,6 +87,8 @@ class FeedItemRead(ORMModel):
     featured: bool
     published_at: datetime | None
     last_refreshed_at: datetime | None
+    images: list[FeedItemImageRead]
+    links: list[FeedItemLinkRead]
 
 
 class GalleryPage(BaseModel):

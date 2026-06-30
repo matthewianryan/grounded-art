@@ -27,7 +27,7 @@
 |---------|--------|-------|
 | Feed page with temporal views | Built | This weekend, opening this week, closing soon |
 | Feed type filters | Removed | Categories dropped; feed shows all items, sliced only by temporal views |
-| Feed card (text layout) | Built | Links to post detail; image layout still pending |
+| Feed card (text layout) | Removed | Replaced by image carousel and post-led cards in Phase 1 |
 | Feed card image layout (post-led) | Not built | image_url field exists; needs rendering |
 | Feed loading skeleton | Built | Pulse animation, mirrors page frame |
 | Feed empty and error states | Partial | Minimal; needs copy and design pass |
@@ -57,10 +57,13 @@ starting point for the redesign build.
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Circular gallery feed browse | Not built | Shows all feed items, no category split; reduced-motion fallback to list |
-| Unmask-on-scroll post detail | Not built | Re-skinned from framer.university pattern |
-| Post-led card with artist name | Not built | Replaces text-led card; image_url already exists |
-| Brand and pin badges on post cards | Not built | Optional gallery brand and tied-location pin |
+| Shared redesign tokens (card, badge, action row, wallet) | Built | Phase 0; packages/tailwind-config |
+| Circular gallery shell (preview) | Built | Phase 0 isolated shell; /app/preview/patterns |
+| Unmask reveal shell (preview) | Built | Phase 0 isolated shell; sticky scroll layering |
+| Circular gallery feed browse | Built | Live at /feed; all items, temporal views only |
+| Unmask-on-scroll post detail | Built | Wired from active carousel card to DetailCard |
+| Post-led card with artist name | Built | feed-post-card.tsx with name and badges |
+| Brand and pin badges on post cards | Built | Optional gallery brand and tied-location pin |
 | Custom cream/black map style | Not built | Port the MVP preset |
 | Map action row (Directions, Save, Check in, Share) | Partial | Save and Check in exist; add Directions and Share |
 | Accounts and sign-in | Not built | Was deferred; now in scope |
@@ -87,6 +90,7 @@ starting point for the redesign build.
 | Feed seed (10 items) | Built | No image URLs yet |
 | Gallery image records | Not built | Model exists; no seed images |
 | Feed image URLs | Not built | image_url field exists; no seeded values |
+| Redesign schema migrations | Built | Phase 0; account, session, check-in, wallet, contact, gallery brand |
 | Auth and sessions | Not built | Sign in, create account, session; redesign scope |
 | POST /check-ins (verify and award) | Not built | Verifies presence, awards a point atomically |
 | Challenge token on gallery card open | Not built | Proof-of-presence binding for verification |

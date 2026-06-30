@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { DM_Sans, Noto_Serif } from "next/font/google";
 import "./globals.css";
 import { SiteNav } from "@/components/site-nav";
-import { SiteFooter } from "@/components/site-footer";
 import { UserActionsProvider } from "@/components/user-actions-provider";
 
 const dmSans = DM_Sans({
@@ -40,7 +39,6 @@ export default function RootLayout({
         <UserActionsProvider>
           <SiteNav />
           <div className="flex-1">{children}</div>
-          <SiteFooter />
         </UserActionsProvider>
       </body>
     </html>
