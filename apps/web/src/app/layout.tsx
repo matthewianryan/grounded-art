@@ -3,6 +3,7 @@ import { DM_Sans, Noto_Serif } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
+import { AuthProvider } from "@/components/auth-provider";
 import { UserActionsProvider } from "@/components/user-actions-provider";
 
 const dmSans = DM_Sans({
@@ -42,11 +43,13 @@ export default function RootLayout({
     >
       <body className="flex min-h-screen flex-col overflow-x-hidden bg-paper font-sans text-ink antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <UserActionsProvider>
-          <SiteNav />
-          <div className="flex-1">{children}</div>
-          <SiteFooter />
-        </UserActionsProvider>
+        <AuthProvider>
+          <UserActionsProvider>
+            <SiteNav />
+            <div className="flex-1">{children}</div>
+            <SiteFooter />
+          </UserActionsProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -34,7 +34,7 @@
 | Feed saved filter pill | Built | Client-side filter via ga-saved cookie |
 | Map page | Built | Gallery map with side panel; list fallback without API key |
 | Map base layer (Google Maps) | Built | Loaded when NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is set |
-| Map custom style (cream/black preset) | Not built | Style JSON exists in MVP; not ported |
+| Map custom style (cream/black preset) | Built | Cream/black preset in maps.ts |
 | Gallery markers on map | Built | Rust default, ink when selected |
 | Gallery side-panel card | Built | Shared DetailCard component |
 | No-key list fallback | Built | isMapConfigured() shows gallery list |
@@ -64,17 +64,17 @@ starting point for the redesign build.
 | Unmask-on-scroll post detail | Built | Wired from active carousel card to DetailCard |
 | Post-led card with artist name | Built | feed-post-card.tsx with name and badges |
 | Brand and pin badges on post cards | Built | Optional gallery brand and tied-location pin |
-| Custom cream/black map style | Not built | Port the MVP preset |
-| Map action row (Directions, Save, Check in, Share) | Partial | Save and Check in exist; add Directions and Share |
-| Accounts and sign-in | Not built | Was deferred; now in scope |
-| Account gate on Check in, profile, wallet | Not built | Map and feed browsing stay open |
-| Cookie-to-account merge on first sign-in | Not built | Migrates ga-saved state |
-| Server-side check-in verification | Not built | Was deferred; challenge token, 100 m radius |
-| Points wallet (append-only ledger) | Not built | Was deferred; +1 per verified check-in |
-| Anti-farming (one award per gallery per 24h) | Not built | Written in the same transaction as the check-in |
-| Profile (avatar, display name, bio) | Not built | |
-| Profile sections (Wallet, Saved, Check-ins, Account) | Not built | Wix My Programs/Notifications/Settings dropped |
-| Account editor (display vs personal info) | Not built | No orange; rust only on the primary action |
+| Custom cream/black map style | Built | Cream/black preset in maps.ts |
+| Map action row (Directions, Save, Check in, Share) | Built | Full action row on gallery DetailCard |
+| Accounts and sign-in | Built | Passwordless email, one-time code, unified sign-up/sign-in |
+| Account gate on Check in, profile, wallet | Built | Map and feed browsing stay open |
+| Cookie-to-account merge on first sign-in | Built | Migrates ga-saved state |
+| Server-side check-in verification | Built | Challenge token, 100 m server radius |
+| Points wallet (append-only ledger) | Built | +1 per verified check-in |
+| Anti-farming (one award per gallery per 24h) | Built | Same transaction as check-in |
+| Profile (avatar, display name, bio) | Built | /app/profile home |
+| Profile sections (Wallet, Saved, Check-ins, Account) | Built | Wallet and check-ins read from API |
+| Account editor (display vs personal info) | Built | No orange; rust only on the primary action |
 | Artist and gallery account card | Not built | Profile-as-card; no scroll-up expansion for v1 |
 | Contact page and form | Not built | Posts to API, stored and notified; "Send" not "Book Now" |
 
@@ -91,11 +91,12 @@ starting point for the redesign build.
 | Gallery image records | Not built | Model exists; no seed images |
 | Feed image URLs | Not built | image_url field exists; no seeded values |
 | Redesign schema migrations | Built | Phase 0; account, session, check-in, wallet, contact, gallery brand |
-| Auth and sessions | Not built | Sign in, create account, session; redesign scope |
-| POST /check-ins (verify and award) | Not built | Verifies presence, awards a point atomically |
-| Challenge token on gallery card open | Not built | Proof-of-presence binding for verification |
-| GET /me, PATCH /me (profile and account) | Not built | Per-account read and edit |
-| GET /me/wallet | Not built | Balance and recent transactions |
+| Auth and sessions | Built | Passwordless email, session cookie, sign out |
+| POST /check-ins (verify and award) | Built | POST /me/check-ins; verifies presence, awards atomically |
+| Challenge token on gallery card open | Built | POST /me/check-in-challenge on gallery card open |
+| GET /me, PATCH /me (profile and account) | Built | Per-account read and edit |
+| GET /me/wallet | Built | Ledger sum and recent transactions |
+| GET /me/saved | Built | Read and write saved galleries and feed items |
 | POST /contact | Not built | Stores the message and notifies us |
 | API test suite | Not built | |
 

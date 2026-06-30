@@ -8,7 +8,7 @@ are not exposed through the API.
 import uuid
 from datetime import date, datetime
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
 class ORMModel(BaseModel):
@@ -139,3 +139,106 @@ class ContactMessageCreate(BaseModel):
 class ContactMessageRead(ORMModel):
     id: uuid.UUID
     received_at: datetime
+
+
+# Auth and account schemas
+
+
+class RequestCodeBody(BaseModel):
+    email: EmailStr
+
+
+class VerifyCodeBody(BaseModel):
+    email: EmailStr
+    code: str = Field(min_length=6, max_length=6)
+    saved_keys: list[str] = Field(default_factory=list)
+
+
+class AccountRead(ORMModel):
+    id: uuid.UUID
+    email: str
+    display_name: str
+    title: str | None
+    avatar_url: str | None
+    bio: str | None
+    first_name: str | None
+    last_name: str | None
+    phone: str | None
+    joined_at: datetime
+
+
+class AccountUpdate(BaseModel):
+    display_name: str | None = Field(default=None, min_length=1, max_length=255)
+    title: str | None = Field(default=None, max_length=255)
+    avatar_url: str | None = Field(default=None, max_length=512)
+    bio: str | None = None
+    first_name: str | None = Field(default=None, max_length=255)
+    last_name: str | None = Field(default=None, max_length=255)
+    phone: str | None = Field(default=None, max_length=64)
+
+
+class SavedItemRead(BaseModel):
+    kind: str
+    slug: str
+    saved_at: datetime
+    gallery: GalleryRead | None = None
+    feed_item: FeedItemRead | None = None
+
+
+class SavedPage(BaseModel):
+    items: list[SavedItemRead]
+
+
+class AddSavedBody(BaseModel):
+    kind: str = Field(pattern="^(feed|gallery)$")
+    slug: str = Field(min_length=1, max_length=255)
+
+
+class WalletTransactionRead(BaseModel):
+    id: uuid.UUID
+    delta: int
+    reason: str
+    created_at: datetime
+    gallery_name: str | None = None
+
+
+class WalletRead(BaseModel):
+    balance: int
+    transactions: list[WalletTransactionRead]
+
+
+class CheckInRead(BaseModel):
+    id: uuid.UUID
+    gallery_slug: str
+    gallery_name: str
+    checked_in_at: datetime
+    verified: bool
+    point_awarded: bool
+
+
+class CheckInPage(BaseModel):
+    items: list[CheckInRead]
+
+
+class CheckInChallengeBody(BaseModel):
+    gallery_slug: str = Field(min_length=1, max_length=255)
+
+
+class CheckInChallengeRead(BaseModel):
+    challenge_token: str
+    expires_at: datetime
+
+
+class CheckInCreateBody(BaseModel):
+    gallery_slug: str = Field(min_length=1, max_length=255)
+    latitude: float
+    longitude: float
+    challenge_token: str = Field(min_length=1)
+
+
+class CheckInResultRead(BaseModel):
+    id: uuid.UUID
+    verified: bool
+    point_awarded: bool
+    already_earned_today: bool
+    balance: int

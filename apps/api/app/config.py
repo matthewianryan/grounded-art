@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     ]
 
     # When true, the redesign schema (accounts, sessions, check-ins, wallet, contact) is
-    # expected to be present. No API routes use these tables until Phase 3+.
+    # expected to be present.
     redesign_schema_enabled: bool = True
 
     # Contact form notifications. The message is always stored in Postgres; Resend is used
@@ -38,6 +38,24 @@ class Settings(BaseSettings):
     contact_rate_limit_email_window_seconds: int = 3600
     turnstile_secret_key: str | None = None
     turnstile_siteverify_url: str = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+
+    # Auth and session settings.
+    session_ttl_days: int = 30
+    login_code_ttl_minutes: int = 10
+    login_code_pepper: str = "dev-pepper-change-in-production"
+    login_code_max_attempts: int = 5
+    login_code_rate_limit_per_email: int = 3
+    login_code_rate_limit_window_hours: int = 1
+    email_provider: str = "console"
+    email_from: str = "Grounded Art <noreply@grounded-art.co.za>"
+    cookie_secure: bool = False
+    session_cookie_name: str = "ga-session"
+    session_cookie_path: str = "/"
+
+    # Check-in verification and wallet awards.
+    check_in_radius_metres: int = 100
+    check_in_challenge_ttl_minutes: int = 5
+    check_in_award_window_hours: int = 24
 
     @field_validator("database_url")
     @classmethod

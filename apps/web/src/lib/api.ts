@@ -54,6 +54,28 @@ async function request<T>(path: string, params?: Record<string, QueryValue>): Pr
   return (await response.json()) as T;
 }
 
+async function authedRequest<T>(path: string, cookieHeader: string, init?: RequestInit): Promise<T> {
+  const url = buildPath(path);
+  const response = await fetch(url, {
+    cache: "no-store",
+    ...init,
+    headers: {
+      ...init?.headers,
+      Cookie: cookieHeader,
+    },
+  });
+  if (response.status === 401) {
+    throw new ApiError("Not signed in", 401);
+  }
+  if (!response.ok) {
+    throw new ApiError(`API request to ${path} failed`, response.status);
+  }
+  if (response.status === 204) {
+    return undefined as T;
+  }
+  return (await response.json()) as T;
+}
+
 export interface ListGalleriesParams extends Record<string, QueryValue> {
   suburb?: string;
   featured?: boolean;
@@ -82,4 +104,42 @@ export function listFeed(params: ListFeedParams = {}): Promise<FeedPage> {
 
 export function getFeedItem(slug: string): Promise<FeedItem> {
   return request<FeedItem>(`/feed/${encodeURIComponent(slug)}`);
+}
+
+// Server-side authenticated read. Forwards the session cookie to the API.
+export async function getMe(
+  cookieHeader?: string,
+): Promise<import("@/lib/account-types").Account | null> {
+  if (!cookieHeader) return null;
+  try {
+    return await authedRequest<import("@/lib/account-types").Account>("/me", cookieHeader);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 401) return null;
+    throw error;
+  }
+}
+
+export async function getWallet(
+  cookieHeader: string,
+): Promise<import("@/lib/account-types").Wallet> {
+  return authedRequest("/me/wallet", cookieHeader);
+}
+
+export async function getSaved(
+  cookieHeader: string,
+): Promise<import("@/lib/account-types").SavedPage> {
+  return authedRequest("/me/saved", cookieHeader);
+}
+
+export async function getCheckIns(
+  cookieHeader: string,
+): Promise<import("@/lib/account-types").CheckInPage> {
+  return authedRequest("/me/check-ins", cookieHeader);
+}
+
+export async function getSessionCookieHeader(): Promise<string | undefined> {
+  const { cookies } = await import("next/headers");
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get("ga-session");
+  return sessionCookie ? `ga-session=${sessionCookie.value}` : undefined;
 }

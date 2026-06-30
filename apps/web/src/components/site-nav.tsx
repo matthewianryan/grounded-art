@@ -8,7 +8,7 @@ import { ThemeToggle } from "./theme-toggle";
 const links = [
   { href: "/map", label: "Map", live: true },
   { href: "/feed", label: "Feed", live: true },
-  { href: "/sign-in?returnTo=/app/profile", label: "Profile", live: true },
+  { href: "/profile", label: "Profile", live: true },
   { href: "/contact", label: "Contact us", live: true, root: true },
 ];
 

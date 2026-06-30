@@ -1,7 +1,9 @@
 export type CheckInStatusVariant =
   | "out_of_range"
   | "permission_denied"
-  | "unavailable";
+  | "unavailable"
+  | "already_earned_today"
+  | "verification_failed";
 
 const COPY: Record<
   CheckInStatusVariant,
@@ -18,6 +20,14 @@ const COPY: Record<
   unavailable: {
     title: "Location unavailable.",
     body: "We couldn't read your position right now. Try again in a moment.",
+  },
+  already_earned_today: {
+    title: "Checked in.",
+    body: "You already earned a point here today. Come back tomorrow.",
+  },
+  verification_failed: {
+    title: "Could not verify.",
+    body: "This check-in was recorded without a point. Open the gallery card and try again.",
   },
 };
 

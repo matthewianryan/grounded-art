@@ -38,10 +38,10 @@ motion shows a clean static feed. Keyboard and screen reader work.
 
 ## Phase 2. Map detail and check-in, no points yet
 
-- [ ] Apply the custom cream and black map style (the preset exists in the MVP and is not yet
+- [x] Apply the custom cream and black map style (the preset exists in the MVP and is not yet
       ported).
-- [ ] Complete the side-panel action row: Directions, Save, Check in, Share.
-- [ ] Keep the existing client check-in behaviour. Add the account gate so a signed-out
+- [x] Complete the side-panel action row: Directions, Save, Check in, Share.
+- [x] Keep the existing client check-in behaviour. Add the account gate so a signed-out
       Check in routes to sign in and returns to the gallery.
 
 Gate: the map reads as a real, legible map in Grounded Art style. The action row and the auth
@@ -49,20 +49,21 @@ gate work. The existing check-in states are intact.
 
 ## Phase 3. Accounts, wallet, verified check-in
 
-- [ ] Finish auth: sign in, create account, session, and the cookie-to-account merge on first
-      sign-in.
-- [ ] Server-side verification with the challenge token. Award one point per verified check-in,
-      rate limited to one per gallery per 24 hours.
-- [ ] Wallet ledger and the wallet read endpoint. The celebration moment shows the new balance.
+- [x] Finish auth: sign in, create account, session, and the cookie-to-account merge on first
+      sign-in (3A).
+- [x] Server-side verification with the challenge token. Award one point per verified check-in,
+      rate limited to one per gallery per 24 hours (3B).
+- [x] Wallet ledger and the wallet read endpoint. The celebration moment shows the new balance
+      (3B).
 
 Gate: a verified check-in increments the wallet exactly once inside the window. All check-in
 states from [Wallet and presence](wallet-and-presence.md) behave. The ledger balance is correct.
 
 ## Phase 4. Profile and account area
 
-- [ ] Profile with avatar, display name, and bio.
-- [ ] Sections: Wallet, Saved, Check-ins, Account.
-- [ ] Account editor with the display and personal information split.
+- [x] Profile with avatar, display name, and bio (shipped in 3A).
+- [x] Sections: Wallet, Saved, Check-ins, Account (shipped in 3A; wallet and check-ins wired in 3B).
+- [x] Account editor with the display and personal information split (shipped in 3A).
 
 Gate: the profile and account screens match the mockup intent in Grounded Art tokens with no
 orange. Saved items carried from session appear. The wallet view reads from Phase 3.

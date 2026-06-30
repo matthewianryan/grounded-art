@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { FeedItem, FeedItemType, Gallery } from "@/lib/types";
 import { formatDateRange } from "@/lib/format";
 import {
@@ -11,14 +11,16 @@ import {
   toFeedGalleryContext,
 } from "@/lib/feed-display";
 import { resolveActionRowContext } from "@/lib/action-row";
-import { currentReturnTo, hasAccountSession, signInHref } from "@/lib/auth-gate";
+import { currentReturnTo, signInHref } from "@/lib/auth-gate";
 import {
   evaluateCheckIn,
   GeolocationError,
   getUserPosition,
 } from "@/lib/check-in";
 import { galleryDirectionsUrl } from "@/lib/maps";
+import { requestCheckInChallenge, submitCheckIn } from "@/lib/api-client";
 import { galleryKey } from "@/lib/user-actions";
+import { useAuth } from "@/components/auth-provider";
 import { useUserActions } from "@/components/user-actions-provider";
 import { CheckInCelebration } from "@/components/check-in-celebration";
 import {
@@ -240,15 +242,44 @@ function ActionRow({
     isCheckedIn,
     markCheckedIn,
   } = useUserActions();
+  const { isSignedIn, ready: authReady } = useAuth();
 
   const [checkingIn, setCheckingIn] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
+  const [celebrationBalance, setCelebrationBalance] = useState<number | undefined>();
   const [statusVariant, setStatusVariant] = useState<CheckInStatusVariant | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | undefined>();
   const [shareMessage, setShareMessage] = useState<string | null>(null);
+  const challengeTokenRef = useRef<string | null>(null);
 
   const gallerySlug = gallery?.slug ?? actions.mapGallerySlug ?? undefined;
   const galleryName = gallery?.name ?? "this gallery";
+
+  useEffect(() => {
+    if (!authReady || !isSignedIn || !gallerySlug) {
+      challengeTokenRef.current = null;
+      return;
+    }
+
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const challenge = await requestCheckInChallenge(gallerySlug);
+        if (!cancelled) {
+          challengeTokenRef.current = challenge.challenge_token;
+        }
+      } catch {
+        if (!cancelled) {
+          challengeTokenRef.current = null;
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authReady, isSignedIn, gallerySlug]);
 
   const saved = item
     ? isFeedItemSaved(item.slug, gallerySlug)
@@ -262,7 +293,7 @@ function ActionRow({
   async function handleCheckIn() {
     if (!gallery || gallery.latitude == null || gallery.longitude == null) return;
 
-    if (!hasAccountSession()) {
+    if (!authReady || !isSignedIn) {
       const returnTo = gallerySlug
         ? `/app/map?gallery=${encodeURIComponent(gallerySlug)}`
         : currentReturnTo();
@@ -276,16 +307,49 @@ function ActionRow({
 
     try {
       const position = await getUserPosition();
-      const result = evaluateCheckIn(position, gallery);
+      const clientResult = evaluateCheckIn(position, gallery);
 
-      if (result.status === "success") {
-        markCheckedIn(gallery.slug);
-        setCelebrating(true);
-      } else if (result.status === "out_of_range") {
+      if (clientResult.status === "out_of_range") {
         setStatusVariant("out_of_range");
-      } else if (result.status === "unavailable") {
+        return;
+      }
+
+      if (clientResult.status === "unavailable") {
         setStatusVariant("unavailable");
-        setStatusMessage(result.message);
+        setStatusMessage(clientResult.message);
+        return;
+      }
+
+      let challengeToken = challengeTokenRef.current;
+      if (!challengeToken) {
+        try {
+          const challenge = await requestCheckInChallenge(gallery.slug);
+          challengeToken = challenge.challenge_token;
+          challengeTokenRef.current = challengeToken;
+        } catch {
+          setStatusVariant("unavailable");
+          setStatusMessage("Could not start check-in. Try again in a moment.");
+          return;
+        }
+      }
+
+      const result = await submitCheckIn({
+        gallery_slug: gallery.slug,
+        latitude: position.lat,
+        longitude: position.lng,
+        challenge_token: challengeToken,
+      });
+
+      markCheckedIn(gallery.slug);
+      challengeTokenRef.current = null;
+
+      if (result.verified && result.point_awarded) {
+        setCelebrationBalance(result.balance);
+        setCelebrating(true);
+      } else if (result.verified && result.already_earned_today) {
+        setStatusVariant("already_earned_today");
+      } else if (!result.verified) {
+        setStatusVariant("verification_failed");
       }
     } catch (error) {
       if (error instanceof GeolocationError) {
@@ -295,6 +359,7 @@ function ActionRow({
         if (error.code === "unavailable") setStatusMessage(error.message);
       } else {
         setStatusVariant("unavailable");
+        setStatusMessage("Could not complete check-in. Try again in a moment.");
       }
     } finally {
       setCheckingIn(false);
@@ -403,7 +468,12 @@ function ActionRow({
       {celebrating && (
         <CheckInCelebration
           galleryName={galleryName}
-          onDismiss={() => setCelebrating(false)}
+          balance={celebrationBalance}
+          pointAwarded={celebrationBalance !== undefined}
+          onDismiss={() => {
+            setCelebrating(false);
+            setCelebrationBalance(undefined);
+          }}
         />
       )}
     </>
