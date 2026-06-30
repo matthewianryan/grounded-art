@@ -75,11 +75,16 @@ In Cloudflare, create or use a Pages project, not a Worker:
 
 Then attach the domain:
 
+Do this from the Pages project, not from account-level Cloudflare Domains or Domain
+Registration. `grounded-art.co.za` should already exist as a Cloudflare zone because its
+nameservers point at Cloudflare.
+
 1. Open the `grounded-art-landing` Pages project.
 2. Go to Custom domains.
-3. Add `grounded-art.co.za`.
-4. Add `www.grounded-art.co.za`.
-5. Follow Cloudflare's DNS prompt if it asks to create records.
+3. Select Set up a domain.
+4. Enter `grounded-art.co.za`.
+5. Continue and let Cloudflare create the DNS record for the existing zone.
+6. Optionally repeat for `www.grounded-art.co.za` if you want the `www` hostname to work too.
 
 The existing `grounded-art` Worker is not the target for this launch. It can be ignored or
 deleted after the Pages project is working.
