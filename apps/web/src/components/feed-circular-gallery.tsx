@@ -7,7 +7,7 @@ import type { FeedCarouselItem } from "@/lib/feed-display";
 import type { GalleryItem } from "@/components/ui/circular-gallery-2";
 import { buildFeedGalleryItems, isDarkTheme } from "@/lib/polaroid-texture";
 import {
-  FEED_CAROUSEL_HIT_CLASS,
+  feedCarouselHitStyle,
   FEED_CAROUSEL_STAGE_CLASS,
   FEED_CAROUSEL_STAGE_FILL_CLASS,
 } from "@/lib/feed-carousel-layout";
@@ -40,6 +40,17 @@ export function FeedCircularGallery({
   const reduce = useReducedMotion();
   const [dark, setDark] = useState(false);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[] | null>(null);
+  const [viewportWidth, setViewportWidth] = useState(768);
+
+  useEffect(() => {
+    function syncViewport() {
+      setViewportWidth(window.innerWidth);
+    }
+
+    syncViewport();
+    window.addEventListener("resize", syncViewport);
+    return () => window.removeEventListener("resize", syncViewport);
+  }, []);
 
   useEffect(() => {
     function readTheme() {
@@ -80,6 +91,8 @@ export function FeedCircularGallery({
       cancelled = true;
     };
   }, [items, dark, reduce]);
+
+  const hitStyle = feedCarouselHitStyle(viewportWidth);
 
   if (items.length === 0) return null;
 
@@ -125,7 +138,8 @@ export function FeedCircularGallery({
           {interactive && onCenterClick && (
             <button
               type="button"
-              className={`absolute inset-x-0 top-1/2 z-10 mx-auto ${FEED_CAROUSEL_HIT_CLASS} -translate-y-1/2 cursor-pointer border-0 bg-transparent`}
+              className="absolute inset-x-0 top-1/2 z-10 mx-auto -translate-y-1/2 cursor-pointer border-0 bg-transparent"
+              style={hitStyle}
               aria-label={`Open ${items[activeIndex]?.displayName ?? "post"}`}
               onClick={onCenterClick}
             />

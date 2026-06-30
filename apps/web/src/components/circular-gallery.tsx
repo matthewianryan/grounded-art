@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import type { FeedCarouselItem } from "@/lib/feed-display";
 import { FeedPostImage } from "@/components/feed-post-card";
 import {
+  feedCarouselArcLift,
+  feedCarouselCardOffsetX,
   FEED_CAROUSEL_CARD_CLASS,
   FEED_CAROUSEL_SNAP_PADDING_CLASS,
   FEED_CAROUSEL_STAGE_CLASS,
@@ -17,12 +19,10 @@ interface CircularGalleryProps {
   onActiveSelect?: () => void;
 }
 
-const MOBILE_CARD_OFFSET_X = 110;
 const DESKTOP_CARD_OFFSET_X = 200;
-const ARC_LIFT = 14;
 
-function arcOffsetY(offset: number): number {
-  return Math.abs(offset) ** 2 * ARC_LIFT;
+function arcOffsetY(offset: number, lift: number): number {
+  return Math.abs(offset) ** 2 * lift;
 }
 
 export function CircularGallery({
@@ -128,7 +128,10 @@ function MotionGallery({
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dragStartX = useRef(0);
-  const isDesktopRef = useRef(false);
+  const [layout, setLayout] = useState({
+    cardOffsetX: DESKTOP_CARD_OFFSET_X,
+    arcLift: 14,
+  });
 
   const goTo = useCallback(
     (index: number) => {
@@ -140,12 +143,17 @@ function MotionGallery({
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    const media = window.matchMedia("(min-width: 768px)");
-    const syncBreakpoint = () => {
-      isDesktopRef.current = media.matches;
-    };
-    syncBreakpoint();
-    media.addEventListener("change", syncBreakpoint);
+
+    function syncLayout() {
+      const viewportWidth = window.innerWidth;
+      setLayout({
+        cardOffsetX: feedCarouselCardOffsetX(viewportWidth),
+        arcLift: feedCarouselArcLift(viewportWidth),
+      });
+    }
+
+    syncLayout();
+    window.addEventListener("resize", syncLayout);
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "ArrowLeft") {
@@ -171,7 +179,7 @@ function MotionGallery({
     container.addEventListener("keydown", onKeyDown);
     container.addEventListener("wheel", onWheel, { passive: false });
     return () => {
-      media.removeEventListener("change", syncBreakpoint);
+      window.removeEventListener("resize", syncLayout);
       container.removeEventListener("keydown", onKeyDown);
       container.removeEventListener("wheel", onWheel);
     };
@@ -207,8 +215,8 @@ function MotionGallery({
                 zIndex: 10 - absOffset,
               }}
               animate={{
-                x: offset * (isDesktopRef.current ? DESKTOP_CARD_OFFSET_X : MOBILE_CARD_OFFSET_X),
-                y: arcOffsetY(offset),
+                x: offset * layout.cardOffsetX,
+                y: arcOffsetY(offset, layout.arcLift),
                 rotateY: offset * -28,
                 rotateZ: offset * -4,
                 scale: 1 - absOffset * 0.08,
