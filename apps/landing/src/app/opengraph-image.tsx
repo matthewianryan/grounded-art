@@ -7,7 +7,7 @@ export const contentType = "image/png";
 // Generated at build time so the route works with the static export.
 export const dynamic = "force-static";
 
-// The share card mirrors the wordmark: cream ground, ink text, a short rust rule.
+// The share card mirrors the wordmark: off-white ground, ink text, a short rust rule.
 export default function OpengraphImage() {
   return new ImageResponse(
     (
@@ -18,7 +18,7 @@ export default function OpengraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#f4efe2",
+          backgroundColor: "#f8f8f4",
           color: "#16130e",
           padding: "80px",
           fontFamily: "serif",
