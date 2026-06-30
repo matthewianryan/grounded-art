@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "./theme-toggle";
+import { WordmarkLink } from "./wordmark-link";
 
 const links = [
   { href: "/map", label: "Map", live: true },
@@ -56,10 +57,7 @@ export function SiteNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-line/70 bg-paper/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <Link href="/" className="inline-flex flex-col" aria-label="Grounded Art home">
-          <span className="font-display text-lg leading-none">Grounded Art</span>
-          <span className="mt-1.5 h-px w-7 bg-accent" aria-hidden="true" />
-        </Link>
+        <WordmarkLink />
 
         <nav
           className="hidden items-center gap-2 rounded-full border border-line bg-paper px-2 py-1.5 text-xs uppercase tracking-[0.14em] md:flex"

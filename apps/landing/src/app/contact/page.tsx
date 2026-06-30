@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      <SiteNav />
+      <SiteNav variant="app" />
       <main>
         <section className="border-b border-line">
           <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16 lg:py-24">
