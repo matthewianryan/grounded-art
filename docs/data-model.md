@@ -37,10 +37,13 @@ Identity is ours and does not depend on any external service.
 The redesign adds the following entities. See [Redesign](redesign.md) and
 [Wallet and presence](wallet-and-presence.md).
 
-- Account: a signed-in user. Holds the display name, an optional title, an avatar, an
-  optional short bio, the private personal fields (first name, last name, phone), and the
-  join date. Browsing the map and the feed needs no account. Check in, profile, and wallet
-  require one.
+- Account: a signed-in user. Holds email (the sign-in identity), display name, an optional
+  title, an avatar, an optional short bio, the private personal fields (first name, last name,
+  phone), and the join date. Auth is passwordless email with one-time codes. Browsing the map
+  and the feed needs no account. Check in, profile, and wallet require one.
+- Account saved item: a gallery or feed item saved by an account. Replaces the ga-saved cookie
+  after first sign-in.
+- Login code: a short-lived hashed one-time code issued for passwordless email sign-in.
 - Session: a server-issued sign-in session for an account, used to gate the per-account
   surfaces and to bind check-in challenge tokens.
 - Gallery brand: an optional attribute on a gallery, holding a brand name and a logo. When

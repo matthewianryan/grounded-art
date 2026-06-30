@@ -97,6 +97,11 @@ class WalletTransactionReason(StrEnum):
     SHOP_SPEND = "shop_spend"
 
 
+class SavedItemKind(StrEnum):
+    FEED = "feed"
+    GALLERY = "gallery"
+
+
 def _uuid_pk() -> Mapped[uuid.UUID]:
     return mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
 
@@ -370,7 +375,6 @@ class Account(Base, TimestampMixin):
 
     id: Mapped[uuid.UUID] = _uuid_pk()
     email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
-    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     display_name: Mapped[str] = mapped_column(String(255), nullable=False)
     title: Mapped[str | None] = mapped_column(String(255))
     avatar_url: Mapped[str | None] = mapped_column(String(512))
@@ -391,6 +395,53 @@ class Account(Base, TimestampMixin):
     wallet_transactions: Mapped[list["WalletTransaction"]] = relationship(
         back_populates="account", cascade="all, delete-orphan"
     )
+    saved_items: Mapped[list["AccountSavedItem"]] = relationship(
+        back_populates="account", cascade="all, delete-orphan"
+    )
+
+
+class LoginCode(Base):
+    """A short-lived one-time code for passwordless email sign-in."""
+
+    __tablename__ = "login_code"
+    __table_args__ = (Index("ix_login_code_email_expires_at", "email", "expires_at"),)
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    email: Mapped[str] = mapped_column(String(255), nullable=False)
+    code_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    consumed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+
+class AccountSavedItem(Base):
+    """A gallery or feed item saved by an account."""
+
+    __tablename__ = "account_saved_item"
+    __table_args__ = (
+        UniqueConstraint(
+            "account_id",
+            "item_kind",
+            "item_slug",
+            name="uq_account_saved_item_account_kind_slug",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    account_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("account.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    # One of SavedItemKind.
+    item_kind: Mapped[str] = mapped_column(String(16), nullable=False)
+    item_slug: Mapped[str] = mapped_column(String(255), nullable=False)
+    saved_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+    account: Mapped["Account"] = relationship(back_populates="saved_items")
 
 
 class Session(Base, TimestampMixin):

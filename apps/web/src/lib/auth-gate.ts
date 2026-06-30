@@ -1,16 +1,4 @@
-const SESSION_COOKIE_NAMES = ["ga-session", "grounded-session"];
 const SIGN_IN_PATH = "/app/sign-in";
-
-function readCookie(name: string): string | undefined {
-  if (typeof document === "undefined") return undefined;
-  const prefix = `${name}=`;
-  const match = document.cookie.split("; ").find((row) => row.startsWith(prefix));
-  return match ? decodeURIComponent(match.slice(prefix.length)) : undefined;
-}
-
-export function hasAccountSession(): boolean {
-  return SESSION_COOKIE_NAMES.some((name) => Boolean(readCookie(name)));
-}
 
 export function currentReturnTo(fallback = "/app/map"): string {
   if (typeof window === "undefined") return fallback;
@@ -19,4 +7,10 @@ export function currentReturnTo(fallback = "/app/map"): string {
 
 export function signInHref(returnTo: string): string {
   return `${SIGN_IN_PATH}?returnTo=${encodeURIComponent(returnTo)}`;
+}
+
+/** Full-page navigation after sign-in. Uses the browser URL (with /app prefix), not the
+ *  Next.js router, so multi-zone and basePath do not double-prefix the path. */
+export function navigateAfterSignIn(returnTo: string): void {
+  window.location.assign(returnTo);
 }

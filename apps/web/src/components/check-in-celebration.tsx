@@ -4,9 +4,13 @@ import { motion, useReducedMotion } from "motion/react";
 
 export function CheckInCelebration({
   galleryName,
+  balance,
+  pointAwarded = true,
   onDismiss,
 }: {
   galleryName: string;
+  balance?: number;
+  pointAwarded?: boolean;
   onDismiss: () => void;
 }) {
   const reduce = useReducedMotion();
@@ -44,9 +48,16 @@ export function CheckInCelebration({
         >
           You&apos;re here.
         </h2>
-        <p className="mt-2 text-sm text-muted">
-          Nice one. Enjoy the show at {galleryName}.
-        </p>
+        {pointAwarded && balance !== undefined ? (
+          <p className="mt-2 text-sm text-muted">
+            You earned 1 point. Your balance is{" "}
+            <span className="font-display text-wallet-balance">{balance}</span>.
+          </p>
+        ) : (
+          <p className="mt-2 text-sm text-muted">
+            Nice one. Enjoy the show at {galleryName}.
+          </p>
+        )}
         <button
           type="button"
           onClick={onDismiss}
