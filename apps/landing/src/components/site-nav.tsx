@@ -2,9 +2,9 @@ import Link from "next/link";
 import { ThemeToggle } from "./theme-toggle";
 
 const links = [
-  { href: "/app/map", label: "Map" },
-  { href: "/app/feed", label: "Feed" },
-  { href: "/app/sign-in?returnTo=/app/profile", label: "Profile" },
+  { href: "/app/map", label: "Map", app: true },
+  { href: "/app/feed", label: "Feed", app: true },
+  { href: "/app/sign-in?returnTo=/app/profile", label: "Profile", app: true },
   { href: "/contact", label: "Contact us" },
 ];
 
@@ -20,11 +20,17 @@ export function SiteNav() {
           <span className="mt-1.5 h-px w-7 bg-accent" aria-hidden="true" />
         </Link>
         <nav className="flex flex-wrap items-center justify-center gap-4 text-xs text-muted sm:gap-6 sm:text-sm">
-          {links.map((link) => (
-            <Link key={link.href} href={link.href} className="transition hover:text-ink">
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) =>
+            link.app ? (
+              <a key={link.href} href={link.href} className="transition hover:text-ink">
+                {link.label}
+              </a>
+            ) : (
+              <Link key={link.href} href={link.href} className="transition hover:text-ink">
+                {link.label}
+              </Link>
+            ),
+          )}
           <ThemeToggle />
         </nav>
       </div>
