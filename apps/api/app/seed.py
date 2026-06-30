@@ -26,6 +26,7 @@ from app.db import SessionLocal
 from app.models import (
     FeedItem,
     FeedItemImage,
+    FeedItemKind,
     FeedItemLink,
     Gallery,
     GalleryExternalRef,
@@ -125,10 +126,36 @@ def seed_galleries(session, now: datetime) -> int:
     return len(galleries)
 
 
+def _validate_feed_row(row: dict) -> None:
+    slug = row["slug"]
+    kind = row.get("kind")
+    if not kind:
+        raise ValueError(f"feed item {slug!r} is missing explicit kind")
+    images = row.get("images", [])
+    if kind == FeedItemKind.ANNOUNCEMENT:
+        if images:
+            raise ValueError(f"announcement {slug!r} must not have images")
+        return
+    if kind in (FeedItemKind.ART_POST, FeedItemKind.EVENT):
+        if not images:
+            raise ValueError(f"feed item {slug!r} ({kind}) must have at least one image")
+    primaries = [img for img in images if img.get("is_primary")]
+    if images and len(primaries) != 1:
+        raise ValueError(f"feed item {slug!r} must have exactly one primary image")
+
+
+def _primary_image_url(item: FeedItem) -> str | None:
+    if not item.images:
+        return None
+    primary = next((img for img in item.images if img.is_primary), None)
+    return primary.url if primary else item.images[0].url
+
+
 def seed_feed_items(session, now: datetime) -> int:
     galleries = {g.slug: g.id for g in session.query(Gallery.slug, Gallery.id).all()}
     count = 0
     for row in _load("feed_items.json"):
+        _validate_feed_row(row)
         slug = row["slug"]
         item = session.query(FeedItem).filter_by(slug=slug).one_or_none()
         if item is None:
@@ -165,7 +192,7 @@ def seed_feed_items(session, now: datetime) -> int:
                     url=image["url"],
                     source=image.get("source", "manual"),
                     source_url=image.get("source_url"),
-                    permission_status=image.get("permission_status", "unconfirmed"),
+                    permission_status=image.get("permission_status", "cleared"),
                     attribution=image.get("attribution"),
                     width=image.get("width"),
                     height=image.get("height"),
@@ -173,6 +200,9 @@ def seed_feed_items(session, now: datetime) -> int:
                     sort_rank=image.get("sort_rank", index),
                 )
             )
+
+        # Carousel cover uses image_url; detail masonry uses FeedItemImage rows.
+        item.image_url = _primary_image_url(item)
 
         for index, link in enumerate(row.get("links", [])):
             item.links.append(

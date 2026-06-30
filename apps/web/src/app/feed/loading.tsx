@@ -13,8 +13,8 @@ export default function FeedLoading() {
         ))}
       </div>
 
-      <div className="mt-10 flex h-[28rem] animate-pulse items-center justify-center" aria-hidden="true">
-        <div className="h-80 w-56 rounded-card bg-line" />
+      <div className="mt-10 flex min-h-[680px] animate-pulse items-center justify-center" aria-hidden="true">
+        <div className="h-96 w-72 rounded-card bg-line" />
       </div>
     </main>
   );

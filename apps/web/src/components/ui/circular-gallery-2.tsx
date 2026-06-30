@@ -3,6 +3,10 @@
 
 import { Camera, Mesh, Plane, Program, Renderer, Texture, Transform } from 'ogl';
 import { useEffect, useRef } from 'react';
+import {
+  FEED_CAROUSEL_PLANE_HEIGHT_FACTOR as PLANE_HEIGHT_FACTOR,
+  FEED_CAROUSEL_PLANE_WIDTH_FACTOR as PLANE_WIDTH_FACTOR,
+} from '@/lib/feed-carousel-layout';
 
 function debounce(func: any, wait: number) {
   let timeout: any;
@@ -43,8 +47,6 @@ interface CircularGalleryProps {
   onActiveIndexChange?: (index: number) => void;
 }
 
-const PLANE_HEIGHT_FACTOR = 920;
-const PLANE_WIDTH_FACTOR = 490;
 const PLANE_PADDING = 2;
 
 class Media {

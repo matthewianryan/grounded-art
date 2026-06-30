@@ -10,7 +10,20 @@
     "ends_on": "2026-07-04",
     "featured": true,
     "source": "gallery_site",
-    "source_url": "https://blankprojects.com/Gallery"
+    "source_url": "https://blankprojects.com/Gallery",
+    "images": [
+      {
+        "url": "/app/images/seed/blank-projects.jpg",
+        "width": 1800,
+        "height": 2119,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1565876427310-0695a4ff03b7",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ]
   },
   {
     "slug": "goodman-masamvu-naked-2026",
@@ -23,7 +36,50 @@
     "ends_on": "2026-07-11",
     "featured": true,
     "source": "gallery_site",
-    "source_url": "https://goodman-gallery.com/exhibitions"
+    "source_url": "https://goodman-gallery.com/exhibitions",
+    "images": [
+      {
+        "url": "/app/images/seed/goodman-1.jpg",
+        "width": 1200,
+        "height": 1600,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1552250575-e508473b090f",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      },
+      {
+        "url": "/app/images/seed/goodman-2.jpg",
+        "width": 1800,
+        "height": 2497,
+        "is_primary": false,
+        "sort_rank": 1,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1569084024058-1632922a4e1d",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      },
+      {
+        "url": "/app/images/seed/goodman-3.jpg",
+        "width": 1200,
+        "height": 1595,
+        "is_primary": false,
+        "sort_rank": 2,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1541512416146-3cf58d6b27cc",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ],
+    "links": [
+      { "label": "Website", "url": "https://goodman-gallery.com", "sort_rank": 0 },
+      {
+        "label": "Instagram",
+        "url": "https://www.instagram.com/goodmangallery/",
+        "sort_rank": 1
+      }
+    ]
   },
   {
     "slug": "thk-i-find-you-all-around-me-2026",
@@ -36,7 +92,20 @@
     "ends_on": "2026-07-27",
     "featured": false,
     "source": "listing_site",
-    "source_url": "https://ocula.com/art-galleries/thk-gallery/exhibitions/i-find-you-all-around-me/"
+    "source_url": "https://ocula.com/art-galleries/thk-gallery/exhibitions/i-find-you-all-around-me/",
+    "images": [
+      {
+        "url": "/app/images/seed/thk-group.jpg",
+        "width": 2000,
+        "height": 1333,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1733886870851-82f45e3fad3c",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ]
   },
   {
     "slug": "norval-zvavahera-tanda-rima-2026",
@@ -52,28 +121,37 @@
     "source_url": "https://www.norvalfoundation.org/exhibitions/",
     "images": [
       {
-        "url": "https://picsum.photos/seed/zvavahera-1/1200/1500",
+        "url": "/app/images/seed/zvavahera-1.jpg",
         "width": 1200,
-        "height": 1500,
-        "attribution": "Norval Foundation",
-        "source": "gallery_provided",
-        "permission_status": "gallery_provided"
+        "height": 1600,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1552250575-e508473b090f",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
       },
       {
-        "url": "https://picsum.photos/seed/zvavahera-2/1600/1066",
+        "url": "/app/images/seed/zvavahera-2.jpg",
+        "width": 1200,
+        "height": 800,
+        "is_primary": false,
+        "sort_rank": 1,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1587824992101-b86cc807f3ed",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      },
+      {
+        "url": "/app/images/seed/zvavahera-3.jpg",
         "width": 1600,
-        "height": 1066,
-        "attribution": "Norval Foundation",
-        "source": "gallery_provided",
-        "permission_status": "gallery_provided"
-      },
-      {
-        "url": "https://picsum.photos/seed/zvavahera-3/1000/1250",
-        "width": 1000,
-        "height": 1250,
-        "attribution": "Norval Foundation",
-        "source": "gallery_provided",
-        "permission_status": "gallery_provided"
+        "height": 1083,
+        "is_primary": false,
+        "sort_rank": 2,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1545052482-2c7be8b56e91",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
       }
     ]
   },
@@ -88,7 +166,20 @@
     "ends_on": "2026-10-04",
     "featured": false,
     "source": "gallery_site",
-    "source_url": "https://www.norvalfoundation.org/exhibitions/"
+    "source_url": "https://www.norvalfoundation.org/exhibitions/",
+    "images": [
+      {
+        "url": "/app/images/seed/coopoo-clay.jpg",
+        "width": 1800,
+        "height": 2497,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1569084024058-1632922a4e1d",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ]
   },
   {
     "slug": "norval-brett-murray-wild-life-2026",
@@ -101,7 +192,20 @@
     "ends_on": "2026-11-22",
     "featured": false,
     "source": "gallery_site",
-    "source_url": "https://www.norvalfoundation.org/exhibitions/"
+    "source_url": "https://www.norvalfoundation.org/exhibitions/",
+    "images": [
+      {
+        "url": "/app/images/seed/brett-sculpture.jpg",
+        "width": 1200,
+        "height": 800,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1572947650440-e8a97ef053b2",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ]
   },
   {
     "slug": "stevenson-both-and-2026",
@@ -114,7 +218,20 @@
     "ends_on": null,
     "featured": false,
     "source": "gallery_site",
-    "source_url": "https://www.stevenson.info/exhibitions-upcoming"
+    "source_url": "https://www.stevenson.info/exhibitions-upcoming",
+    "images": [
+      {
+        "url": "/app/images/seed/stevenson-opening.jpg",
+        "width": 1600,
+        "height": 1083,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1545052482-2c7be8b56e91",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ]
   },
   {
     "slug": "first-thursdays-cape-town-july-2026",
@@ -130,9 +247,22 @@
     "featured": false,
     "source": "listing_site",
     "source_url": "https://first-thursdays.co.za",
+    "images": [
+      {
+        "url": "/app/images/seed/first-thursdays.jpg",
+        "width": 2400,
+        "height": 1800,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1615184697985-c9bde1b07da7",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ],
     "links": [
-      { "label": "Website", "url": "https://first-thursdays.co.za" },
-      { "label": "Instagram", "url": "https://www.instagram.com/firstthursdaysct/" }
+      { "label": "Website", "url": "https://first-thursdays.co.za", "sort_rank": 0 },
+      { "label": "Instagram", "url": "https://www.instagram.com/firstthursdaysct/", "sort_rank": 1 }
     ]
   },
   {
@@ -161,33 +291,53 @@
     "source": "sample_seed",
     "images": [
       {
-        "url": "https://picsum.photos/seed/spotlight-1/1080/1350",
-        "width": 1080,
-        "height": 1350,
-        "attribution": "Sample Emerging Artist"
+        "url": "/app/images/seed/spotlight-1.jpg",
+        "width": 1200,
+        "height": 1600,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1552250575-e508473b090f",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
       },
       {
-        "url": "https://picsum.photos/seed/spotlight-2/1080/1080",
-        "width": 1080,
-        "height": 1080,
-        "attribution": "Sample Emerging Artist"
+        "url": "/app/images/seed/spotlight-2.jpg",
+        "width": 1200,
+        "height": 1595,
+        "is_primary": false,
+        "sort_rank": 1,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1541512416146-3cf58d6b27cc",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
       },
       {
-        "url": "https://picsum.photos/seed/spotlight-3/1280/853",
-        "width": 1280,
-        "height": 853,
-        "attribution": "Sample Emerging Artist"
+        "url": "/app/images/seed/spotlight-3.jpg",
+        "width": 1200,
+        "height": 800,
+        "is_primary": false,
+        "sort_rank": 2,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1587824992101-b86cc807f3ed",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
       },
       {
-        "url": "https://picsum.photos/seed/spotlight-4/900/1200",
-        "width": 900,
-        "height": 1200,
-        "attribution": "Sample Emerging Artist"
+        "url": "/app/images/seed/spotlight-4.jpg",
+        "width": 2000,
+        "height": 1333,
+        "is_primary": false,
+        "sort_rank": 3,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1733886870851-82f45e3fad3c",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
       }
     ],
     "links": [
-      { "label": "Website", "url": "https://example.com" },
-      { "label": "Instagram", "url": "https://www.instagram.com/" }
+      { "label": "Website", "url": "https://example.com", "sort_rank": 0 },
+      { "label": "Instagram", "url": "https://www.instagram.com/", "sort_rank": 1 }
     ]
   }
 ]

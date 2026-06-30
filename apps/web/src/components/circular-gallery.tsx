@@ -4,7 +4,11 @@ import { useCallback, useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import type { FeedCarouselItem } from "@/lib/feed-display";
 import { FeedPostImage } from "@/components/feed-post-card";
-import { PolaroidCard } from "@/components/polaroid-frame";
+import {
+  FEED_CAROUSEL_CARD_CLASS,
+  FEED_CAROUSEL_SNAP_PADDING_CLASS,
+  FEED_CAROUSEL_STAGE_CLASS,
+} from "@/lib/feed-carousel-layout";
 
 interface CircularGalleryProps {
   items: FeedCarouselItem[];
@@ -13,7 +17,6 @@ interface CircularGalleryProps {
   onActiveSelect?: () => void;
 }
 
-const CARD_CLASS = "w-[clamp(15rem,28vw,22rem)]";
 const CARD_OFFSET_X = 200;
 const ARC_LIFT = 14;
 
@@ -52,25 +55,13 @@ export function CircularGallery({
   );
 }
 
-function PolaroidImage({
-  item,
-  active,
-}: {
-  item: FeedCarouselItem;
-  active: boolean;
-}) {
-  const image = (
+function CarouselImage({ item }: { item: FeedCarouselItem }) {
+  return (
     <FeedPostImage
       imageUrl={item.imageUrl}
       displayName={item.displayName}
       className="aspect-[4/5] w-full object-cover"
     />
-  );
-
-  return (
-    <PolaroidCard active={active} showReflection>
-      {image}
-    </PolaroidCard>
   );
 }
 
@@ -93,7 +84,7 @@ function ReducedMotionGallery({
   return (
     <div
       ref={containerRef}
-      className="flex h-[min(70svh,720px)] snap-x snap-mandatory items-center gap-8 overflow-x-auto px-[max(1rem,calc(50%-15rem))] pb-8"
+      className={`flex ${FEED_CAROUSEL_STAGE_CLASS} snap-x snap-mandatory items-center gap-8 overflow-x-auto ${FEED_CAROUSEL_SNAP_PADDING_CLASS} pb-8`}
       role="list"
       aria-label="Feed browse gallery"
     >
@@ -104,7 +95,7 @@ function ReducedMotionGallery({
             key={item.id}
             role="listitem"
             aria-current={isActive ? "true" : undefined}
-            className={`${CARD_CLASS} shrink-0 snap-center`}
+            className={`${FEED_CAROUSEL_CARD_CLASS} shrink-0 snap-center`}
           >
             <button
               type="button"
@@ -119,7 +110,7 @@ function ReducedMotionGallery({
                 if (isActive) onActiveSelect?.();
               }}
             >
-              <PolaroidImage item={item} active={isActive} />
+              <CarouselImage item={item} />
             </button>
           </article>
         );
@@ -180,7 +171,7 @@ function MotionGallery({
   return (
     <div
       ref={containerRef}
-      className="relative h-[min(70svh,720px)] w-full touch-pan-y overflow-hidden [perspective:1200px]"
+      className={`relative ${FEED_CAROUSEL_STAGE_CLASS} w-full touch-pan-y overflow-hidden [perspective:1200px]`}
       style={{ perspectiveOrigin: "50% 40%" }}
       role="list"
       aria-label="Feed browse gallery"
@@ -201,7 +192,7 @@ function MotionGallery({
               aria-hidden={!isActive}
               aria-current={isActive ? "true" : undefined}
               aria-label={isActive ? item.displayName : undefined}
-              className={`absolute cursor-pointer ${CARD_CLASS}`}
+              className={`absolute cursor-pointer ${FEED_CAROUSEL_CARD_CLASS}`}
               style={{
                 transformStyle: "preserve-3d",
                 zIndex: 10 - absOffset,
@@ -232,7 +223,7 @@ function MotionGallery({
                 else onActiveSelect?.();
               }}
             >
-              <PolaroidImage item={item} active={isActive} />
+              <CarouselImage item={item} />
             </motion.article>
           );
         })}

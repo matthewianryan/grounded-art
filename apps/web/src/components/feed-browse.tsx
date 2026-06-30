@@ -10,6 +10,7 @@ import { galleryKey, feedKey } from "@/lib/user-actions";
 import { FeedCircularGallery } from "@/components/feed-circular-gallery";
 import { FeedExpandedCard } from "@/components/feed-expanded-card";
 import { FeedUnmaskReveal } from "@/components/feed-unmask-reveal";
+import { FEED_CAROUSEL_STAGE_CLASS } from "@/lib/feed-carousel-layout";
 
 type FeedMode = "browse" | "expanded" | "unmask";
 
@@ -232,12 +233,26 @@ export function FeedBrowse({
             <div
               ref={dialogRef}
               tabIndex={-1}
-              className="pointer-events-none absolute inset-x-0 top-0 z-20 flex h-[min(70svh,720px)] min-h-[600px] items-center justify-center px-4 py-8 outline-none"
+              className={`absolute inset-x-0 top-0 z-20 flex ${FEED_CAROUSEL_STAGE_CLASS} items-center justify-center px-4 py-8 outline-none ${
+                mode === "expanded" ? "pointer-events-auto" : "pointer-events-none"
+              }`}
               role="dialog"
               aria-modal="true"
               aria-label={`${activeItem.title} detail`}
+              onPointerDown={
+                mode === "expanded"
+                  ? (event) => {
+                      if (event.target === event.currentTarget) closeExpanded();
+                    }
+                  : undefined
+              }
             >
-              <div className="pointer-events-auto relative w-full max-w-4xl">{expandedCard}</div>
+              <div
+                className="pointer-events-auto relative w-full max-w-4xl"
+                onPointerDown={(event) => event.stopPropagation()}
+              >
+                {expandedCard}
+              </div>
             </div>
           )}
         </AnimatePresence>
