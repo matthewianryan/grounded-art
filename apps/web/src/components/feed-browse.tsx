@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, useReducedMotion } from "motion/react";
-import type { FeedItem, FeedGalleryContext, Gallery } from "@/lib/types";
+import type { FeedItem, FeedGalleryContext, FeedItemKind, Gallery } from "@/lib/types";
 import { feedPostKind, kindOpensDetail, toFeedCarouselItem } from "@/lib/feed-display";
 import { useVerticalSwipe } from "@/lib/use-axis-lock";
 import { useUserActions } from "@/components/user-actions-provider";
@@ -15,17 +15,25 @@ import { FEED_CAROUSEL_STAGE_CLASS } from "@/lib/feed-carousel-layout";
 
 type FeedMode = "browse" | "expanded" | "unmask";
 
+function kindFilterLabel(kind: FeedItemKind): string {
+  if (kind === "art_post") return "art";
+  if (kind === "event") return "events";
+  return "announcements";
+}
+
 export function FeedBrowse({
   items,
   galleriesById,
   fullGalleriesById,
   savedOnly,
+  kindFilter,
   searchTerm,
 }: {
   items: FeedItem[];
   galleriesById: Map<string, FeedGalleryContext>;
   fullGalleriesById: Map<string, Gallery>;
   savedOnly: boolean;
+  kindFilter?: FeedItemKind;
   searchTerm: string;
 }) {
   const { ready, isSaved } = useUserActions();
@@ -45,7 +53,7 @@ export function FeedBrowse({
   useEffect(() => {
     setActiveIndex(0);
     setMode("browse");
-  }, [items, savedOnly, normalizedSearch]);
+  }, [items, savedOnly, kindFilter, normalizedSearch]);
 
   useEffect(() => {
     feedPageShell?.reportMode(mode);
@@ -81,9 +89,13 @@ export function FeedBrowse({
             return gallery ? isSaved(galleryKey(gallery.slug)) : false;
           });
 
-    if (!normalizedSearch) return savedFiltered;
+    const kindFiltered = kindFilter
+      ? savedFiltered.filter((item) => feedPostKind(item) === kindFilter)
+      : savedFiltered;
 
-    return savedFiltered.filter((item) => {
+    if (!normalizedSearch) return kindFiltered;
+
+    return kindFiltered.filter((item) => {
       const gallery = item.gallery_id ? galleriesById.get(item.gallery_id) : undefined;
       const haystack = [
         item.title,
@@ -99,7 +111,7 @@ export function FeedBrowse({
 
       return haystack.includes(normalizedSearch);
     });
-  }, [items, savedOnly, ready, isSaved, galleriesById, normalizedSearch]);
+  }, [items, savedOnly, kindFilter, ready, isSaved, galleriesById, normalizedSearch]);
 
   const carouselItems = useMemo(
     () =>
@@ -234,15 +246,18 @@ export function FeedBrowse({
   }
 
   if (visible.length === 0) {
+    const kindPhrase = kindFilter ? ` ${kindFilterLabel(kindFilter)}` : "";
     return (
       <p className="text-sm text-muted">
         {normalizedSearch
           ? savedOnly
-            ? "No saved items match that search. Try another term or clear Saved."
-            : "No feed items match that search. Try another term or filter."
+            ? `No saved${kindPhrase} items match that search. Try another term or clear filters.`
+            : `No${kindPhrase} feed items match that search. Try another term or filter.`
           : savedOnly
-            ? "Nothing saved yet. Save exhibitions and posts as you browse."
-            : "Nothing in this view yet. Try another filter, or check back soon."}
+            ? `Nothing saved${kindPhrase} yet. Save exhibitions and posts as you browse.`
+            : kindFilter
+              ? `No${kindPhrase} in this view yet. Try another filter, or check back soon.`
+              : "Nothing in this view yet. Try another filter, or check back soon."}
       </p>
     );
   }

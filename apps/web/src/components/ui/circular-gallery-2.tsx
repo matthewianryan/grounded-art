@@ -43,6 +43,8 @@ interface CircularGalleryProps {
   scrollEase?: number;
   activeIndex?: number;
   interactive?: boolean;
+  centerHovered?: boolean;
+  reduceMotion?: boolean;
   onActiveIndexChange?: (index: number) => void;
 }
 
@@ -72,6 +74,9 @@ class Media {
   scale: any;
   padding: any;
   width: any;
+  baseScaleX: number;
+  baseScaleY: number;
+  hoverScale: number;
 
   constructor({
     app,
@@ -100,6 +105,9 @@ class Media {
     this.viewport = viewport;
     this.bend = bend;
     this.borderRadius = borderRadius;
+    this.baseScaleX = 1;
+    this.baseScaleY = 1;
+    this.hoverScale = 1;
     this.createShader();
     this.createMesh();
     this.onResize();
@@ -214,6 +222,14 @@ class Media {
       this.extra += this.widthTotal;
       this.isBefore = this.isAfter = false;
     }
+
+    const isCenter = Math.abs(this.plane.position.x) < this.width * 0.15;
+    const targetHover =
+      !this.app.reduceMotion && this.app.centerHovered && isCenter ? 1.04 : 1;
+    this.hoverScale = lerp(this.hoverScale, targetHover, 0.15);
+    this.plane.scale.x = this.baseScaleX * this.hoverScale;
+    this.plane.scale.y = this.baseScaleY * this.hoverScale;
+    this.plane.program.uniforms.uPlaneSizes.value = [this.plane.scale.x, this.plane.scale.y];
   }
   onResize({ screen, viewport }: any = {}) {
     if (screen) this.screen = screen;
@@ -225,8 +241,13 @@ class Media {
     }
     const planeFactors = this.app?.planeFactors ?? feedCarouselPlaneFactors(window.innerWidth);
     this.scale = this.screen.height / 1500;
-    this.plane.scale.y = (this.viewport.height * (planeFactors.height * this.scale)) / this.screen.height;
-    this.plane.scale.x = (this.viewport.width * (planeFactors.width * this.scale)) / this.screen.width;
+    this.baseScaleY =
+      (this.viewport.height * (planeFactors.height * this.scale)) / this.screen.height;
+    this.baseScaleX =
+      (this.viewport.width * (planeFactors.width * this.scale)) / this.screen.width;
+    this.hoverScale = 1;
+    this.plane.scale.y = this.baseScaleY;
+    this.plane.scale.x = this.baseScaleX;
     this.plane.program.uniforms.uPlaneSizes.value = [this.plane.scale.x, this.plane.scale.y];
     this.padding = PLANE_PADDING;
     this.width = this.plane.scale.x + this.padding;
@@ -264,6 +285,8 @@ class App {
   interactionListenersAttached: boolean;
   onActiveIndexChange?: (index: number) => void;
   planeFactors: { height: number; width: number };
+  centerHovered: boolean;
+  reduceMotion: boolean;
 
   constructor(
     container: HTMLElement,
@@ -294,6 +317,8 @@ class App {
     this.interactionListenersAttached = false;
     this.onActiveIndexChange = onActiveIndexChange;
     this.planeFactors = feedCarouselPlaneFactors(window.innerWidth);
+    this.centerHovered = false;
+    this.reduceMotion = false;
     this.onCheckDebounce = debounce(this.onCheck.bind(this), 200);
     this.createRenderer();
     this.createCamera();
@@ -488,6 +513,12 @@ class App {
     if (enabled) this.addInteractionListeners();
     else this.removeInteractionListeners();
   }
+  setCenterHovered(hovered: boolean) {
+    this.centerHovered = hovered;
+  }
+  setReduceMotion(reduce: boolean) {
+    this.reduceMotion = reduce;
+  }
   destroy() {
     window.cancelAnimationFrame(this.raf);
     window.removeEventListener('resize', this.boundOnResize);
@@ -506,6 +537,8 @@ export function CircularGallery({
   scrollEase = 0.08,
   activeIndex = 0,
   interactive = true,
+  centerHovered = false,
+  reduceMotion = false,
   onActiveIndexChange,
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -551,6 +584,14 @@ export function CircularGallery({
   useEffect(() => {
     appRef.current?.setInteractive(interactive);
   }, [interactive]);
+
+  useEffect(() => {
+    appRef.current?.setCenterHovered(centerHovered);
+  }, [centerHovered]);
+
+  useEffect(() => {
+    appRef.current?.setReduceMotion(reduceMotion);
+  }, [reduceMotion]);
 
   return (
     <div

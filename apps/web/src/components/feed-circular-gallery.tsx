@@ -41,6 +41,7 @@ export function FeedCircularGallery({
   const [dark, setDark] = useState(false);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[] | null>(null);
   const [viewportWidth, setViewportWidth] = useState(768);
+  const [centerHovered, setCenterHovered] = useState(false);
 
   useEffect(() => {
     function syncViewport() {
@@ -133,6 +134,8 @@ export function FeedCircularGallery({
             scrollEase={0.02}
             activeIndex={activeIndex}
             interactive={interactive}
+            centerHovered={centerHovered}
+            reduceMotion={false}
             onActiveIndexChange={onActiveIndexChange}
           />
           {interactive && onCenterClick && (
@@ -142,6 +145,8 @@ export function FeedCircularGallery({
               style={hitStyle}
               aria-label={`Open ${items[activeIndex]?.displayName ?? "post"}`}
               onClick={onCenterClick}
+              onMouseEnter={() => setCenterHovered(true)}
+              onMouseLeave={() => setCenterHovered(false)}
             />
           )}
         </>

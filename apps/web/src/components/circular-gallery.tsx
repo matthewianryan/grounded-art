@@ -96,7 +96,9 @@ function ReducedMotionGallery({
             key={item.id}
             role="listitem"
             aria-current={isActive ? "true" : undefined}
-            className={`${FEED_CAROUSEL_CARD_CLASS} shrink-0 snap-center`}
+            className={`${FEED_CAROUSEL_CARD_CLASS} shrink-0 snap-center ${
+              isActive ? "rounded-card ring-1 ring-line" : ""
+            }`}
           >
             <button
               type="button"
@@ -223,6 +225,13 @@ function MotionGallery({
                 z: -absOffset * 40,
                 opacity: 1 - absOffset * 0.12,
               }}
+              whileHover={
+                isActive
+                  ? {
+                      scale: 1.03,
+                    }
+                  : undefined
+              }
               transition={{ type: "spring", stiffness: 220, damping: 26 }}
               drag={isActive ? "x" : false}
               dragConstraints={{ left: 0, right: 0 }}
