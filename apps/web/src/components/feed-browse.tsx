@@ -259,7 +259,6 @@ export function FeedBrowse({
     ) : null;
 
   const scenePinned = mode === "unmask" && !reduce;
-  const cardVisible = mode === "expanded" || mode === "unmask";
   const fillContainer = mode === "browse";
 
   return (
@@ -286,28 +285,38 @@ export function FeedBrowse({
         />
 
         <AnimatePresence>
-          {cardVisible && activeItem && (
+          {mode === "expanded" && activeItem && (
+            <>
+              <button
+                type="button"
+                className="fixed inset-0 z-[60] border-0 bg-ink/10 p-0"
+                aria-label="Close expanded view"
+                onClick={closeExpanded}
+              />
+              <div
+                ref={dialogRef}
+                tabIndex={-1}
+                className="pointer-events-none fixed inset-0 z-[70] flex items-center justify-center px-3 py-6 outline-none md:px-4 md:py-8"
+                role="dialog"
+                aria-modal="true"
+                aria-label={`${activeItem.title} detail`}
+              >
+                <div className="pointer-events-auto relative w-full max-w-4xl">
+                  {expandedCard}
+                </div>
+              </div>
+            </>
+          )}
+          {mode === "unmask" && activeItem && (
             <div
               ref={dialogRef}
               tabIndex={-1}
-              className={`absolute inset-x-0 top-0 z-20 flex ${FEED_CAROUSEL_STAGE_CLASS} items-center justify-center px-3 py-6 outline-none md:px-4 md:py-8 ${
-                mode === "expanded" ? "pointer-events-auto" : "pointer-events-none"
-              }`}
+              className={`absolute inset-x-0 top-0 z-20 flex ${FEED_CAROUSEL_STAGE_CLASS} pointer-events-none items-center justify-center px-3 py-6 outline-none md:px-4 md:py-8`}
               role="dialog"
               aria-modal="true"
               aria-label={`${activeItem.title} detail`}
-              onPointerDown={
-                mode === "expanded"
-                  ? (event) => {
-                      if (event.target === event.currentTarget) closeExpanded();
-                    }
-                  : undefined
-              }
             >
-              <div
-                className="pointer-events-auto relative w-full max-w-4xl"
-                onPointerDown={(event) => event.stopPropagation()}
-              >
+              <div className="pointer-events-auto relative w-full max-w-4xl">
                 {expandedCard}
               </div>
             </div>

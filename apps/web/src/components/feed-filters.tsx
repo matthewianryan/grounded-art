@@ -50,7 +50,7 @@ export function FeedFilters({
       {VIEW_OPTIONS.map((opt) => (
         <Pill
           key={opt.label}
-          href={hrefFor(opt.value, saved, q)}
+          href={hrefFor(opt.value, false, q)}
           active={!saved && view === opt.value}
           label={opt.label}
         />
