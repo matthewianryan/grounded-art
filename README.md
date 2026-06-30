@@ -36,6 +36,8 @@ Next.js apps stitched into one site under one domain using Next.js multi-zones.
 - [Interactions](docs/interactions.md) - carousel, unmask reveal, gesture model, map styling
 - [Wallet and presence](docs/wallet-and-presence.md) - verified check-in, points wallet, accounts
 - [Profile and account](docs/pages/profile.md) and [Contact](docs/pages/contact.md) - new surfaces
+- [Contact email and abuse controls](docs/contact-email-and-abuse.md) - Resend DNS, root env,
+  rate limiting, honeypot, and optional Turnstile
 
 ## Local development
 
@@ -49,6 +51,7 @@ Next.js apps stitched into one site under one domain using Next.js multi-zones.
 
 ```bash
 pnpm install
+cp .env.example .env
 pnpm dev
 ```
 
@@ -68,7 +71,6 @@ docker compose up -d db
 
 ```bash
 cd apps/api
-cp .env.example .env
 uv sync
 uv run uvicorn app.main:app --reload --port 8000
 ```

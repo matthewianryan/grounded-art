@@ -110,10 +110,20 @@ class ContactMessageCreate(BaseModel):
     email: str = Field(min_length=3, max_length=255)
     subject: str = Field(min_length=2, max_length=512)
     message: str = Field(min_length=10, max_length=5000)
+    company: str | None = Field(default=None, max_length=255)
+    turnstile_token: str | None = Field(default=None, max_length=2048)
 
-    @field_validator("name", "email", "subject", "message", mode="before")
+    @field_validator(
+        "name",
+        "email",
+        "subject",
+        "message",
+        "company",
+        "turnstile_token",
+        mode="before",
+    )
     @classmethod
-    def _strip_text(cls, value: str) -> str:
+    def _strip_text(cls, value: str | None) -> str | None:
         if isinstance(value, str):
             return value.strip()
         return value

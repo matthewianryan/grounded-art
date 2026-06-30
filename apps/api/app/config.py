@@ -1,9 +1,13 @@
+from pathlib import Path
+
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+ROOT_DIR = Path(__file__).resolve().parents[3]
+
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=ROOT_DIR / ".env", extra="ignore")
 
     # The default targets the local Docker Postgres. In a deployed environment the platform sets
     # DATABASE_URL; it is normalized to the psycopg driver below so a managed provider's URL works
@@ -21,10 +25,19 @@ class Settings(BaseSettings):
     # expected to be present. No API routes use these tables until Phase 3+.
     redesign_schema_enabled: bool = True
 
-    # Contact form notifications. The message is always stored in Postgres; deployments can
-    # set a webhook URL to fan the stored message out to mail or ops tooling.
-    contact_notification_email: str = "hello@grounded-art.co.za"
-    contact_notification_webhook_url: str | None = None
+    # Contact form notifications. The message is always stored in Postgres; Resend is used
+    # only as the delivery mechanism for the internal notification.
+    resend_api_key: str | None = None
+    resend_api_url: str = "https://api.resend.com/emails"
+    contact_notification_to: str = "hello@grounded-art.co.za"
+    contact_notification_from: str = "Grounded Art <notifications@grounded-art.co.za>"
+    contact_notification_reply_to_submitter: bool = True
+    contact_rate_limit_ip_max: int = 5
+    contact_rate_limit_ip_window_seconds: int = 900
+    contact_rate_limit_email_max: int = 3
+    contact_rate_limit_email_window_seconds: int = 3600
+    turnstile_secret_key: str | None = None
+    turnstile_siteverify_url: str = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 
     @field_validator("database_url")
     @classmethod
@@ -39,6 +52,13 @@ class Settings(BaseSettings):
         for prefix in prefixes:
             if value.startswith(prefix):
                 return "postgresql+psycopg://" + value[len(prefix) :]
+        return value
+
+    @field_validator("resend_api_key", "turnstile_secret_key", mode="before")
+    @classmethod
+    def _empty_secret_is_none(cls, value: str | None) -> str | None:
+        if isinstance(value, str) and value.strip() == "":
+            return None
         return value
 
 

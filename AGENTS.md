@@ -19,15 +19,17 @@ which fan out via Turbo), and `apps/api` (`uv run ...`). Prefer those over dupli
 - PostgreSQL 16 is installed natively instead of via Docker (the repo's `docker-compose.yml`
   expects Postgres 17, but Docker is not available here; native 16 is compatible for dev).
   A `grounded` role (password `grounded`) and `grounded_art` database already exist, matching
-  `docker-compose.yml` / `apps/api/.env.example`, so `DATABASE_URL` defaults work unchanged.
+  `docker-compose.yml` / root `.env.example`, so `DATABASE_URL` defaults work unchanged.
+- Environment config is root-only. Use `.env.example` and `.env` at the repo root; do not add
+  app-local env files under `apps/api`, `apps/landing`, or `apps/web`.
 
 ### Starting services (the update script does NOT start anything)
 
 1. Start Postgres (no init system, so start the cluster manually each boot; data persists):
    `sudo pg_ctlcluster 16 main start`
 2. API: from `apps/api`, run `uv run uvicorn app.main:app --reload --port 8000`.
-   `apps/api/app/config.py` defaults `DATABASE_URL` to the local Postgres, so a `.env` is
-   optional; copy `.env.example` to `.env` only if you need to override it.
+   `apps/api/app/config.py` reads the repo-root `.env` and defaults `DATABASE_URL` to the
+   local Postgres.
 3. Frontend (both Next apps together): from the repo root, run `pnpm dev`.
 
 ### Database setup (only needed on a fresh DB)
@@ -43,5 +45,5 @@ The seeded data survives in the snapshot, so this is usually a no-op on later bo
 - The web app's saved-items / check-in user actions persist in first-party cookies scoped to
   the `/app` path (see `apps/web/src/lib/user-actions.ts`); check-in additionally needs
   browser geolocation. `NEXT_PUBLIC_API_URL` defaults to `http://localhost:8000`.
-- The Google Maps key (`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in `apps/web`) is optional; the map
+- The Google Maps key (`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in root `.env`) is optional; the map
   page degrades gracefully to "map not configured" when it is unset.

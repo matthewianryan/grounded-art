@@ -482,3 +482,21 @@ class ContactMessage(Base):
     received_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now(), index=True
     )
+
+
+class ContactRateLimitEvent(Base):
+    """A rate-limit event for contact form attempts.
+
+    Stored in Postgres so contact abuse limits are shared across API processes and instances.
+    """
+
+    __tablename__ = "contact_rate_limit_event"
+    __table_args__ = (
+        Index("ix_contact_rate_limit_event_key_occurred_at", "key", "occurred_at"),
+    )
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    key: Mapped[str] = mapped_column(String(512), nullable=False, index=True)
+    occurred_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now(), index=True
+    )

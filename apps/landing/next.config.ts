@@ -1,5 +1,9 @@
+import { loadEnvConfig } from "@next/env";
 import type { NextConfig } from "next";
 import path from "path";
+
+const rootDir = path.join(__dirname, "../../");
+loadEnvConfig(rootDir);
 
 // The landing app owns the domain root. App routes under /app are routed
 // through to the web app using Next.js multi-zones in dev and server builds.
@@ -14,13 +18,13 @@ const isStaticExport = process.env.STATIC_EXPORT === "true";
 const nextConfig: NextConfig = isStaticExport
   ? {
       output: "export",
-      outputFileTracingRoot: path.join(__dirname, "../../"),
+      outputFileTracingRoot: rootDir,
       // next/image optimization needs a server; the static export ships the
       // source images as-is.
       images: { unoptimized: true },
     }
   : {
-      outputFileTracingRoot: path.join(__dirname, "../../"),
+      outputFileTracingRoot: rootDir,
       async rewrites() {
         return [
           { source: "/app", destination: `${WEB_APP_URL}/app` },

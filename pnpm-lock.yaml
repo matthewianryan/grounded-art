@@ -20,6 +20,9 @@ importers:
       '@gsap/react':
         specifier: ^2.1.2
         version: 2.1.2(gsap@3.15.0)(react@19.2.7)
+      '@next/env':
+        specifier: ^15.5.19
+        version: 15.5.19
       gsap:
         specifier: ^3.15.0
         version: 3.15.0

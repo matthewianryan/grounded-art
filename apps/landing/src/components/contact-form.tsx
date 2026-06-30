@@ -1,8 +1,10 @@
 "use client";
 
 import { FormEvent, useRef, useState } from "react";
+import Script from "next/script";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
 type FormStatus = "idle" | "sending" | "sent" | "error";
 
@@ -20,6 +22,8 @@ export function ContactForm() {
       email: String(formData.get("email") ?? ""),
       subject: String(formData.get("subject") ?? ""),
       message: String(formData.get("message") ?? ""),
+      company: String(formData.get("company") ?? ""),
+      turnstile_token: String(formData.get("cf-turnstile-response") ?? ""),
     };
 
     setStatus("sending");
@@ -35,6 +39,10 @@ export function ContactForm() {
       }
 
       formRef.current?.reset();
+      const turnstile = (
+        window as typeof window & { turnstile?: { reset: () => void } }
+      ).turnstile;
+      turnstile?.reset();
       setStatus("sent");
     } catch {
       setStatus("error");
@@ -44,7 +52,27 @@ export function ContactForm() {
   const disabled = status === "sending";
 
   return (
-    <form ref={formRef} onSubmit={onSubmit} className="space-y-5">
+    <form ref={formRef} onSubmit={onSubmit} className="relative space-y-5">
+      {TURNSTILE_SITE_KEY ? (
+        <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
+      ) : null}
+
+      <div
+        className="absolute left-[-10000px] top-auto h-px w-px overflow-hidden"
+        aria-hidden="true"
+      >
+        <label>
+          Company
+          <input
+            name="company"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            disabled={disabled}
+          />
+        </label>
+      </div>
+
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block">
           <span className="text-sm font-medium text-ink">Name</span>
@@ -98,6 +126,15 @@ export function ContactForm() {
           className="mt-2 w-full resize-y rounded-sm border border-line bg-paper px-4 py-3 text-sm leading-relaxed text-ink outline-none transition placeholder:text-muted focus:border-ink disabled:cursor-not-allowed disabled:opacity-60"
         />
       </label>
+
+      {TURNSTILE_SITE_KEY ? (
+        <div
+          className="cf-turnstile"
+          data-sitekey={TURNSTILE_SITE_KEY}
+          data-theme="auto"
+          data-size="normal"
+        />
+      ) : null}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <button
