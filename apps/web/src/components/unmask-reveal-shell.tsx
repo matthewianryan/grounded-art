@@ -58,8 +58,8 @@ function PreviewCard() {
         loading="lazy"
       />
       <div className="border-t border-line p-4">
-        <p className="font-display text-lg text-ink">Thandiwe Maseko</p>
-        <p className="mt-1 text-sm text-muted">Opening this week</p>
+        <p className="ga-display-card text-ink">Thandiwe Maseko</p>
+        <p className="ga-body mt-1">Opening this week</p>
       </div>
     </article>
   );
@@ -77,7 +77,7 @@ function DetailSurface() {
       />
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <h2 className="font-display text-2xl text-ink">Thandiwe Maseko</h2>
+        <h2 className="ga-display-card text-ink">Thandiwe Maseko</h2>
         <span className="inline-flex items-center rounded-badge border border-badge-border bg-badge-bg px-2 py-0.5 text-xs text-badge-fg">
           Gallery brand
         </span>
@@ -86,7 +86,7 @@ function DetailSurface() {
         </span>
       </div>
 
-      <p className="mt-4 text-sm leading-relaxed text-muted">
+      <p className="ga-body mt-4">
         A quiet study in light and form. The work sits between memory and place, drawn from
         walks through the city and the coast.
       </p>
@@ -117,9 +117,9 @@ function ActionPill({ label, active = false }: { label: string; active?: boolean
 export function WalletPreview() {
   return (
     <div className="rounded-card border border-line bg-card-bg p-5 shadow-card">
-      <p className="text-xs uppercase tracking-[0.16em] text-wallet-muted">Wallet</p>
+      <p className="ga-meta text-wallet-muted">Wallet</p>
       <p className="mt-2 font-display text-4xl text-wallet-balance">12</p>
-      <p className="mt-1 text-sm text-wallet-muted">points earned</p>
+      <p className="ga-body mt-1 text-wallet-muted">points earned</p>
       <ul className="mt-6 space-y-3 border-t border-line pt-4">
         <li className="flex items-baseline justify-between text-sm">
           <span className="text-muted">Verified check-in</span>

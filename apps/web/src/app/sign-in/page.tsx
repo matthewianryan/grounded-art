@@ -15,9 +15,9 @@ export default async function SignInPage({
 
   return (
     <main className="mx-auto max-w-xl px-6 py-16">
-      <p className="text-sm uppercase tracking-[0.16em] text-muted">Account</p>
-      <h1 className="mt-3 font-display text-4xl tracking-tight">Continue with email</h1>
-      <p className="mt-4 text-sm leading-relaxed text-muted">
+      <p className="ga-kicker">Account</p>
+      <h1 className="ga-display-page mt-5">Continue with email</h1>
+      <p className="ga-body-intro mt-7 max-w-md">
         Sign in or create an account with a one-time code. Browsing the map and feed stays
         open without an account.
       </p>

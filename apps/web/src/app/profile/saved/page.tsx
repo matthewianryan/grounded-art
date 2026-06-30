@@ -12,7 +12,7 @@ export default async function ProfileSavedPage() {
 
   return (
     <section aria-labelledby="saved-heading">
-      <h2 id="saved-heading" className="font-display text-2xl tracking-tight">
+      <h2 id="saved-heading" className="ga-display-sub">
         Saved
       </h2>
 
@@ -43,8 +43,8 @@ export default async function ProfileSavedPage() {
                   href={href}
                   className="block rounded-card border border-line bg-card-bg px-4 py-3 shadow-card transition hover:border-ink"
                 >
-                  <p className="font-display text-lg tracking-tight">{title}</p>
-                  <p className="mt-1 text-sm text-muted">{subtitle}</p>
+                  <p className="ga-display-card">{title}</p>
+                  <p className="ga-body mt-1">{subtitle}</p>
                 </Link>
               </li>
             );

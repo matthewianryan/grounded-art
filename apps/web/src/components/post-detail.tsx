@@ -58,7 +58,7 @@ export function PostDetail({
           <h1
             id={headingId}
             tabIndex={headingId ? -1 : undefined}
-            className="font-display text-3xl leading-tight tracking-tight text-ink outline-none sm:text-4xl"
+            className="ga-display-page text-ink outline-none"
           >
             {heading}
           </h1>
@@ -66,10 +66,10 @@ export function PostDetail({
         </div>
 
         {leadsWithArtist && (
-          <p className="mt-2 font-display text-xl text-muted">{item.title}</p>
+          <p className="ga-display-sub mt-2 text-muted">{item.title}</p>
         )}
 
-        <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm text-muted">
+        <div className="ga-body mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
           {!leadsWithArtist && postingAccount && <span>{postingAccount}</span>}
           {item.location_text && (
             <>
@@ -87,7 +87,7 @@ export function PostDetail({
       </header>
 
       {item.body && (
-        <p className="mt-6 max-w-[65ch] text-base leading-relaxed text-ink/80">{item.body}</p>
+        <p className="ga-body-intro mt-6 max-w-[65ch] text-ink/80">{item.body}</p>
       )}
 
       <div className="mt-8 space-y-4">

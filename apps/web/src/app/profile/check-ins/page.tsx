@@ -11,7 +11,7 @@ export default async function ProfileCheckInsPage() {
 
   return (
     <section aria-labelledby="check-ins-heading">
-      <h2 id="check-ins-heading" className="font-display text-2xl tracking-tight">
+      <h2 id="check-ins-heading" className="ga-display-sub">
         Check-ins
       </h2>
 
@@ -30,7 +30,7 @@ export default async function ProfileCheckInsPage() {
               className="rounded-card border border-line bg-card-bg px-4 py-3 shadow-card"
             >
               <div className="flex items-baseline justify-between gap-3">
-                <p className="font-display text-lg tracking-tight">{item.gallery_name}</p>
+                <p className="ga-display-card">{item.gallery_name}</p>
                 <span
                   className={`shrink-0 rounded-full border px-2.5 py-0.5 text-xs ${
                     item.verified
@@ -41,7 +41,7 @@ export default async function ProfileCheckInsPage() {
                   {item.verified ? "Verified" : "Unverified"}
                 </span>
               </div>
-              <p className="mt-1 text-sm text-muted">
+              <p className="ga-body mt-1">
                 {new Date(item.checked_in_at).toLocaleString()}
                 {item.point_awarded ? " · +1 point" : null}
               </p>

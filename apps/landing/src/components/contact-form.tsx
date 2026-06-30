@@ -103,7 +103,7 @@ export function ContactForm() {
 
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block">
-          <span className="text-sm font-medium text-ink">Name</span>
+          <span className="ga-label">Name</span>
           <input
             name="name"
             type="text"
@@ -116,7 +116,7 @@ export function ContactForm() {
         </label>
 
         <label className="block">
-          <span className="text-sm font-medium text-ink">Email</span>
+          <span className="ga-label">Email</span>
           <input
             name="email"
             type="email"
@@ -130,7 +130,7 @@ export function ContactForm() {
       </div>
 
       <label className="block">
-        <span className="text-sm font-medium text-ink">Subject</span>
+        <span className="ga-label">Subject</span>
         <input
           name="subject"
           type="text"
@@ -143,7 +143,7 @@ export function ContactForm() {
       </label>
 
       <label className="block">
-        <span className="text-sm font-medium text-ink">Message</span>
+        <span className="ga-label">Message</span>
         <textarea
           name="message"
           required
@@ -172,7 +172,7 @@ export function ContactForm() {
         >
           {status === "sending" ? "Sending" : "Send"}
         </button>
-        <p className="min-h-5 text-sm text-muted" aria-live="polite">
+        <p className="ga-body min-h-5" aria-live="polite">
           {status === "sent"
             ? "Thanks. Your message reached us."
             : status === "error"

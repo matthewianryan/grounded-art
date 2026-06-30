@@ -50,8 +50,8 @@ export function CheckInStatus({
       >
         <LocationOffIcon />
       </div>
-      <p className="mt-3 font-display text-lg tracking-tight">{copy.title}</p>
-      <p className="mt-1 text-sm text-muted">{message ?? copy.body}</p>
+      <p className="ga-display-card mt-3">{copy.title}</p>
+      <p className="ga-body mt-1">{message ?? copy.body}</p>
       {onDismiss && (
         <button
           type="button"

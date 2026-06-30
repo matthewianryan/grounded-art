@@ -44,17 +44,17 @@ export function CheckInCelebration({
 
         <h2
           id="checkin-success-title"
-          className="mt-5 font-display text-xl tracking-tight"
+          className="ga-display-sub mt-5"
         >
           You&apos;re here.
         </h2>
         {pointAwarded && balance !== undefined ? (
-          <p className="mt-2 text-sm text-muted">
+          <p className="ga-body mt-2">
             You earned 1 point. Your balance is{" "}
             <span className="font-display text-wallet-balance">{balance}</span>.
           </p>
         ) : (
-          <p className="mt-2 text-sm text-muted">
+          <p className="ga-body mt-2">
             Nice one. Enjoy the show at {galleryName}.
           </p>
         )}

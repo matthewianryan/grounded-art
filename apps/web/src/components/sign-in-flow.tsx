@@ -81,7 +81,7 @@ export function SignInFlow({ returnTo }: { returnTo: string }) {
       {step === "email" ? (
         <form onSubmit={handleEmailSubmit} className="space-y-4">
           <div>
-            <label htmlFor="sign-in-email" className="block text-sm text-muted">
+            <label htmlFor="sign-in-email" className="ga-label">
               Email
             </label>
             <input
@@ -110,11 +110,11 @@ export function SignInFlow({ returnTo }: { returnTo: string }) {
         </form>
       ) : (
         <form onSubmit={handleCodeSubmit} className="space-y-4">
-          <p className="text-sm text-muted">
+          <p className="ga-body">
             We sent a six-digit code to <span className="text-ink">{email}</span>.
           </p>
           <div>
-            <label htmlFor="sign-in-code" className="block text-sm text-muted">
+            <label htmlFor="sign-in-code" className="ga-label">
               Code
             </label>
             <input

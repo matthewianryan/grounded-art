@@ -1,0 +1,29 @@
+/* Shared self-hosted fonts for landing and web zones. Latin subsets only. */
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url("./fonts/dm-sans-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/noto-serif-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Serif";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/noto-serif-latin.woff2") format("woff2");
+}
+
+:root {
+  --font-dm-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-noto-serif: "Noto Serif", ui-serif, Georgia, serif;
+}

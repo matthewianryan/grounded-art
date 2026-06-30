@@ -18,8 +18,8 @@ export default async function ProfileLayout({
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
       <header>
-        <p className="text-sm uppercase tracking-[0.16em] text-muted">Your space</p>
-        <h1 className="mt-2 font-display text-3xl tracking-tight">Profile</h1>
+        <p className="ga-kicker">Your space</p>
+        <h1 className="ga-display-section mt-5">Profile</h1>
       </header>
 
       <ProfileSectionNav />

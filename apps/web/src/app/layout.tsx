@@ -1,23 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Noto_Serif } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
 import { AuthProvider } from "@/components/auth-provider";
 import { UserActionsProvider } from "@/components/user-actions-provider";
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-dm-sans",
-  display: "swap",
-});
-
-const notoSerif = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-noto-serif",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Grounded Art",
@@ -36,11 +22,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${dmSans.variable} ${notoSerif.variable}`}
-    >
+    <html lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col overflow-x-hidden bg-paper font-sans text-ink antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <AuthProvider>

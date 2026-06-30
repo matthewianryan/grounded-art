@@ -86,8 +86,8 @@ export function AccountEditor({ account }: { account: Account }) {
   return (
     <form onSubmit={(e) => void handleSave(e)} className="space-y-8">
       <fieldset className="space-y-4">
-        <legend className="font-display text-lg tracking-tight">Display information</legend>
-        <p className="text-sm text-muted">Visible to others on your profile.</p>
+        <legend className="ga-display-sub">Display information</legend>
+        <p className="ga-body">Visible to others on your profile.</p>
 
         <Field label="Display name" id="display_name" required>
           <input
@@ -133,8 +133,8 @@ export function AccountEditor({ account }: { account: Account }) {
       </fieldset>
 
       <fieldset className="space-y-4">
-        <legend className="font-display text-lg tracking-tight">Personal information</legend>
-        <p className="text-sm text-muted">Private. Not shown on your public profile.</p>
+        <legend className="ga-display-sub">Personal information</legend>
+        <p className="ga-body">Private. Not shown on your public profile.</p>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="First name" id="first_name">
@@ -209,8 +209,8 @@ export function AccountEditor({ account }: { account: Account }) {
       </div>
 
       <div className="border-t border-line pt-8">
-        <h2 className="font-display text-lg tracking-tight">Sign out</h2>
-        <p className="mt-1 text-sm text-muted">End your session on this device.</p>
+        <h2 className="ga-display-sub">Sign out</h2>
+        <p className="ga-body mt-1">End your session on this device.</p>
         <button
           type="button"
           onClick={() => void handleSignOut()}
@@ -236,7 +236,7 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-sm text-muted">
+      <label htmlFor={id} className="ga-label">
         {label}
         {required ? <span className="sr-only"> (required)</span> : null}
       </label>

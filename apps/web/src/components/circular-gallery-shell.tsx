@@ -84,7 +84,7 @@ function ReducedMotionGallery({ items }: { items: GalleryShellItem[] }) {
               loading="lazy"
             />
           </div>
-          <p className="mt-2 font-display text-sm text-ink">{item.label}</p>
+          <p className="ga-display-card mt-2 text-ink">{item.label}</p>
         </article>
       ))}
     </div>
@@ -175,7 +175,7 @@ function MotionGallery({ items }: { items: GalleryShellItem[] }) {
               />
             </div>
             {isActive && (
-              <p className="mt-3 text-center font-display text-sm text-ink">{item.label}</p>
+              <p className="ga-display-card mt-3 text-center text-ink">{item.label}</p>
             )}
           </motion.article>
         );

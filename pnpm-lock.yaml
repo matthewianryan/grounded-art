@@ -17,6 +17,9 @@ importers:
       '@grounded-art/tailwind-config':
         specifier: workspace:*
         version: link:../../packages/tailwind-config
+      '@grounded-art/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@gsap/react':
         specifier: ^2.1.2
         version: 2.1.2(gsap@3.15.0)(react@19.2.7)
@@ -78,6 +81,9 @@ importers:
       '@grounded-art/tailwind-config':
         specifier: workspace:*
         version: link:../../packages/tailwind-config
+      '@grounded-art/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@next/env':
         specifier: ^15.5.19
         version: 15.5.19
@@ -134,6 +140,28 @@ importers:
   packages/tailwind-config: {}
 
   packages/tsconfig: {}
+
+  packages/ui:
+    dependencies:
+      next:
+        specifier: ^15.0.0
+        version: 15.5.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      '@grounded-art/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.17
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
 
   tooling/screencast:
     devDependencies:

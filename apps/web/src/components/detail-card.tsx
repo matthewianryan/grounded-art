@@ -99,8 +99,8 @@ function FeedDetailContent({
         />
       </div>
 
-      <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs text-muted">
-        <span className="uppercase tracking-[0.16em]">{TYPE_LABELS[item.type]}</span>
+      <div className="ga-meta mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span>{TYPE_LABELS[item.type]}</span>
         {dates && (
           <>
             <span aria-hidden="true">·</span>
@@ -110,14 +110,14 @@ function FeedDetailContent({
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <h1 className="font-display text-2xl leading-snug tracking-tight">{displayName}</h1>
+        <h1 className="ga-display-card">{displayName}</h1>
         <PostBadges badges={badges} />
       </div>
 
-      {gallery && <p className="mt-2 text-sm text-muted">{gallery.name}</p>}
+      {gallery && <p className="ga-body mt-2">{gallery.name}</p>}
 
       {item.body && (
-        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">{item.body}</p>
+        <p className="ga-body-intro mt-4 max-w-2xl">{item.body}</p>
       )}
     </>
   );
@@ -134,8 +134,8 @@ function LegacyFeedDetailContent({
 
   return (
     <>
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs text-muted">
-        <span className="uppercase tracking-[0.16em]">{TYPE_LABELS[item.type]}</span>
+      <div className="ga-meta flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span>{TYPE_LABELS[item.type]}</span>
         {dates && (
           <>
             <span aria-hidden="true">·</span>
@@ -144,7 +144,7 @@ function LegacyFeedDetailContent({
         )}
       </div>
 
-      <h1 className="mt-2 font-display text-2xl leading-snug tracking-tight">{item.title}</h1>
+      <h1 className="ga-display-card mt-2">{item.title}</h1>
 
       <FeedAttribution item={item} gallery={gallery} />
 
@@ -156,7 +156,7 @@ function LegacyFeedDetailContent({
       )}
 
       {item.body && (
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">{item.body}</p>
+        <p className="ga-body-intro mt-3 max-w-2xl">{item.body}</p>
       )}
     </>
   );
@@ -170,18 +170,18 @@ function FeedAttribution({
   gallery: Gallery | undefined;
 }) {
   if (gallery) {
-    return <p className="mt-1 text-sm text-ink">{gallery.name}</p>;
+    return <p className="ga-body mt-1 text-ink">{gallery.name}</p>;
   }
   if (item.creative_name) {
     return (
-      <p className="mt-1 text-sm text-ink">
+      <p className="ga-body mt-1 text-ink">
         {item.creative_name}
         {item.location_text && <span className="text-muted">, {item.location_text}</span>}
       </p>
     );
   }
   if (item.location_text) {
-    return <p className="mt-1 text-sm text-muted">{item.location_text}</p>;
+    return <p className="ga-body mt-1">{item.location_text}</p>;
   }
   return null;
 }
@@ -191,10 +191,10 @@ function GalleryDetailContent({ gallery }: { gallery: Gallery }) {
 
   return (
     <>
-      <h2 className="font-display text-2xl leading-snug tracking-tight">{gallery.name}</h2>
-      {gallery.suburb && <p className="mt-1 text-sm text-muted">{gallery.suburb}</p>}
+      <h2 className="ga-display-card">{gallery.name}</h2>
+      {gallery.suburb && <p className="ga-body mt-1">{gallery.suburb}</p>}
 
-      <ul className="mt-4 space-y-2 text-sm text-muted">
+      <ul className="ga-body mt-4 space-y-2">
         {gallery.formatted_address && (
           <li className="flex gap-2">
             <PinIcon />

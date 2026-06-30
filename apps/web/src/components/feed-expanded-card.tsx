@@ -100,7 +100,7 @@ export function FeedExpandedCard({
             <div className="flex flex-wrap items-center gap-2">
               <h2
                 id="feed-expanded-title"
-                className="font-display text-xl leading-snug tracking-tight text-ink sm:text-2xl"
+                className="ga-display-card sm:text-2xl text-ink"
               >
                 {heading}
               </h2>
@@ -108,17 +108,17 @@ export function FeedExpandedCard({
             </div>
 
             {leadsWithArtist && (
-              <p className="mt-1 font-display text-base text-muted">{item.title}</p>
+              <p className="ga-display-sub mt-1 text-muted">{item.title}</p>
             )}
 
             {gallery && (
-              <p className="mt-2 text-sm text-muted">
+              <p className="ga-body mt-2">
                 {gallery.name}
                 {gallery.suburb ? ` · ${gallery.suburb}` : ""}
               </p>
             )}
 
-            {dates && <p className="mt-1 text-xs text-muted">{dates}</p>}
+            {dates && <p className="ga-meta mt-1">{dates}</p>}
           </div>
 
           <button
@@ -132,7 +132,7 @@ export function FeedExpandedCard({
         </div>
 
         {bodyExcerpt && (
-          <p className="mt-4 flex-1 text-sm leading-relaxed text-muted">{bodyExcerpt}</p>
+          <p className="ga-body mt-4 flex-1">{bodyExcerpt}</p>
         )}
 
         <div className="mt-6 flex flex-wrap gap-2">
