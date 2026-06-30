@@ -7,14 +7,14 @@ and [AGENTS.md](../AGENTS.md).
 
 | Service | Staging | Production |
 |---------|---------|------------|
-| Landing | `staging.grounded-art.co.za` (Cloudflare Pages static) | `www.grounded-art.co.za` |
+| Landing | `staging.grounded-art.co.za` (Cloudflare Pages static) | `grounded-art.co.za` and `www.grounded-art.co.za` |
 | Web app | Cloudflare Pages with SSR, e.g. `app.staging.grounded-art.co.za` | `app.grounded-art.co.za` (recommended) |
 | API | Railway, Fly.io, or VPS at `api.staging.grounded-art.co.za` | `api.grounded-art.co.za` |
 | Postgres | Staging database only | Production database only |
 
 The landing app is a static export ([`apps/landing/wrangler.toml`](../apps/landing/wrangler.toml)).
-It does not proxy `/app`. Until a Cloudflare Worker rewrites `www.../app` to the web origin, point
-landing CTAs at `https://app.../app/feed`.
+It does not proxy `/app`. Until the web app has its own deployed origin, landing navigation should
+stay on landing pages and section anchors instead of linking to `/app/*`.
 
 The web app must run with a Node server (Next.js SSR). BFF routes under `/app/api/*` handle auth
 and authenticated API calls. A static export of `apps/web` will not work for sign-in or check-in.
@@ -121,7 +121,7 @@ Recommended branch mapping: `staging` branch to staging environments, `main` to 
 | Gap | Follow-up |
 |-----|-----------|
 | Contact form API (`POST /contact`) | Phase 6 in [redesign-plan.md](redesign-plan.md) |
-| Landing `/app` proxy on static www | Worker rewrite or subdomain CTA |
+| Landing `/app` proxy on static site | Worker rewrite, separate app subdomain, or keep landing CTAs on page anchors |
 | CI deploy pipelines | Add when hosts are chosen |
 | API integration test suite | [feature-list.md](feature-list.md) |
 | Contact notification email | When contact form ships |

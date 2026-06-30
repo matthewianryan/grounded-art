@@ -102,16 +102,16 @@ export function Hero() {
         </p>
         <div className="mt-9 flex flex-wrap gap-4">
           <a
-            href="/app/feed"
+            href="#feed"
             className="hero-cta rounded-full bg-ink px-6 py-3 text-sm font-medium text-paper transition hover:bg-accent"
           >
-            Open the feed
+            See what is on
           </a>
           <a
-            href="/app/map"
+            href="#atlas"
             className="hero-cta rounded-full border border-line px-6 py-3 text-sm font-medium text-ink transition hover:border-ink"
           >
-            View the map
+            Explore the atlas
           </a>
         </div>
       </div>

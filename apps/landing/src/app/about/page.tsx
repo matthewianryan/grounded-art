@@ -98,16 +98,16 @@ export default function AboutPage() {
               </h2>
               <div className="mt-10 flex flex-wrap justify-center gap-4">
                 <Link
-                  href="/app/feed"
+                  href="/#feed"
                   className="rounded-full bg-ink px-7 py-3 text-sm font-medium text-paper transition hover:bg-accent"
                 >
-                  Open the feed
+                  See what is on
                 </Link>
                 <Link
-                  href="/app/map"
+                  href="/#atlas"
                   className="rounded-full border border-line px-7 py-3 text-sm font-medium text-ink transition hover:border-ink"
                 >
-                  View the map
+                  Explore the atlas
                 </Link>
               </div>
             </Reveal>

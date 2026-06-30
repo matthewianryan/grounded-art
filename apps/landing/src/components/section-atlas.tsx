@@ -30,10 +30,10 @@ export function SectionAtlas() {
             actually walk.
           </p>
           <Link
-            href="/app/map"
+            href="/contact"
             className="mt-8 inline-flex rounded-full border border-line px-6 py-3 text-sm font-medium text-ink transition hover:border-ink"
           >
-            Open the map
+            Add or update a gallery
           </Link>
         </Reveal>
 

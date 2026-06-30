@@ -53,10 +53,10 @@ export function SectionFeed() {
             refreshed often, so what you see is what is on this week.
           </p>
           <Link
-            href="/app/feed"
+            href="/contact"
             className="mt-8 inline-flex rounded-full border border-line px-6 py-3 text-sm font-medium text-ink transition hover:border-ink"
           >
-            Open the feed
+            Send us an opening
           </Link>
         </Reveal>
 

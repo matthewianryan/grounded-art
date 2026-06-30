@@ -28,8 +28,9 @@ Do not expect these to work from Cloudflare Pages yet:
 The web app needs a Next.js server runtime and the API needs FastAPI plus Postgres. Those are
 separate deployment decisions.
 
-For the landing-only launch, `apps/landing/public/_redirects` sends `/app/*` back to `/` so
-public visitors do not hit a 404 while the app is not deployed.
+For the landing-only launch, public navigation stays on the landing pages and section anchors.
+`apps/landing/public/_redirects` still sends `/app/*` back to `/` so old or guessed app URLs do
+not hit a 404 while the app is not deployed.
 
 ## Local verification
 

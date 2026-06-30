@@ -3,8 +3,21 @@
 import { FormEvent, useRef, useState } from "react";
 import Script from "next/script";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+const CONTACT_EMAIL = "hello@grounded-art.co.za";
+
+function canUseContactApi() {
+  if (!API_BASE) return false;
+  if (process.env.NODE_ENV !== "production") return true;
+
+  try {
+    const { hostname } = new URL(API_BASE);
+    return hostname !== "localhost" && hostname !== "127.0.0.1";
+  } catch {
+    return false;
+  }
+}
 
 type FormStatus = "idle" | "sending" | "sent" | "error";
 
@@ -28,6 +41,21 @@ export function ContactForm() {
 
     setStatus("sending");
     try {
+      if (!canUseContactApi()) {
+        const subject = encodeURIComponent(payload.subject || "Grounded Art contact");
+        const body = encodeURIComponent(
+          [
+            payload.message,
+            "",
+            `From: ${payload.name}`,
+            `Email: ${payload.email}`,
+          ].join("\n"),
+        );
+        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+        setStatus("idle");
+        return;
+      }
+
       const response = await fetch(`${API_BASE}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -148,7 +176,7 @@ export function ContactForm() {
           {status === "sent"
             ? "Thanks. Your message reached us."
             : status === "error"
-              ? "Something went wrong. Try again, or email hello@grounded-art.co.za."
+              ? `Something went wrong. Try again, or email ${CONTACT_EMAIL}.`
               : ""}
         </p>
       </div>

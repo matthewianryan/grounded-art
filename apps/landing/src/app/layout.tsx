@@ -15,7 +15,7 @@ const notoSerif = Noto_Serif({
   display: "swap",
 });
 
-const SITE_URL = "https://www.grounded-art.co.za";
+const SITE_URL = "https://grounded-art.co.za";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

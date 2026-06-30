@@ -17,18 +17,15 @@ export function SiteFooter() {
 
         <nav className="flex flex-col gap-3 text-sm">
           <span className="text-xs uppercase tracking-[0.18em] text-muted">Explore</span>
-          <a href="/app/map" className="text-muted transition hover:text-ink">
+          <Link href="/#atlas" className="text-muted transition hover:text-ink">
             Map
-          </a>
-          <a href="/app/feed" className="text-muted transition hover:text-ink">
+          </Link>
+          <Link href="/#feed" className="text-muted transition hover:text-ink">
             Feed
-          </a>
-          <a
-            href="/app/sign-in?returnTo=/app/profile"
-            className="text-muted transition hover:text-ink"
-          >
-            Profile
-          </a>
+          </Link>
+          <Link href="/about" className="text-muted transition hover:text-ink">
+            About
+          </Link>
           <Link href="/contact" className="text-muted transition hover:text-ink">
             Contact us
           </Link>
