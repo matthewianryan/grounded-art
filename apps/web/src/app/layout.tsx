@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Noto_Serif } from "next/font/google";
 import "./globals.css";
 import { SiteNav } from "@/components/site-nav";
@@ -23,6 +23,11 @@ export const metadata: Metadata = {
     "Cape Town's galleries, exhibitions, and artists, in one place and kept current.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 const themeScript = `(function(){try{var t=localStorage.getItem('ga-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');}}catch(e){}})();`;
 
 export default function RootLayout({
@@ -34,7 +39,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${dmSans.variable} ${notoSerif.variable}`}
     >
-      <body className="flex min-h-screen flex-col bg-paper text-ink font-sans antialiased">
+      <body className="flex min-h-screen flex-col overflow-x-hidden bg-paper font-sans text-ink antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <UserActionsProvider>
           <SiteNav />

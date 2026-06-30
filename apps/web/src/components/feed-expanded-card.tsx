@@ -16,7 +16,6 @@ import { formatDateRange } from "@/lib/format";
 import { useUserActions } from "@/components/user-actions-provider";
 import { PostBadges } from "@/components/post-badges";
 import { FeedPostImage } from "@/components/feed-post-card";
-import { PolaroidFrame } from "@/components/polaroid-frame";
 
 interface FeedExpandedCardProps {
   item: FeedItem;
@@ -65,13 +64,11 @@ export function FeedExpandedCard({
       aria-labelledby="feed-expanded-title"
     >
       <div className="relative w-full shrink-0 border-b border-line p-4 sm:w-[45%] sm:border-b-0 sm:border-r">
-        <PolaroidFrame active className="mx-auto max-w-sm">
-          <FeedPostImage
-            imageUrl={imageUrl}
-            displayName={displayName}
-            className="aspect-[4/5] w-full object-cover sm:min-h-[18rem]"
-          />
-        </PolaroidFrame>
+        <FeedPostImage
+          imageUrl={imageUrl}
+          displayName={displayName}
+          className="mx-auto aspect-[4/5] w-full max-w-sm object-cover object-center"
+        />
 
         {images.length > 1 && (
           <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-between px-3">

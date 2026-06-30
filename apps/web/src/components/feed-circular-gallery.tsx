@@ -6,6 +6,10 @@ import { useReducedMotion } from "motion/react";
 import type { FeedCarouselItem } from "@/lib/feed-display";
 import type { GalleryItem } from "@/components/ui/circular-gallery-2";
 import { buildFeedGalleryItems, isDarkTheme } from "@/lib/polaroid-texture";
+import {
+  FEED_CAROUSEL_HIT_CLASS,
+  FEED_CAROUSEL_STAGE_CLASS,
+} from "@/lib/feed-carousel-layout";
 import { CircularGallery as PolaroidSnapGallery } from "@/components/circular-gallery";
 
 const WebGLCircularGallery = dynamic(
@@ -76,7 +80,7 @@ export function FeedCircularGallery({
 
   if (items.length === 0) return null;
 
-  const stageClass = `relative h-[min(70svh,720px)] min-h-[600px] w-full bg-paper ${
+  const stageClass = `relative ${FEED_CAROUSEL_STAGE_CLASS} w-full touch-pan-y bg-paper ${
     interactive ? "" : "pointer-events-none"
   }`;
 
@@ -115,7 +119,7 @@ export function FeedCircularGallery({
           {interactive && onCenterClick && (
             <button
               type="button"
-              className="absolute inset-x-0 top-1/2 z-10 mx-auto h-[min(58vh,580px)] w-[clamp(15rem,28vw,22rem)] -translate-y-1/2 cursor-pointer border-0 bg-transparent"
+              className={`absolute inset-x-0 top-1/2 z-10 mx-auto ${FEED_CAROUSEL_HIT_CLASS} -translate-y-1/2 cursor-pointer border-0 bg-transparent`}
               aria-label={`Open ${items[activeIndex]?.displayName ?? "post"}`}
               onClick={onCenterClick}
             />
