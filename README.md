@@ -21,6 +21,7 @@ Next.js apps stitched into one site under one domain using Next.js multi-zones.
 - [Product](docs/product.md) - core product decisions
 - [Data model](docs/data-model.md) - entities, canonical identity, and source of truth
 - [External dependencies](docs/external-dependencies.md) - external reliances and decoupling paths
+- [Cloudflare deployment](docs/cloudflare-deployment.md) - current landing-site launch path
 - [Design](docs/design.md) - aesthetic and visual decisions
 - [Home page](docs/pages/home.md) - landing page sections
 - [Posts feed](docs/pages/posts.md) - the content feed

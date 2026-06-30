@@ -7,6 +7,9 @@
     "dev": "turbo run dev",
     "dev:local": "node tooling/dev-local.mjs",
     "build": "turbo run build",
+    "pages:build": "pnpm --filter @grounded-art/landing pages:build",
+    "pages:preview": "pnpm --filter @grounded-art/landing pages:preview",
+    "pages:deploy": "pnpm pages:build && cd apps/landing && npx wrangler pages deploy out --project-name=grounded-art-landing",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck"
   },
