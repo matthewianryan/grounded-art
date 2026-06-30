@@ -11,11 +11,13 @@ import {
   toFeedGalleryContext,
 } from "@/lib/feed-display";
 import { resolveActionRowContext } from "@/lib/action-row";
+import { currentReturnTo, hasAccountSession, signInHref } from "@/lib/auth-gate";
 import {
   evaluateCheckIn,
   GeolocationError,
   getUserPosition,
 } from "@/lib/check-in";
+import { galleryDirectionsUrl } from "@/lib/maps";
 import { galleryKey } from "@/lib/user-actions";
 import { useUserActions } from "@/components/user-actions-provider";
 import { CheckInCelebration } from "@/components/check-in-celebration";
@@ -243,6 +245,7 @@ function ActionRow({
   const [celebrating, setCelebrating] = useState(false);
   const [statusVariant, setStatusVariant] = useState<CheckInStatusVariant | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | undefined>();
+  const [shareMessage, setShareMessage] = useState<string | null>(null);
 
   const gallerySlug = gallery?.slug ?? actions.mapGallerySlug ?? undefined;
   const galleryName = gallery?.name ?? "this gallery";
@@ -254,9 +257,18 @@ function ActionRow({
       : false;
 
   const checkedIn = gallerySlug ? isCheckedIn(gallerySlug) : false;
+  const directionsUrl = gallery && actions.directions ? galleryDirectionsUrl(gallery) : null;
 
   async function handleCheckIn() {
     if (!gallery || gallery.latitude == null || gallery.longitude == null) return;
+
+    if (!hasAccountSession()) {
+      const returnTo = gallerySlug
+        ? `/app/map?gallery=${encodeURIComponent(gallerySlug)}`
+        : currentReturnTo();
+      window.location.assign(signInHref(returnTo));
+      return;
+    }
 
     setCheckingIn(true);
     setStatusVariant(null);
@@ -297,9 +309,41 @@ function ActionRow({
     }
   }
 
+  async function handleShare() {
+    if (typeof window === "undefined") return;
+
+    setShareMessage(null);
+
+    const url =
+      !item && gallerySlug
+        ? `${window.location.origin}/app/map?gallery=${encodeURIComponent(gallerySlug)}`
+        : window.location.href;
+    const title = item?.title ?? gallery?.name ?? "Grounded Art";
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setShareMessage("Link copied.");
+    } catch {
+      setShareMessage("Could not copy the link.");
+    }
+  }
+
   return (
     <>
       <div className="mt-6 flex flex-wrap gap-2">
+        {!item && directionsUrl && (
+          <ActionPill
+            label="Directions"
+            icon={<DirectionsIcon />}
+            href={directionsUrl}
+            external
+          />
+        )}
+
         <ActionPill
           label={saved ? "Saved" : "Save"}
           icon={saved ? undefined : <BookmarkIcon />}
@@ -332,7 +376,21 @@ function ActionRow({
             pressed={checkedIn}
           />
         )}
+
+        {actions.share && (
+          <ActionPill
+            label="Share"
+            icon={<ShareIcon />}
+            onClick={handleShare}
+          />
+        )}
       </div>
+
+      {shareMessage && (
+        <p className="mt-3 text-sm text-muted" role="status">
+          {shareMessage}
+        </p>
+      )}
 
       {statusVariant && (
         <CheckInStatus
@@ -359,6 +417,7 @@ function ActionPill({
   onClick,
   disabled,
   pressed,
+  external,
 }: {
   label: string;
   icon?: ReactNode;
@@ -366,6 +425,7 @@ function ActionPill({
   onClick?: () => void;
   disabled?: boolean;
   pressed?: boolean;
+  external?: boolean;
 }) {
   const className = `inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition ${
     pressed
@@ -374,6 +434,15 @@ function ActionPill({
   } ${disabled ? "opacity-60" : ""}`;
 
   if (href) {
+    if (external) {
+      return (
+        <a href={href} target="_blank" rel="noreferrer" className={className}>
+          {icon}
+          {label}
+        </a>
+      );
+    }
+
     return (
       <Link href={href} className={className}>
         {icon}
@@ -443,6 +512,27 @@ function TargetIcon() {
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.5" />
       <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function DirectionsIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 3l9 9-9 9-9-9 9-9z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M9 13h4a2 2 0 002-2V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M13 8l2-2 2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ShareIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="18" cy="5" r="3" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="6" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="18" cy="19" r="3" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
