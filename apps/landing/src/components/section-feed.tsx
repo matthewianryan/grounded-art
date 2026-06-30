@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Reveal } from "./reveal";
 
 // A snapshot of the feed: recent openings, exhibitions, and posts. The copy is illustrative of
@@ -51,6 +52,12 @@ export function SectionFeed() {
             Openings, exhibitions, and posts from across Cape Town, gathered into one place and
             refreshed often, so what you see is what is on this week.
           </p>
+          <Link
+            href="/app/feed"
+            className="mt-8 inline-flex rounded-full border border-line px-6 py-3 text-sm font-medium text-ink transition hover:border-ink"
+          >
+            Open the feed
+          </Link>
         </Reveal>
 
         <div className="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">

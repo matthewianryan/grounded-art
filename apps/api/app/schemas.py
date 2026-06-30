@@ -8,7 +8,7 @@ are not exposed through the API.
 import uuid
 from datetime import date, datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class ORMModel(BaseModel):
@@ -103,3 +103,29 @@ class FeedPage(BaseModel):
     total: int
     limit: int
     offset: int
+
+
+class ContactMessageCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=255)
+    email: str = Field(min_length=3, max_length=255)
+    subject: str = Field(min_length=2, max_length=512)
+    message: str = Field(min_length=10, max_length=5000)
+
+    @field_validator("name", "email", "subject", "message", mode="before")
+    @classmethod
+    def _strip_text(cls, value: str) -> str:
+        if isinstance(value, str):
+            return value.strip()
+        return value
+
+    @field_validator("email")
+    @classmethod
+    def _validate_email(cls, value: str) -> str:
+        if "@" not in value or "." not in value.rsplit("@", 1)[-1]:
+            raise ValueError("Enter a valid email address.")
+        return value.lower()
+
+
+class ContactMessageRead(ORMModel):
+    id: uuid.UUID
+    received_at: datetime

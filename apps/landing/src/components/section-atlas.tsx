@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Reveal } from "./reveal";
 
 // Galleries dotted across the preview, evoking the atlas without standing in for the real map,
@@ -28,6 +29,12 @@ export function SectionAtlas() {
             Only real, physical galleries become points on the map, so it stays a map you can
             actually walk.
           </p>
+          <Link
+            href="/app/map"
+            className="mt-8 inline-flex rounded-full border border-line px-6 py-3 text-sm font-medium text-ink transition hover:border-ink"
+          >
+            Open the map
+          </Link>
         </Reveal>
 
         <Reveal delay={0.1}>

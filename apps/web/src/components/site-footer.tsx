@@ -23,6 +23,15 @@ export function SiteFooter() {
           <Link href="/feed" className="text-muted transition hover:text-ink">
             Feed
           </Link>
+          <Link
+            href="/sign-in?returnTo=/app/profile"
+            className="text-muted transition hover:text-ink"
+          >
+            Profile
+          </Link>
+          <a href="/contact" className="text-muted transition hover:text-ink">
+            Contact us
+          </a>
         </nav>
 
         <nav className="flex flex-col gap-3 text-sm">

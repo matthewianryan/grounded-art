@@ -11,16 +11,16 @@ export function SectionClosing() {
           </h2>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <a
-              href="#atlas"
+              href="/app/feed"
               className="rounded-full bg-ink px-7 py-3 text-sm font-medium text-paper transition hover:bg-accent"
             >
-              Explore the atlas
+              Open the feed
             </a>
             <a
-              href="#feed"
+              href="/app/map"
               className="rounded-full border border-line px-7 py-3 text-sm font-medium text-ink transition hover:border-ink"
             >
-              See what&apos;s on
+              View the map
             </a>
           </div>
         </Reveal>

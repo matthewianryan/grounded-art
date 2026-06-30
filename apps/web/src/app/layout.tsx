@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Noto_Serif } from "next/font/google";
 import "./globals.css";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
 import { UserActionsProvider } from "@/components/user-actions-provider";
 
@@ -44,6 +45,7 @@ export default function RootLayout({
         <UserActionsProvider>
           <SiteNav />
           <div className="flex-1">{children}</div>
+          <SiteFooter />
         </UserActionsProvider>
       </body>
     </html>

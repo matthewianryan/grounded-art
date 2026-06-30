@@ -8,8 +8,8 @@ import { ThemeToggle } from "./theme-toggle";
 const links = [
   { href: "/map", label: "Map", live: true },
   { href: "/feed", label: "Feed", live: true },
-  { href: "/profile", label: "Profile", live: false },
-  { href: "/contact", label: "Contact us", live: false },
+  { href: "/sign-in?returnTo=/app/profile", label: "Profile", live: true },
+  { href: "/contact", label: "Contact us", live: true, root: true },
 ];
 
 export function SiteNav() {
@@ -111,14 +111,16 @@ function InlineNavItem({
   href,
   label,
   live,
+  root,
   pathname,
 }: {
   href: string;
   label: string;
   live: boolean;
+  root?: boolean;
   pathname: string;
 }) {
-  const active = live && (pathname === href || pathname.startsWith(`${href}/`));
+  const active = live && !root && (pathname === href || pathname.startsWith(`${href}/`));
 
   if (!live) {
     return (
@@ -129,6 +131,14 @@ function InlineNavItem({
       >
         {label}
       </span>
+    );
+  }
+
+  if (root) {
+    return (
+      <a href={href} className="rounded-full px-3 py-1.5 text-muted transition hover:bg-line/40 hover:text-ink">
+        {label}
+      </a>
     );
   }
 
@@ -149,16 +159,18 @@ function MobileNavItem({
   href,
   label,
   live,
+  root,
   pathname,
   closeMenu,
 }: {
   href: string;
   label: string;
   live: boolean;
+  root?: boolean;
   pathname: string;
   closeMenu: () => void;
 }) {
-  const active = live && (pathname === href || pathname.startsWith(`${href}/`));
+  const active = live && !root && (pathname === href || pathname.startsWith(`${href}/`));
 
   if (!live) {
     return (
@@ -169,6 +181,18 @@ function MobileNavItem({
       >
         {label}
       </span>
+    );
+  }
+
+  if (root) {
+    return (
+      <a
+        href={href}
+        className="rounded-full border border-line px-3 py-2 text-muted transition hover:border-ink hover:text-ink"
+        onClick={closeMenu}
+      >
+        {label}
+      </a>
     );
   }
 

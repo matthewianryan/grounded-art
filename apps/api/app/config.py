@@ -21,6 +21,11 @@ class Settings(BaseSettings):
     # expected to be present. No API routes use these tables until Phase 3+.
     redesign_schema_enabled: bool = True
 
+    # Contact form notifications. The message is always stored in Postgres; deployments can
+    # set a webhook URL to fan the stored message out to mail or ops tooling.
+    contact_notification_email: str = "hello@grounded-art.co.za"
+    contact_notification_webhook_url: str | None = None
+
     @field_validator("database_url")
     @classmethod
     def _normalize_database_url(cls, value: str) -> str:
