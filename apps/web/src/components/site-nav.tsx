@@ -68,7 +68,7 @@ export function SiteNav() {
           {links.map((link) => (
             <InlineNavItem key={link.href} pathname={pathname} {...link} />
           ))}
-          <ThemeToggle />
+          <ThemeToggle variant="inline" />
         </nav>
 
         <button

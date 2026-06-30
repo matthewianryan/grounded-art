@@ -43,10 +43,14 @@ interface CircularGalleryProps {
   scrollEase?: number;
   activeIndex?: number;
   interactive?: boolean;
+  centerHovered?: boolean;
+  reduceMotion?: boolean;
   onActiveIndexChange?: (index: number) => void;
 }
 
-const PLANE_PADDING = 2;
+const PLANE_GAP_RATIO = 0.14;
+const CENTER_HOVER_SCALE = 1.04;
+const MIN_ITEMS_FOR_LOOP_DUPLICATE = 5;
 
 class Media {
   app: any;
@@ -72,6 +76,9 @@ class Media {
   scale: any;
   padding: any;
   width: any;
+  baseScaleX: number;
+  baseScaleY: number;
+  hoverScale: number;
 
   constructor({
     app,
@@ -100,6 +107,9 @@ class Media {
     this.viewport = viewport;
     this.bend = bend;
     this.borderRadius = borderRadius;
+    this.baseScaleX = 1;
+    this.baseScaleY = 1;
+    this.hoverScale = 1;
     this.createShader();
     this.createMesh();
     this.onResize();
@@ -115,10 +125,12 @@ class Media {
         attribute vec2 uv;
         uniform mat4 modelViewMatrix;
         uniform mat4 projectionMatrix;
+        uniform float uHoverScale;
         varying vec2 vUv;
         void main() {
           vUv = uv;
           vec3 p = position;
+          p.xy *= uHoverScale;
           p.z = 0.0;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
         }
@@ -158,7 +170,8 @@ class Media {
         tMap: { value: texture },
         uPlaneSizes: { value: [0, 0] },
         uImageSizes: { value: [0, 0] },
-        uBorderRadius: { value: this.borderRadius }
+        uBorderRadius: { value: this.borderRadius },
+        uHoverScale: { value: 1 },
       },
       transparent: true
     });
@@ -202,7 +215,7 @@ class Media {
 
     this.speed = scroll.current - scroll.last;
 
-    const planeOffset = this.plane.scale.x / 2;
+    const planeOffset = this.baseScaleX / 2;
     const viewportOffset = this.viewport.width / 2;
     this.isBefore = this.plane.position.x + planeOffset < -viewportOffset;
     this.isAfter = this.plane.position.x - planeOffset > viewportOffset;
@@ -214,6 +227,12 @@ class Media {
       this.extra += this.widthTotal;
       this.isBefore = this.isAfter = false;
     }
+
+    const isCenter = Math.abs(this.plane.position.x) < this.width * 0.15;
+    const targetHover =
+      !this.app.reduceMotion && this.app.centerHovered && isCenter ? CENTER_HOVER_SCALE : 1;
+    this.hoverScale = lerp(this.hoverScale, targetHover, 0.15);
+    this.program.uniforms.uHoverScale.value = this.hoverScale;
   }
   onResize({ screen, viewport }: any = {}) {
     if (screen) this.screen = screen;
@@ -225,11 +244,16 @@ class Media {
     }
     const planeFactors = this.app?.planeFactors ?? feedCarouselPlaneFactors(window.innerWidth);
     this.scale = this.screen.height / 1500;
-    this.plane.scale.y = (this.viewport.height * (planeFactors.height * this.scale)) / this.screen.height;
-    this.plane.scale.x = (this.viewport.width * (planeFactors.width * this.scale)) / this.screen.width;
+    this.baseScaleY =
+      (this.viewport.height * (planeFactors.height * this.scale)) / this.screen.height;
+    this.baseScaleX =
+      (this.viewport.width * (planeFactors.width * this.scale)) / this.screen.width;
+    this.hoverScale = 1;
+    this.plane.scale.y = this.baseScaleY;
+    this.plane.scale.x = this.baseScaleX;
+    this.program.uniforms.uHoverScale.value = 1;
     this.plane.program.uniforms.uPlaneSizes.value = [this.plane.scale.x, this.plane.scale.y];
-    this.padding = PLANE_PADDING;
-    this.width = this.plane.scale.x + this.padding;
+    this.width = this.baseScaleX * (1 + PLANE_GAP_RATIO);
     this.widthTotal = this.width * this.length;
     this.x = this.width * this.index;
   }
@@ -264,6 +288,8 @@ class App {
   interactionListenersAttached: boolean;
   onActiveIndexChange?: (index: number) => void;
   planeFactors: { height: number; width: number };
+  centerHovered: boolean;
+  reduceMotion: boolean;
 
   constructor(
     container: HTMLElement,
@@ -294,6 +320,8 @@ class App {
     this.interactionListenersAttached = false;
     this.onActiveIndexChange = onActiveIndexChange;
     this.planeFactors = feedCarouselPlaneFactors(window.innerWidth);
+    this.centerHovered = false;
+    this.reduceMotion = false;
     this.onCheckDebounce = debounce(this.onCheck.bind(this), 200);
     this.createRenderer();
     this.createCamera();
@@ -345,7 +373,10 @@ class App {
     ];
     const sourceItems = items && items.length ? items : defaultItems;
     this.itemCount = sourceItems.length;
-    this.mediasImages = sourceItems.concat(sourceItems);
+    this.mediasImages =
+      sourceItems.length >= MIN_ITEMS_FOR_LOOP_DUPLICATE
+        ? sourceItems.concat(sourceItems)
+        : sourceItems;
     this.medias = this.mediasImages.map((data: GalleryItem, index: number) => {
       return new Media({
         app: this,
@@ -488,6 +519,12 @@ class App {
     if (enabled) this.addInteractionListeners();
     else this.removeInteractionListeners();
   }
+  setCenterHovered(hovered: boolean) {
+    this.centerHovered = hovered;
+  }
+  setReduceMotion(reduce: boolean) {
+    this.reduceMotion = reduce;
+  }
   destroy() {
     window.cancelAnimationFrame(this.raf);
     window.removeEventListener('resize', this.boundOnResize);
@@ -506,6 +543,8 @@ export function CircularGallery({
   scrollEase = 0.08,
   activeIndex = 0,
   interactive = true,
+  centerHovered = false,
+  reduceMotion = false,
   onActiveIndexChange,
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -551,6 +590,14 @@ export function CircularGallery({
   useEffect(() => {
     appRef.current?.setInteractive(interactive);
   }, [interactive]);
+
+  useEffect(() => {
+    appRef.current?.setCenterHovered(centerHovered);
+  }, [centerHovered]);
+
+  useEffect(() => {
+    appRef.current?.setReduceMotion(reduceMotion);
+  }, [reduceMotion]);
 
   return (
     <div

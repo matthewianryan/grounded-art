@@ -7,8 +7,9 @@ import type { FeedCarouselItem } from "@/lib/feed-display";
 import type { GalleryItem } from "@/components/ui/circular-gallery-2";
 import { buildFeedGalleryItems, isDarkTheme } from "@/lib/polaroid-texture";
 import {
-  FEED_CAROUSEL_HIT_CLASS,
+  feedCarouselHitStyle,
   FEED_CAROUSEL_STAGE_CLASS,
+  FEED_CAROUSEL_STAGE_FILL_CLASS,
 } from "@/lib/feed-carousel-layout";
 import { CircularGallery as PolaroidSnapGallery } from "@/components/circular-gallery";
 
@@ -23,6 +24,7 @@ interface FeedCircularGalleryProps {
   onActiveIndexChange: (index: number) => void;
   onCenterClick?: () => void;
   interactive?: boolean;
+  fillContainer?: boolean;
 }
 
 function noop() {}
@@ -33,10 +35,23 @@ export function FeedCircularGallery({
   onActiveIndexChange,
   onCenterClick,
   interactive = true,
+  fillContainer = false,
 }: FeedCircularGalleryProps) {
   const reduce = useReducedMotion();
   const [dark, setDark] = useState(false);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[] | null>(null);
+  const [viewportWidth, setViewportWidth] = useState(768);
+  const [centerHovered, setCenterHovered] = useState(false);
+
+  useEffect(() => {
+    function syncViewport() {
+      setViewportWidth(window.innerWidth);
+    }
+
+    syncViewport();
+    window.addEventListener("resize", syncViewport);
+    return () => window.removeEventListener("resize", syncViewport);
+  }, []);
 
   useEffect(() => {
     function readTheme() {
@@ -78,9 +93,14 @@ export function FeedCircularGallery({
     };
   }, [items, dark, reduce]);
 
+  const hitStyle = feedCarouselHitStyle(viewportWidth);
+
   if (items.length === 0) return null;
 
-  const stageClass = `relative ${FEED_CAROUSEL_STAGE_CLASS} w-full touch-pan-y bg-paper ${
+  const stageHeightClass = fillContainer
+    ? FEED_CAROUSEL_STAGE_FILL_CLASS
+    : FEED_CAROUSEL_STAGE_CLASS;
+  const stageClass = `relative ${stageHeightClass} w-full touch-pan-y bg-paper ${
     interactive ? "" : "pointer-events-none"
   }`;
 
@@ -95,7 +115,7 @@ export function FeedCircularGallery({
         />
         {interactive && (
           <p className="pointer-events-none absolute inset-x-0 bottom-4 text-center text-xs text-muted">
-            Scroll to browse. Select the centre image to open detail.
+            Swipe to browse. Select the centre image to open detail.
           </p>
         )}
       </div>
@@ -114,14 +134,19 @@ export function FeedCircularGallery({
             scrollEase={0.02}
             activeIndex={activeIndex}
             interactive={interactive}
+            centerHovered={centerHovered}
+            reduceMotion={false}
             onActiveIndexChange={onActiveIndexChange}
           />
           {interactive && onCenterClick && (
             <button
               type="button"
-              className={`absolute inset-x-0 top-1/2 z-10 mx-auto ${FEED_CAROUSEL_HIT_CLASS} -translate-y-1/2 cursor-pointer border-0 bg-transparent`}
+              className="absolute inset-x-0 top-1/2 z-10 mx-auto -translate-y-1/2 cursor-pointer border-0 bg-transparent"
+              style={hitStyle}
               aria-label={`Open ${items[activeIndex]?.displayName ?? "post"}`}
               onClick={onCenterClick}
+              onMouseEnter={() => setCenterHovered(true)}
+              onMouseLeave={() => setCenterHovered(false)}
             />
           )}
         </>
@@ -133,7 +158,7 @@ export function FeedCircularGallery({
 
       {interactive && galleryItems && (
         <p className="pointer-events-none absolute inset-x-0 bottom-4 text-center text-xs text-muted">
-          Scroll or drag to browse. Select the centre image to open detail.
+          Drag to browse. Select the centre image to open detail.
         </p>
       )}
     </div>
