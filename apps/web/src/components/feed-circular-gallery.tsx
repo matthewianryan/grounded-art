@@ -9,6 +9,7 @@ import { buildFeedGalleryItems, isDarkTheme } from "@/lib/polaroid-texture";
 import {
   FEED_CAROUSEL_HIT_CLASS,
   FEED_CAROUSEL_STAGE_CLASS,
+  FEED_CAROUSEL_STAGE_FILL_CLASS,
 } from "@/lib/feed-carousel-layout";
 import { CircularGallery as PolaroidSnapGallery } from "@/components/circular-gallery";
 
@@ -23,6 +24,7 @@ interface FeedCircularGalleryProps {
   onActiveIndexChange: (index: number) => void;
   onCenterClick?: () => void;
   interactive?: boolean;
+  fillContainer?: boolean;
 }
 
 function noop() {}
@@ -33,6 +35,7 @@ export function FeedCircularGallery({
   onActiveIndexChange,
   onCenterClick,
   interactive = true,
+  fillContainer = false,
 }: FeedCircularGalleryProps) {
   const reduce = useReducedMotion();
   const [dark, setDark] = useState(false);
@@ -80,7 +83,10 @@ export function FeedCircularGallery({
 
   if (items.length === 0) return null;
 
-  const stageClass = `relative ${FEED_CAROUSEL_STAGE_CLASS} w-full touch-pan-y bg-paper ${
+  const stageHeightClass = fillContainer
+    ? FEED_CAROUSEL_STAGE_FILL_CLASS
+    : FEED_CAROUSEL_STAGE_CLASS;
+  const stageClass = `relative ${stageHeightClass} w-full touch-pan-y bg-paper ${
     interactive ? "" : "pointer-events-none"
   }`;
 
@@ -95,7 +101,7 @@ export function FeedCircularGallery({
         />
         {interactive && (
           <p className="pointer-events-none absolute inset-x-0 bottom-4 text-center text-xs text-muted">
-            Scroll to browse. Select the centre image to open detail.
+            Swipe to browse. Select the centre image to open detail.
           </p>
         )}
       </div>
@@ -133,7 +139,7 @@ export function FeedCircularGallery({
 
       {interactive && galleryItems && (
         <p className="pointer-events-none absolute inset-x-0 bottom-4 text-center text-xs text-muted">
-          Scroll or drag to browse. Select the centre image to open detail.
+          Drag to browse. Select the centre image to open detail.
         </p>
       )}
     </div>

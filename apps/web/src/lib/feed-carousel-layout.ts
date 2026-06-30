@@ -3,6 +3,9 @@
 export const FEED_CAROUSEL_STAGE_CLASS =
   "h-[60svh] min-h-0 md:h-[min(82svh,840px)] md:min-h-[680px]";
 
+/** Fills the feed viewport shell below the search toolbar in browse mode. */
+export const FEED_CAROUSEL_STAGE_FILL_CLASS = "h-full min-h-0";
+
 export const FEED_CAROUSEL_CARD_CLASS =
   "w-[min(78vw,22rem)] md:w-[clamp(18rem,34vw,28rem)]";
 

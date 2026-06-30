@@ -2,6 +2,7 @@ import { listFeed, listGalleries } from "@/lib/api";
 import type { FeedView } from "@/lib/types";
 import { FeedFilters } from "@/components/feed-filters";
 import { FeedBrowse } from "@/components/feed-browse";
+import { FeedPageShell } from "@/components/feed-page-shell";
 import { buildGalleryMaps } from "@/lib/feed-display";
 
 const FEED_VIEWS: FeedView[] = ["this_weekend", "opening_this_week", "closing_soon"];
@@ -21,8 +22,8 @@ export default async function FeedPage({
   const q = params.q?.trim() ?? "";
 
   return (
-    <main>
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <FeedPageShell
+      toolbar={
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <form method="get" className="flex flex-1 gap-2 sm:max-w-md">
             {view ? <input type="hidden" name="view" value={view} /> : null}
@@ -46,12 +47,10 @@ export default async function FeedPage({
           </form>
           <FeedFilters view={view} saved={savedOnly} q={q} />
         </div>
-      </div>
-
-      <section className="mt-2 w-full">
-        <FeedList view={view} savedOnly={savedOnly} q={q} />
-      </section>
-    </main>
+      }
+    >
+      <FeedList view={view} savedOnly={savedOnly} q={q} />
+    </FeedPageShell>
   );
 }
 

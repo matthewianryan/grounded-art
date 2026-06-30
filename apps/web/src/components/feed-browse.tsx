@@ -10,6 +10,7 @@ import { galleryKey, feedKey } from "@/lib/user-actions";
 import { FeedCircularGallery } from "@/components/feed-circular-gallery";
 import { FeedExpandedCard } from "@/components/feed-expanded-card";
 import { FeedUnmaskReveal } from "@/components/feed-unmask-reveal";
+import { useFeedPageShell } from "@/components/feed-page-shell";
 import { FEED_CAROUSEL_STAGE_CLASS } from "@/lib/feed-carousel-layout";
 
 type FeedMode = "browse" | "expanded" | "unmask";
@@ -29,6 +30,7 @@ export function FeedBrowse({
 }) {
   const { ready, isSaved } = useUserActions();
   const reduce = useReducedMotion();
+  const feedPageShell = useFeedPageShell();
   const [mode, setMode] = useState<FeedMode>("browse");
   const [activeIndex, setActiveIndex] = useState(0);
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -44,6 +46,29 @@ export function FeedBrowse({
     setActiveIndex(0);
     setMode("browse");
   }, [items, savedOnly, normalizedSearch]);
+
+  useEffect(() => {
+    feedPageShell?.reportMode(mode);
+  }, [mode, feedPageShell]);
+
+  // Keep the page fixed while the carousel is moveable; scrolling is for expanded detail only.
+  useEffect(() => {
+    if (mode !== "browse") {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      return;
+    }
+
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousBodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.body.style.overflow = previousBodyOverflow;
+    };
+  }, [mode]);
 
   const visible = useMemo(() => {
     const savedFiltered = !savedOnly
@@ -235,9 +260,10 @@ export function FeedBrowse({
 
   const scenePinned = mode === "unmask" && !reduce;
   const cardVisible = mode === "expanded" || mode === "unmask";
+  const fillContainer = mode === "browse";
 
   return (
-    <div className="relative">
+    <div className={fillContainer ? "relative h-full min-h-0" : "relative"}>
       {/* Scene: carousel, neighbours, and the expanded card. The same elements stay mounted in
           every mode; during the reveal the scene pins so it stays visible behind the sheet. */}
       <div
@@ -245,7 +271,9 @@ export function FeedBrowse({
         className={
           scenePinned
             ? "sticky top-0 z-0 min-h-svh overflow-hidden"
-            : "relative z-0"
+            : fillContainer
+              ? "relative z-0 h-full min-h-0"
+              : "relative z-0"
         }
       >
         <FeedCircularGallery
@@ -254,6 +282,7 @@ export function FeedBrowse({
           onActiveIndexChange={handleActiveIndexChange}
           onCenterClick={mode === "browse" ? openExpanded : undefined}
           interactive={mode === "browse"}
+          fillContainer={fillContainer}
         />
 
         <AnimatePresence>

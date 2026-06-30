@@ -68,7 +68,7 @@ export function SiteNav() {
           {links.map((link) => (
             <InlineNavItem key={link.href} pathname={pathname} {...link} />
           ))}
-          <ThemeToggle />
+          <ThemeToggle variant="inline" />
         </nav>
 
         <button
@@ -99,10 +99,7 @@ export function SiteNav() {
                 {...link}
               />
             ))}
-            <div className="mt-2 flex items-center justify-between rounded-full border border-line px-3 py-2">
-              <span className="text-muted">Dark</span>
-              <ThemeToggle />
-            </div>
+            <ThemeToggle variant="mobile" />
           </nav>
         </div>
       )}
