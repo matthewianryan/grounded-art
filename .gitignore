@@ -24,6 +24,7 @@ __pycache__/
 
 # Turbo
 .turbo/
+*.tsbuildinfo
 
 # Cloudflare / next-on-pages
 .vercel/

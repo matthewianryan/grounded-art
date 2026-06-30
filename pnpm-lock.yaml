@@ -78,6 +78,9 @@ importers:
       '@grounded-art/tailwind-config':
         specifier: workspace:*
         version: link:../../packages/tailwind-config
+      '@next/env':
+        specifier: ^15.5.19
+        version: 15.5.19
       motion:
         specifier: ^12.40.0
         version: 12.40.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
