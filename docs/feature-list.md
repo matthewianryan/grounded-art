@@ -26,7 +26,7 @@
 | Feature | Status | Notes |
 |---------|--------|-------|
 | Feed page with temporal views | Built | This weekend, opening this week, closing soon, with local q search |
-| Feed type filters | Removed | Categories dropped; feed shows all items, sliced only by temporal views |
+| Feed type filters | Built | Art, events, and announcements pills; client-side kind filter on carousel |
 | Feed card (text layout) | Removed | Replaced by image carousel and post-led cards in Phase 1 |
 | Feed card image layout (post-led) | Not built | image_url field exists; needs rendering |
 | Feed loading skeleton | Built | Pulse animation, mirrors page frame |

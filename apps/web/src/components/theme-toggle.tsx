@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 
+type ThemeToggleVariant = "default" | "inline" | "mobile";
+
 // Mirrors the landing theme toggle so both zones share one mechanism: the no-flash script in
 // the root layout reads ga-theme on load, and this flips the .dark class and persists it.
-export function ThemeToggle({ variant = "inline" }: { variant?: "inline" | "mobile" }) {
+export function ThemeToggle({ variant = "default" }: { variant?: ThemeToggleVariant }) {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
@@ -23,9 +25,11 @@ export function ThemeToggle({ variant = "inline" }: { variant?: "inline" | "mobi
   }
 
   const className =
-    variant === "mobile"
-      ? "flex w-full items-center justify-between rounded-full border border-line px-3 py-2 text-muted transition hover:border-ink hover:text-ink"
-      : "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-muted transition hover:bg-line/40 hover:text-ink";
+    variant === "inline"
+      ? "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-muted transition hover:bg-line/40 hover:text-ink"
+      : variant === "mobile"
+        ? "mt-2 flex w-full items-center justify-between rounded-full border border-line px-3 py-2 text-xs uppercase tracking-[0.14em] text-muted transition hover:border-ink hover:text-ink"
+        : "inline-flex items-center gap-2 text-sm text-muted transition hover:text-ink";
 
   return (
     <button

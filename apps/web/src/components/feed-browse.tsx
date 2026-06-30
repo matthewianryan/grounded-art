@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, useReducedMotion } from "motion/react";
-import type { FeedItem, FeedGalleryContext, Gallery } from "@/lib/types";
+import type { FeedItem, FeedGalleryContext, FeedItemKind, Gallery } from "@/lib/types";
 import { feedPostKind, kindOpensDetail, toFeedCarouselItem } from "@/lib/feed-display";
 import { useVerticalSwipe } from "@/lib/use-axis-lock";
 import { useUserActions } from "@/components/user-actions-provider";
@@ -10,25 +10,35 @@ import { galleryKey, feedKey } from "@/lib/user-actions";
 import { FeedCircularGallery } from "@/components/feed-circular-gallery";
 import { FeedExpandedCard } from "@/components/feed-expanded-card";
 import { FeedUnmaskReveal } from "@/components/feed-unmask-reveal";
+import { useFeedPageShell } from "@/components/feed-page-shell";
 import { FEED_CAROUSEL_STAGE_CLASS } from "@/lib/feed-carousel-layout";
 
 type FeedMode = "browse" | "expanded" | "unmask";
+
+function kindFilterLabel(kind: FeedItemKind): string {
+  if (kind === "art_post") return "art";
+  if (kind === "event") return "events";
+  return "announcements";
+}
 
 export function FeedBrowse({
   items,
   galleriesById,
   fullGalleriesById,
   savedOnly,
+  kindFilter,
   searchTerm,
 }: {
   items: FeedItem[];
   galleriesById: Map<string, FeedGalleryContext>;
   fullGalleriesById: Map<string, Gallery>;
   savedOnly: boolean;
+  kindFilter?: FeedItemKind;
   searchTerm: string;
 }) {
   const { ready, isSaved } = useUserActions();
   const reduce = useReducedMotion();
+  const feedPageShell = useFeedPageShell();
   const [mode, setMode] = useState<FeedMode>("browse");
   const [activeIndex, setActiveIndex] = useState(0);
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -43,7 +53,30 @@ export function FeedBrowse({
   useEffect(() => {
     setActiveIndex(0);
     setMode("browse");
-  }, [items, savedOnly, normalizedSearch]);
+  }, [items, savedOnly, kindFilter, normalizedSearch]);
+
+  useEffect(() => {
+    feedPageShell?.reportMode(mode);
+  }, [mode, feedPageShell]);
+
+  // Keep the page fixed while the carousel is moveable; scrolling is for expanded detail only.
+  useEffect(() => {
+    if (mode !== "browse") {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      return;
+    }
+
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousBodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.body.style.overflow = previousBodyOverflow;
+    };
+  }, [mode]);
 
   const visible = useMemo(() => {
     const savedFiltered = !savedOnly
@@ -56,9 +89,13 @@ export function FeedBrowse({
             return gallery ? isSaved(galleryKey(gallery.slug)) : false;
           });
 
-    if (!normalizedSearch) return savedFiltered;
+    const kindFiltered = kindFilter
+      ? savedFiltered.filter((item) => feedPostKind(item) === kindFilter)
+      : savedFiltered;
 
-    return savedFiltered.filter((item) => {
+    if (!normalizedSearch) return kindFiltered;
+
+    return kindFiltered.filter((item) => {
       const gallery = item.gallery_id ? galleriesById.get(item.gallery_id) : undefined;
       const haystack = [
         item.title,
@@ -74,7 +111,7 @@ export function FeedBrowse({
 
       return haystack.includes(normalizedSearch);
     });
-  }, [items, savedOnly, ready, isSaved, galleriesById, normalizedSearch]);
+  }, [items, savedOnly, kindFilter, ready, isSaved, galleriesById, normalizedSearch]);
 
   const carouselItems = useMemo(
     () =>
@@ -209,15 +246,18 @@ export function FeedBrowse({
   }
 
   if (visible.length === 0) {
+    const kindPhrase = kindFilter ? ` ${kindFilterLabel(kindFilter)}` : "";
     return (
       <p className="text-sm text-muted">
         {normalizedSearch
           ? savedOnly
-            ? "No saved items match that search. Try another term or clear Saved."
-            : "No feed items match that search. Try another term or filter."
+            ? `No saved${kindPhrase} items match that search. Try another term or clear filters.`
+            : `No${kindPhrase} feed items match that search. Try another term or filter.`
           : savedOnly
-            ? "Nothing saved yet. Save exhibitions and posts as you browse."
-            : "Nothing in this view yet. Try another filter, or check back soon."}
+            ? `Nothing saved${kindPhrase} yet. Save exhibitions and posts as you browse.`
+            : kindFilter
+              ? `No${kindPhrase} in this view yet. Try another filter, or check back soon.`
+              : "Nothing in this view yet. Try another filter, or check back soon."}
       </p>
     );
   }
@@ -234,10 +274,10 @@ export function FeedBrowse({
     ) : null;
 
   const scenePinned = mode === "unmask" && !reduce;
-  const cardVisible = mode === "expanded" || mode === "unmask";
+  const fillContainer = mode === "browse";
 
   return (
-    <div className="relative">
+    <div className={fillContainer ? "relative h-full min-h-0" : "relative"}>
       {/* Scene: carousel, neighbours, and the expanded card. The same elements stay mounted in
           every mode; during the reveal the scene pins so it stays visible behind the sheet. */}
       <div
@@ -245,7 +285,9 @@ export function FeedBrowse({
         className={
           scenePinned
             ? "sticky top-0 z-0 min-h-svh overflow-hidden"
-            : "relative z-0"
+            : fillContainer
+              ? "relative z-0 h-full min-h-0"
+              : "relative z-0"
         }
       >
         <FeedCircularGallery
@@ -254,31 +296,42 @@ export function FeedBrowse({
           onActiveIndexChange={handleActiveIndexChange}
           onCenterClick={mode === "browse" ? openExpanded : undefined}
           interactive={mode === "browse"}
+          fillContainer={fillContainer}
         />
 
         <AnimatePresence>
-          {cardVisible && activeItem && (
+          {mode === "expanded" && activeItem && (
+            <>
+              <button
+                type="button"
+                className="fixed inset-0 z-[60] border-0 bg-ink/10 p-0"
+                aria-label="Close expanded view"
+                onClick={closeExpanded}
+              />
+              <div
+                ref={dialogRef}
+                tabIndex={-1}
+                className="pointer-events-none fixed inset-0 z-[70] flex items-center justify-center px-3 py-6 outline-none md:px-4 md:py-8"
+                role="dialog"
+                aria-modal="true"
+                aria-label={`${activeItem.title} detail`}
+              >
+                <div className="pointer-events-auto relative w-full max-w-4xl">
+                  {expandedCard}
+                </div>
+              </div>
+            </>
+          )}
+          {mode === "unmask" && activeItem && (
             <div
               ref={dialogRef}
               tabIndex={-1}
-              className={`absolute inset-x-0 top-0 z-20 flex ${FEED_CAROUSEL_STAGE_CLASS} items-center justify-center px-3 py-6 outline-none md:px-4 md:py-8 ${
-                mode === "expanded" ? "pointer-events-auto" : "pointer-events-none"
-              }`}
+              className={`absolute inset-x-0 top-0 z-20 flex ${FEED_CAROUSEL_STAGE_CLASS} pointer-events-none items-center justify-center px-3 py-6 outline-none md:px-4 md:py-8`}
               role="dialog"
               aria-modal="true"
               aria-label={`${activeItem.title} detail`}
-              onPointerDown={
-                mode === "expanded"
-                  ? (event) => {
-                      if (event.target === event.currentTarget) closeExpanded();
-                    }
-                  : undefined
-              }
             >
-              <div
-                className="pointer-events-auto relative w-full max-w-4xl"
-                onPointerDown={(event) => event.stopPropagation()}
-              >
+              <div className="pointer-events-auto relative w-full max-w-4xl">
                 {expandedCard}
               </div>
             </div>

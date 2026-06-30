@@ -1,31 +1,39 @@
 import { listFeed, listGalleries } from "@/lib/api";
-import type { FeedView } from "@/lib/types";
+import type { FeedItemKind, FeedView } from "@/lib/types";
 import { FeedFilters } from "@/components/feed-filters";
 import { FeedBrowse } from "@/components/feed-browse";
+import { FeedPageShell } from "@/components/feed-page-shell";
 import { buildGalleryMaps } from "@/lib/feed-display";
 
 const FEED_VIEWS: FeedView[] = ["this_weekend", "opening_this_week", "closing_soon"];
+const FEED_KINDS: FeedItemKind[] = ["art_post", "event", "announcement"];
 
 function asView(value: string | undefined): FeedView | undefined {
   return value && (FEED_VIEWS as string[]).includes(value) ? (value as FeedView) : undefined;
 }
 
+function asKind(value: string | undefined): FeedItemKind | undefined {
+  return value && (FEED_KINDS as string[]).includes(value) ? (value as FeedItemKind) : undefined;
+}
+
 export default async function FeedPage({
   searchParams,
 }: {
-  searchParams: Promise<{ view?: string; type?: string; saved?: string; q?: string }>;
+  searchParams: Promise<{ view?: string; kind?: string; saved?: string; q?: string }>;
 }) {
   const params = await searchParams;
   const view = asView(params.view);
+  const kindFilter = asKind(params.kind);
   const savedOnly = params.saved === "1";
   const q = params.q?.trim() ?? "";
 
   return (
-    <main>
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <FeedPageShell
+      toolbar={
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <form method="get" className="flex flex-1 gap-2 sm:max-w-md">
             {view ? <input type="hidden" name="view" value={view} /> : null}
+            {kindFilter ? <input type="hidden" name="kind" value={kindFilter} /> : null}
             {savedOnly ? <input type="hidden" name="saved" value="1" /> : null}
             <label className="block flex-1">
               <span className="sr-only">Search feed</span>
@@ -44,23 +52,23 @@ export default async function FeedPage({
               Search
             </button>
           </form>
-          <FeedFilters view={view} saved={savedOnly} q={q} />
+          <FeedFilters view={view} saved={savedOnly} kind={kindFilter} q={q} />
         </div>
-      </div>
-
-      <section className="mt-2 w-full">
-        <FeedList view={view} savedOnly={savedOnly} q={q} />
-      </section>
-    </main>
+      }
+    >
+      <FeedList view={view} kindFilter={kindFilter} savedOnly={savedOnly} q={q} />
+    </FeedPageShell>
   );
 }
 
 async function FeedList({
   view,
+  kindFilter,
   savedOnly,
   q,
 }: {
   view: FeedView | undefined;
+  kindFilter: FeedItemKind | undefined;
   savedOnly: boolean;
   q: string;
 }) {
@@ -77,6 +85,7 @@ async function FeedList({
         galleriesById={galleriesById}
         fullGalleriesById={fullGalleriesById}
         savedOnly={savedOnly}
+        kindFilter={kindFilter}
         searchTerm={q}
       />
     );
