@@ -31,6 +31,8 @@ static-assets Worker: a static Next.js export (`pnpm pages:build`, output `apps/
 served from `apps/landing/wrangler.toml`. The `/app` multi-zone proxy is a server feature, so it
 is omitted from the static export until the web zone is deployed.
 
+Staging and production setup: [Deployment](deployment.md).
+
 ## Frontend tooling
 
 - The monorepo is managed with pnpm workspaces and Turborepo.

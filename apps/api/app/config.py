@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     login_code_rate_limit_per_email: int = 3
     login_code_rate_limit_window_hours: int = 1
     email_provider: str = "console"
+    email_from: str = "Grounded Art <noreply@grounded-art.co.za>"
+    resend_api_key: str | None = None
     cookie_secure: bool = False
     session_cookie_name: str = "ga-session"
     session_cookie_path: str = "/"
