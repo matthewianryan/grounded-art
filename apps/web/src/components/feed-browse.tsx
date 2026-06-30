@@ -233,7 +233,7 @@ export function FeedBrowse({
             <div
               ref={dialogRef}
               tabIndex={-1}
-              className={`absolute inset-x-0 top-0 z-20 flex ${FEED_CAROUSEL_STAGE_CLASS} items-center justify-center px-4 py-8 outline-none ${
+              className={`absolute inset-x-0 top-0 z-20 flex ${FEED_CAROUSEL_STAGE_CLASS} items-center justify-center px-3 py-6 outline-none md:px-4 md:py-8 ${
                 mode === "expanded" ? "pointer-events-auto" : "pointer-events-none"
               }`}
               role="dialog"

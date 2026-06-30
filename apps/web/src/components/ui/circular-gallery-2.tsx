@@ -4,8 +4,7 @@
 import { Camera, Mesh, Plane, Program, Renderer, Texture, Transform } from 'ogl';
 import { useEffect, useRef } from 'react';
 import {
-  FEED_CAROUSEL_PLANE_HEIGHT_FACTOR as PLANE_HEIGHT_FACTOR,
-  FEED_CAROUSEL_PLANE_WIDTH_FACTOR as PLANE_WIDTH_FACTOR,
+  feedCarouselPlaneFactors,
 } from '@/lib/feed-carousel-layout';
 
 function debounce(func: any, wait: number) {
@@ -50,6 +49,7 @@ interface CircularGalleryProps {
 const PLANE_PADDING = 2;
 
 class Media {
+  app: any;
   extra: number;
   geometry: any;
   gl: any;
@@ -74,6 +74,7 @@ class Media {
   width: any;
 
   constructor({
+    app,
     geometry,
     gl,
     image,
@@ -86,6 +87,7 @@ class Media {
     bend,
     borderRadius = 0,
   }: any) {
+    this.app = app;
     this.extra = 0;
     this.geometry = geometry;
     this.gl = gl;
@@ -221,9 +223,10 @@ class Media {
         this.plane.program.uniforms.uViewportSizes.value = [this.viewport.width, this.viewport.height];
       }
     }
+    const planeFactors = this.app?.planeFactors ?? feedCarouselPlaneFactors(window.innerWidth);
     this.scale = this.screen.height / 1500;
-    this.plane.scale.y = (this.viewport.height * (PLANE_HEIGHT_FACTOR * this.scale)) / this.screen.height;
-    this.plane.scale.x = (this.viewport.width * (PLANE_WIDTH_FACTOR * this.scale)) / this.screen.width;
+    this.plane.scale.y = (this.viewport.height * (planeFactors.height * this.scale)) / this.screen.height;
+    this.plane.scale.x = (this.viewport.width * (planeFactors.width * this.scale)) / this.screen.width;
     this.plane.program.uniforms.uPlaneSizes.value = [this.plane.scale.x, this.plane.scale.y];
     this.padding = PLANE_PADDING;
     this.width = this.plane.scale.x + this.padding;
@@ -260,6 +263,7 @@ class App {
   interactive: boolean;
   interactionListenersAttached: boolean;
   onActiveIndexChange?: (index: number) => void;
+  planeFactors: { height: number; width: number };
 
   constructor(
     container: HTMLElement,
@@ -289,6 +293,7 @@ class App {
     this.interactive = true;
     this.interactionListenersAttached = false;
     this.onActiveIndexChange = onActiveIndexChange;
+    this.planeFactors = feedCarouselPlaneFactors(window.innerWidth);
     this.onCheckDebounce = debounce(this.onCheck.bind(this), 200);
     this.createRenderer();
     this.createCamera();
@@ -343,6 +348,7 @@ class App {
     this.mediasImages = sourceItems.concat(sourceItems);
     this.medias = this.mediasImages.map((data: GalleryItem, index: number) => {
       return new Media({
+        app: this,
         geometry: this.planeGeometry,
         gl: this.gl,
         image: data.image,
@@ -358,6 +364,10 @@ class App {
     });
   }
   onTouchDown(e: any) {
+    if (e.touches && e.touches.length > 1) {
+      e.preventDefault();
+      return;
+    }
     this.isDown = true;
     this.scroll.position = this.scroll.current;
     this.start = e.touches ? e.touches[0].clientX : e.clientX;
@@ -394,6 +404,7 @@ class App {
     this.lastActiveIndex = clamped;
   }
   onResize() {
+    this.planeFactors = feedCarouselPlaneFactors(window.innerWidth);
     this.screen = {
       width: this.container.clientWidth,
       height: this.container.clientHeight
@@ -407,7 +418,9 @@ class App {
     const width = height * this.camera.aspect;
     this.viewport = { width, height };
     if (this.medias) {
-      this.medias.forEach((media: any) => media.onResize({ screen: this.screen, viewport: this.viewport }));
+      this.medias.forEach((media: any) =>
+        media.onResize({ screen: this.screen, viewport: this.viewport }),
+      );
     }
   }
   update() {
@@ -452,7 +465,7 @@ class App {
     window.addEventListener('mousedown', this.boundOnTouchDown);
     window.addEventListener('mousemove', this.boundOnTouchMove);
     window.addEventListener('mouseup', this.boundOnTouchUp);
-    window.addEventListener('touchstart', this.boundOnTouchDown);
+    window.addEventListener('touchstart', this.boundOnTouchDown, { passive: false });
     window.addEventListener('touchmove', this.boundOnTouchMove);
     window.addEventListener('touchend', this.boundOnTouchUp);
     this.interactionListenersAttached = true;
@@ -541,7 +554,7 @@ export function CircularGallery({
 
   return (
     <div
-      className="h-full w-full cursor-grab overflow-hidden active:cursor-grabbing"
+      className="h-full w-full touch-pan-y cursor-grab overflow-hidden active:cursor-grabbing"
       ref={containerRef}
     />
   );

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "./theme-toggle";
 
 const links = [
@@ -13,59 +14,180 @@ const links = [
 
 export function SiteNav() {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const firstFocusable = panelRef.current?.querySelector<HTMLElement>(
+      "a,button,[tabindex]:not([tabindex='-1'])",
+    );
+    firstFocusable?.focus();
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setMenuOpen(false);
+        buttonRef.current?.focus();
+      }
+    }
+
+    function onPointerDown(event: PointerEvent) {
+      const target = event.target as Node | null;
+      if (
+        target &&
+        !panelRef.current?.contains(target) &&
+        !buttonRef.current?.contains(target)
+      ) {
+        setMenuOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [menuOpen]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-line/70 bg-paper/80 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <Link href="/" className="inline-flex flex-col" aria-label="Grounded Art home">
           <span className="font-display text-lg leading-none">Grounded Art</span>
           <span className="mt-1.5 h-px w-7 bg-accent" aria-hidden="true" />
         </Link>
 
         <nav
-          className="flex items-center gap-2 rounded-full border border-line bg-paper px-2 py-1.5 text-xs uppercase tracking-[0.14em] sm:gap-1 sm:px-3"
+          className="hidden items-center gap-2 rounded-full border border-line bg-paper px-2 py-1.5 text-xs uppercase tracking-[0.14em] md:flex"
           aria-label="Main"
         >
-          <span className="hidden px-2 text-muted sm:inline-flex" aria-hidden="true">
-            <MenuIcon />
-          </span>
-
-          {links.map(({ href, label, live }) => {
-            const active = live && (pathname === href || pathname.startsWith(`${href}/`));
-
-            if (!live) {
-              return (
-                <span
-                  key={href}
-                  aria-disabled="true"
-                  className="cursor-default px-2.5 py-1.5 text-muted/70 sm:px-3"
-                  title="Coming soon"
-                >
-                  {label}
-                </span>
-              );
-            }
-
-            return (
-              <Link
-                key={href}
-                href={href}
-                aria-current={active ? "page" : undefined}
-                className={`rounded-full px-2.5 py-1.5 transition sm:px-3 ${
-                  active
-                    ? "bg-ink text-paper"
-                    : "text-muted hover:bg-line/40 hover:text-ink"
-                }`}
-              >
-                {label}
-              </Link>
-            );
-          })}
-
+          {links.map((link) => (
+            <InlineNavItem key={link.href} pathname={pathname} {...link} />
+          ))}
           <ThemeToggle />
         </nav>
+
+        <button
+          ref={buttonRef}
+          type="button"
+          className="inline-flex items-center justify-center rounded-full border border-line bg-paper p-2 text-muted transition hover:border-ink hover:text-ink md:hidden"
+          aria-label="Open menu"
+          aria-expanded={menuOpen}
+          aria-controls="mobile-nav-panel"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <MenuIcon />
+        </button>
       </div>
+
+      {menuOpen && (
+        <div
+          id="mobile-nav-panel"
+          ref={panelRef}
+          className="border-t border-line bg-paper px-4 py-3 md:hidden"
+        >
+          <nav className="flex flex-col gap-1 text-xs uppercase tracking-[0.14em]" aria-label="Mobile">
+            {links.map((link) => (
+              <MobileNavItem
+                key={link.href}
+                pathname={pathname}
+                closeMenu={() => setMenuOpen(false)}
+                {...link}
+              />
+            ))}
+            <div className="mt-2 flex items-center justify-between rounded-full border border-line px-3 py-2">
+              <span className="text-muted">Dark</span>
+              <ThemeToggle />
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
+  );
+}
+
+function InlineNavItem({
+  href,
+  label,
+  live,
+  pathname,
+}: {
+  href: string;
+  label: string;
+  live: boolean;
+  pathname: string;
+}) {
+  const active = live && (pathname === href || pathname.startsWith(`${href}/`));
+
+  if (!live) {
+    return (
+      <span
+        aria-disabled="true"
+        className="cursor-default px-3 py-1.5 text-muted/70"
+        title="Coming soon"
+      >
+        {label}
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={`rounded-full px-3 py-1.5 transition ${
+        active ? "bg-ink text-paper" : "text-muted hover:bg-line/40 hover:text-ink"
+      }`}
+    >
+      {label}
+    </Link>
+  );
+}
+
+function MobileNavItem({
+  href,
+  label,
+  live,
+  pathname,
+  closeMenu,
+}: {
+  href: string;
+  label: string;
+  live: boolean;
+  pathname: string;
+  closeMenu: () => void;
+}) {
+  const active = live && (pathname === href || pathname.startsWith(`${href}/`));
+
+  if (!live) {
+    return (
+      <span
+        aria-disabled="true"
+        className="rounded-full border border-line px-3 py-2 text-muted/70"
+        title="Coming soon"
+      >
+        {label}
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={`rounded-full border px-3 py-2 transition ${
+        active
+          ? "border-ink bg-ink text-paper"
+          : "border-line text-muted hover:border-ink hover:text-ink"
+      }`}
+      onClick={closeMenu}
+    >
+      {label}
+    </Link>
   );
 }
 

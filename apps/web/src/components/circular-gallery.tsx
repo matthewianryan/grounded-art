@@ -17,7 +17,8 @@ interface CircularGalleryProps {
   onActiveSelect?: () => void;
 }
 
-const CARD_OFFSET_X = 200;
+const MOBILE_CARD_OFFSET_X = 110;
+const DESKTOP_CARD_OFFSET_X = 200;
 const ARC_LIFT = 14;
 
 function arcOffsetY(offset: number): number {
@@ -84,7 +85,7 @@ function ReducedMotionGallery({
   return (
     <div
       ref={containerRef}
-      className={`flex ${FEED_CAROUSEL_STAGE_CLASS} snap-x snap-mandatory items-center gap-8 overflow-x-auto ${FEED_CAROUSEL_SNAP_PADDING_CLASS} pb-8`}
+      className={`flex ${FEED_CAROUSEL_STAGE_CLASS} touch-pan-y snap-x snap-mandatory items-center gap-8 overflow-x-auto ${FEED_CAROUSEL_SNAP_PADDING_CLASS} pb-8`}
       role="list"
       aria-label="Feed browse gallery"
     >
@@ -127,6 +128,7 @@ function MotionGallery({
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dragStartX = useRef(0);
+  const isDesktopRef = useRef(false);
 
   const goTo = useCallback(
     (index: number) => {
@@ -138,6 +140,12 @@ function MotionGallery({
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+    const media = window.matchMedia("(min-width: 768px)");
+    const syncBreakpoint = () => {
+      isDesktopRef.current = media.matches;
+    };
+    syncBreakpoint();
+    media.addEventListener("change", syncBreakpoint);
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "ArrowLeft") {
@@ -163,6 +171,7 @@ function MotionGallery({
     container.addEventListener("keydown", onKeyDown);
     container.addEventListener("wheel", onWheel, { passive: false });
     return () => {
+      media.removeEventListener("change", syncBreakpoint);
       container.removeEventListener("keydown", onKeyDown);
       container.removeEventListener("wheel", onWheel);
     };
@@ -198,7 +207,7 @@ function MotionGallery({
                 zIndex: 10 - absOffset,
               }}
               animate={{
-                x: offset * CARD_OFFSET_X,
+                x: offset * (isDesktopRef.current ? DESKTOP_CARD_OFFSET_X : MOBILE_CARD_OFFSET_X),
                 y: arcOffsetY(offset),
                 rotateY: offset * -28,
                 rotateZ: offset * -4,

@@ -80,7 +80,7 @@ export function FeedCircularGallery({
 
   if (items.length === 0) return null;
 
-  const stageClass = `relative ${FEED_CAROUSEL_STAGE_CLASS} w-full bg-paper ${
+  const stageClass = `relative ${FEED_CAROUSEL_STAGE_CLASS} w-full touch-pan-y bg-paper ${
     interactive ? "" : "pointer-events-none"
   }`;
 
