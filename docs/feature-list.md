@@ -58,6 +58,7 @@ starting point for the redesign build.
 | Feature | Status | Notes |
 |---------|--------|-------|
 | Shared redesign tokens (card, badge, action row, wallet) | Built | Phase 0; packages/tailwind-config |
+| Shared typography utilities (ga-kicker, ga-display-*, ga-body) | Built | packages/tailwind-config/typography.css; landing and web app |
 | Circular gallery shell (preview) | Built | Phase 0 isolated shell; /app/preview/patterns |
 | Unmask reveal shell (preview) | Built | Phase 0 isolated shell; sticky scroll layering |
 | Circular gallery feed browse | Built | Live at /feed; all items, temporal views only |

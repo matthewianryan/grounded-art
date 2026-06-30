@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./theme.css": "./theme.css"
+    "./theme.css": "./theme.css",
+    "./typography.css": "./typography.css",
+    "./fonts.css": "./fonts.css"
   },
-  "files": ["theme.css"]
+  "files": ["theme.css", "typography.css", "fonts.css", "fonts"]
 }

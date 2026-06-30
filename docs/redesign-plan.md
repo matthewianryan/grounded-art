@@ -82,8 +82,8 @@ is present, and never compete with the art.
 - [x] The contact page and its form, posting to the API. See [Contact](pages/contact.md).
 - [x] Nav and footer updated for the redesign: Map, Feed, Profile, Contact us.
 - [x] Landing call to action that opens the web app, defaulting to the feed carousel.
-- [x] The landing nav Map and Feed links go live into the app, replacing the v1 in-page
-      previews.
+- [x] Landing nav Map and Feed link to in-page previews (`/#atlas`, `/#feed`). The live app
+      stays under `/app` via the web zone nav and deep links.
 
 Gate: the form reaches us and stores. Nav and footer are consistent across the landing and the
 web app. The page is in Grounded Art tokens.

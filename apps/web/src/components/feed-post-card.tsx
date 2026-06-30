@@ -22,7 +22,7 @@ export function FeedPostImage({
       className={`flex items-center justify-center bg-line/30 ${className}`}
       aria-hidden="true"
     >
-      <span className="px-4 text-center font-display text-sm text-muted">{displayName}</span>
+      <span className="ga-display-card px-4 text-center text-muted">{displayName}</span>
     </div>
   );
 }
@@ -47,7 +47,7 @@ export function FeedPostCard({
       />
       <div className="border-t border-line p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <p className={`font-display text-ink ${compact ? "text-lg" : "text-sm"}`}>
+          <p className={`ga-display-card text-ink ${compact ? "text-lg sm:text-xl" : ""}`}>
             {displayName}
           </p>
           <PostBadges badges={badges} />

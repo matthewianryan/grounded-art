@@ -11,7 +11,7 @@ export default async function ProfileWalletPage() {
 
   return (
     <section aria-labelledby="wallet-heading">
-      <h2 id="wallet-heading" className="font-display text-2xl tracking-tight">
+      <h2 id="wallet-heading" className="ga-display-sub">
         Wallet
       </h2>
 
@@ -24,9 +24,9 @@ export default async function ProfileWalletPage() {
         </div>
       ) : (
         <div className="mt-6 rounded-card border border-line bg-card-bg p-5 shadow-card">
-          <p className="text-xs uppercase tracking-[0.16em] text-wallet-muted">Balance</p>
+          <p className="ga-meta text-wallet-muted">Balance</p>
           <p className="mt-2 font-display text-4xl text-wallet-balance">{wallet.balance}</p>
-          <p className="mt-1 text-sm text-wallet-muted">points earned</p>
+          <p className="ga-body mt-1 text-wallet-muted">points earned</p>
           <ul className="mt-6 space-y-3 border-t border-line pt-4">
             {wallet.transactions.map((tx) => (
               <li key={tx.id} className="flex items-baseline justify-between text-sm">

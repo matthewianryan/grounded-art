@@ -10,7 +10,7 @@ export default async function ProfileAccountPage() {
 
   return (
     <section aria-labelledby="account-heading">
-      <h2 id="account-heading" className="font-display text-2xl tracking-tight">
+      <h2 id="account-heading" className="ga-display-sub">
         Account
       </h2>
       <div className="mt-6">

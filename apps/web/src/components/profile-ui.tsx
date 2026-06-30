@@ -42,8 +42,8 @@ export function ProfileEditLink() {
 export function ProfileEmptyState({ title, body }: { title: string; body: string }) {
   return (
     <div className="rounded-card border border-line bg-card-bg p-8 text-center shadow-card">
-      <h2 className="font-display text-xl tracking-tight">{title}</h2>
-      <p className="mt-2 text-sm text-muted">{body}</p>
+      <h2 className="ga-display-sub">{title}</h2>
+      <p className="ga-body mt-2">{body}</p>
     </div>
   );
 }

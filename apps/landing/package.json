@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@grounded-art/tailwind-config": "workspace:*",
+    "@grounded-art/ui": "workspace:*",
     "@gsap/react": "^2.1.2",
     "@next/env": "^15.5.19",
     "gsap": "^3.15.0",

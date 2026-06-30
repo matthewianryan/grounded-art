@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@grounded-art/tailwind-config": "workspace:*",
+    "@grounded-art/ui": "workspace:*",
     "@next/env": "^15.5.19",
     "motion": "^12.40.0",
     "next": "^15.0.0",

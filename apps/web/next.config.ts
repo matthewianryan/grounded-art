@@ -10,6 +10,7 @@ loadEnvConfig(rootDir);
 const nextConfig: NextConfig = {
   outputFileTracingRoot: rootDir,
   basePath: "/app",
+  transpilePackages: ["@grounded-art/ui"],
 };
 
 export default nextConfig;

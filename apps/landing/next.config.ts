@@ -19,12 +19,14 @@ const nextConfig: NextConfig = isStaticExport
   ? {
       output: "export",
       outputFileTracingRoot: rootDir,
+      transpilePackages: ["@grounded-art/ui"],
       // next/image optimization needs a server; the static export ships the
       // source images as-is.
       images: { unoptimized: true },
     }
   : {
       outputFileTracingRoot: rootDir,
+      transpilePackages: ["@grounded-art/ui"],
       async rewrites() {
         return [
           { source: "/app", destination: `${WEB_APP_URL}/app` },
