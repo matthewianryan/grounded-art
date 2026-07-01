@@ -1,8 +1,8 @@
 import { listFeed, listGalleries } from "@/lib/api";
 import type { FeedView } from "@/lib/types";
-import { FeedFilters } from "@/components/feed-filters";
 import { FeedBrowse } from "@/components/feed-browse";
 import { FeedPageShell } from "@/components/feed-page-shell";
+import { FeedToolbar } from "@/components/feed-toolbar";
 import { buildGalleryMaps } from "@/lib/feed-display";
 
 const FEED_VIEWS: FeedView[] = ["this_weekend", "opening_this_week", "closing_soon"];
@@ -23,31 +23,7 @@ export default async function FeedPage({
 
   return (
     <FeedPageShell
-      toolbar={
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <form method="get" className="flex flex-1 gap-2 sm:max-w-md">
-            {view ? <input type="hidden" name="view" value={view} /> : null}
-            {savedOnly ? <input type="hidden" name="saved" value="1" /> : null}
-            <label className="block flex-1">
-              <span className="sr-only">Search feed</span>
-              <input
-                type="search"
-                name="q"
-                defaultValue={q}
-                placeholder="Search feed"
-                className="w-full rounded-full border border-line bg-paper px-4 py-2.5 text-sm text-ink placeholder:text-muted"
-              />
-            </label>
-            <button
-              type="submit"
-              className="rounded-full border border-line px-4 py-2.5 text-sm text-muted transition hover:border-ink hover:text-ink"
-            >
-              Search
-            </button>
-          </form>
-          <FeedFilters view={view} saved={savedOnly} q={q} />
-        </div>
-      }
+      toolbar={<FeedToolbar view={view} saved={savedOnly} q={q} />}
     >
       <FeedList view={view} savedOnly={savedOnly} q={q} />
     </FeedPageShell>
