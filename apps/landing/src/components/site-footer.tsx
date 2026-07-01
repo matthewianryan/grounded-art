@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { mapHref, feedHref } from "@/lib/app-url";
 
 // Shared footer: a short blurb, the contact email, social profiles, and a clear takedown and
 // opt-out contact. Kept restrained so it closes the page without competing with the work above.
@@ -9,27 +10,30 @@ export function SiteFooter() {
         <div className="sm:col-span-2 lg:col-span-2">
           <span className="font-display text-lg">Grounded Art</span>
           <span className="mt-2 block h-px w-7 bg-accent" aria-hidden="true" />
-          <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted">
+          <p className="ga-body mt-5 max-w-sm">
             A living atlas of Cape Town art. Every gallery, exhibition, and opening in one
             place, kept current and made by people who love this city.
           </p>
         </div>
 
         <nav className="flex flex-col gap-3 text-sm">
-          <span className="text-xs uppercase tracking-[0.18em] text-muted">Explore</span>
-          <Link href="/#atlas" className="text-muted transition hover:text-ink">
-            Atlas
-          </Link>
-          <Link href="/#feed" className="text-muted transition hover:text-ink">
+          <span className="ga-meta tracking-[0.18em]">Explore</span>
+          <a href={mapHref()} className="text-muted transition hover:text-ink">
+            Map
+          </a>
+          <a href={feedHref()} className="text-muted transition hover:text-ink">
             Feed
-          </Link>
+          </a>
           <Link href="/about" className="text-muted transition hover:text-ink">
             About
+          </Link>
+          <Link href="/contact" className="text-muted transition hover:text-ink">
+            Contact us
           </Link>
         </nav>
 
         <nav className="flex flex-col gap-3 text-sm">
-          <span className="text-xs uppercase tracking-[0.18em] text-muted">Find us</span>
+          <span className="ga-meta tracking-[0.18em]">Find us</span>
           <a
             href="https://www.instagram.com/groundedart.ct"
             target="_blank"

@@ -1,0 +1,40 @@
+/* Shared Grounded Art typography utilities.
+   Derived from the landing page and contact page patterns. */
+
+@layer components {
+  .ga-kicker {
+    @apply text-sm uppercase tracking-[0.2em] text-accent;
+  }
+
+  .ga-display-page {
+    @apply font-display text-5xl leading-[1.08] sm:text-6xl;
+  }
+
+  .ga-display-section {
+    @apply font-display text-4xl leading-tight sm:text-5xl;
+  }
+
+  .ga-display-sub {
+    @apply font-display text-xl;
+  }
+
+  .ga-display-card {
+    @apply font-display text-xl leading-snug;
+  }
+
+  .ga-body-intro {
+    @apply text-lg leading-relaxed text-muted;
+  }
+
+  .ga-body {
+    @apply text-sm leading-relaxed text-muted;
+  }
+
+  .ga-meta {
+    @apply text-xs uppercase tracking-[0.16em] text-muted;
+  }
+
+  .ga-label {
+    @apply text-sm font-medium text-ink;
+  }
+}

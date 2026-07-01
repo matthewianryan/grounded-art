@@ -10,23 +10,28 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@grounded-art/tailwind-config": "workspace:*",
+    "@grounded-art/ui": "workspace:*",
+    "@next/env": "^15.5.19",
     "motion": "^12.40.0",
     "next": "^15.0.0",
+    "ogl": "^1.0.11",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "@grounded-art/tailwind-config": "workspace:*"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.0.0",
     "@grounded-art/tsconfig": "workspace:*",
     "@tailwindcss/postcss": "^4.0.0",
-    "tailwindcss": "^4.0.0",
-    "typescript": "^5.0.0",
     "@types/google.maps": "^3.58.1",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.0.0",
-    "@eslint/eslintrc": "^3.0.0"
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.0.0"
   }
 }

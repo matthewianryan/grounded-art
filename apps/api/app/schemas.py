@@ -8,7 +8,7 @@ are not exposed through the API.
 import uuid
 from datetime import date, datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
 class ORMModel(BaseModel):
@@ -46,15 +46,35 @@ class GalleryRead(ORMModel):
     hours: dict | None
     business_status: str | None
     featured: bool
+    brand_name: str | None
+    brand_logo_url: str | None
     last_refreshed_at: datetime | None
     images: list[GalleryImageRead]
     external_refs: list[GalleryExternalRefRead]
+
+
+class FeedItemImageRead(ORMModel):
+    id: uuid.UUID
+    url: str
+    attribution: str | None
+    width: int | None
+    height: int | None
+    is_primary: bool
+    sort_rank: int | None
+
+
+class FeedItemLinkRead(ORMModel):
+    id: uuid.UUID
+    label: str
+    url: str
+    sort_rank: int | None
 
 
 class FeedItemRead(ORMModel):
     id: uuid.UUID
     slug: str
     type: str
+    kind: str
     title: str
     body: str | None
     gallery_id: uuid.UUID | None
@@ -67,6 +87,8 @@ class FeedItemRead(ORMModel):
     featured: bool
     published_at: datetime | None
     last_refreshed_at: datetime | None
+    images: list[FeedItemImageRead]
+    links: list[FeedItemLinkRead]
 
 
 class GalleryPage(BaseModel):
@@ -81,3 +103,151 @@ class FeedPage(BaseModel):
     total: int
     limit: int
     offset: int
+
+
+class ContactMessageCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=255)
+    email: str = Field(min_length=3, max_length=255)
+    subject: str = Field(min_length=2, max_length=512)
+    message: str = Field(min_length=10, max_length=5000)
+    company: str | None = Field(default=None, max_length=255)
+    turnstile_token: str | None = Field(default=None, max_length=2048)
+
+    @field_validator(
+        "name",
+        "email",
+        "subject",
+        "message",
+        "company",
+        "turnstile_token",
+        mode="before",
+    )
+    @classmethod
+    def _strip_text(cls, value: str | None) -> str | None:
+        if isinstance(value, str):
+            return value.strip()
+        return value
+
+    @field_validator("email")
+    @classmethod
+    def _validate_email(cls, value: str) -> str:
+        if "@" not in value or "." not in value.rsplit("@", 1)[-1]:
+            raise ValueError("Enter a valid email address.")
+        return value.lower()
+
+
+class ContactMessageRead(ORMModel):
+    id: uuid.UUID
+    received_at: datetime
+
+
+# Auth and account schemas
+
+
+class RequestCodeBody(BaseModel):
+    email: EmailStr
+
+
+class VerifyCodeBody(BaseModel):
+    email: EmailStr
+    code: str = Field(min_length=6, max_length=6)
+    saved_keys: list[str] = Field(default_factory=list)
+
+
+class AccountRead(ORMModel):
+    id: uuid.UUID
+    email: str
+    display_name: str
+    title: str | None
+    avatar_url: str | None
+    bio: str | None
+    first_name: str | None
+    last_name: str | None
+    phone: str | None
+    joined_at: datetime
+
+
+class AccountUpdate(BaseModel):
+    display_name: str | None = Field(default=None, min_length=1, max_length=255)
+    title: str | None = Field(default=None, max_length=255)
+    avatar_url: str | None = Field(default=None, max_length=512)
+    bio: str | None = None
+    first_name: str | None = Field(default=None, max_length=255)
+    last_name: str | None = Field(default=None, max_length=255)
+    phone: str | None = Field(default=None, max_length=64)
+
+
+class SavedItemRead(BaseModel):
+    kind: str
+    slug: str
+    saved_at: datetime
+    gallery: GalleryRead | None = None
+    feed_item: FeedItemRead | None = None
+
+
+class SavedPage(BaseModel):
+    items: list[SavedItemRead]
+
+
+class AddSavedBody(BaseModel):
+    kind: str = Field(pattern="^(feed|gallery)$")
+    slug: str = Field(min_length=1, max_length=255)
+
+
+class WalletTransactionRead(BaseModel):
+    id: uuid.UUID
+    delta: int
+    reason: str
+    created_at: datetime
+    gallery_name: str | None = None
+
+
+class WalletRead(BaseModel):
+    balance: int
+    transactions: list[WalletTransactionRead]
+
+
+class CheckInRead(BaseModel):
+    id: uuid.UUID
+    gallery_slug: str
+    gallery_name: str
+    checked_in_at: datetime
+    verified: bool
+    point_awarded: bool
+    presence_method: str
+
+
+class CheckInPage(BaseModel):
+    items: list[CheckInRead]
+
+
+class CheckInChallengeBody(BaseModel):
+    gallery_slug: str = Field(min_length=1, max_length=255)
+    # The on-site venue code, when the user reached the gallery card by scanning it. A missing
+    # or non-matching code silently falls back to the geolocation tier; it never blocks.
+    code: str | None = Field(default=None, max_length=64)
+
+
+class CheckInChallengeRead(BaseModel):
+    challenge_token: str
+    expires_at: datetime
+
+
+class CheckInCreateBody(BaseModel):
+    gallery_slug: str = Field(min_length=1, max_length=255)
+    latitude: float
+    longitude: float
+    challenge_token: str = Field(min_length=1)
+    # Device-reported fix accuracy in metres. Coarse fixes are rejected before a point is awarded.
+    accuracy: float | None = Field(default=None, ge=0)
+
+
+class CheckInResultRead(BaseModel):
+    id: uuid.UUID
+    verified: bool
+    point_awarded: bool
+    already_earned_today: bool
+    balance: int
+    presence_method: str
+    # One of CheckInDeclineReason when no point was awarded; null when a point was awarded.
+    decline_reason: str | None = None

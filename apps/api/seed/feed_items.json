@@ -2,6 +2,7 @@
   {
     "slug": "blank-projects-mukwazhi-hlatshwayo-2026",
     "type": "exhibition",
+    "kind": "event",
     "title": "Kresiah Mukwazhi and Thembinkosi Hlatshwayo",
     "body": "A two-person exhibition at blank projects bringing together new work by Kresiah Mukwazhi and Thembinkosi Hlatshwayo.",
     "gallery_slug": "blank-projects",
@@ -9,11 +10,25 @@
     "ends_on": "2026-07-04",
     "featured": true,
     "source": "gallery_site",
-    "source_url": "https://blankprojects.com/Gallery"
+    "source_url": "https://blankprojects.com/Gallery",
+    "images": [
+      {
+        "url": "/images/seed/blank-projects.jpg",
+        "width": 1800,
+        "height": 2119,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1565876427310-0695a4ff03b7",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ]
   },
   {
     "slug": "goodman-masamvu-naked-2026",
     "type": "exhibition",
+    "kind": "event",
     "title": "Misheck Masamvu: Naked",
     "body": "A solo exhibition of new paintings by Misheck Masamvu at Goodman Gallery Cape Town.",
     "gallery_slug": "goodman-gallery-cape-town",
@@ -21,11 +36,55 @@
     "ends_on": "2026-07-11",
     "featured": true,
     "source": "gallery_site",
-    "source_url": "https://goodman-gallery.com/exhibitions"
+    "source_url": "https://goodman-gallery.com/exhibitions",
+    "images": [
+      {
+        "url": "/images/seed/goodman-1.jpg",
+        "width": 1200,
+        "height": 1600,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1552250575-e508473b090f",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      },
+      {
+        "url": "/images/seed/goodman-2.jpg",
+        "width": 1800,
+        "height": 2497,
+        "is_primary": false,
+        "sort_rank": 1,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1569084024058-1632922a4e1d",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      },
+      {
+        "url": "/images/seed/goodman-3.jpg",
+        "width": 1200,
+        "height": 1595,
+        "is_primary": false,
+        "sort_rank": 2,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1541512416146-3cf58d6b27cc",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ],
+    "links": [
+      { "label": "Website", "url": "https://goodman-gallery.com", "sort_rank": 0 },
+      {
+        "label": "Instagram",
+        "url": "https://www.instagram.com/goodmangallery/",
+        "sort_rank": 1
+      }
+    ]
   },
   {
     "slug": "thk-i-find-you-all-around-me-2026",
     "type": "exhibition",
+    "kind": "event",
     "title": "I Find You All Around Me",
     "body": "A group exhibition at THK Gallery in the city centre.",
     "gallery_slug": "thk-gallery",
@@ -33,11 +92,25 @@
     "ends_on": "2026-07-27",
     "featured": false,
     "source": "listing_site",
-    "source_url": "https://ocula.com/art-galleries/thk-gallery/exhibitions/i-find-you-all-around-me/"
+    "source_url": "https://ocula.com/art-galleries/thk-gallery/exhibitions/i-find-you-all-around-me/",
+    "images": [
+      {
+        "url": "/images/seed/thk-group.jpg",
+        "width": 2000,
+        "height": 1333,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1733886870851-82f45e3fad3c",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ]
   },
   {
     "slug": "norval-zvavahera-tanda-rima-2026",
     "type": "exhibition",
+    "kind": "event",
     "title": "Portia Zvavahera: Tanda rima",
     "body": "A major exhibition by the Zimbabwean artist Portia Zvavahera at the Norval Foundation, presented as part of the Investec Cape Town Art Fair programme.",
     "gallery_slug": "norval-foundation",
@@ -45,11 +118,47 @@
     "ends_on": "2026-09-06",
     "featured": true,
     "source": "gallery_site",
-    "source_url": "https://www.norvalfoundation.org/exhibitions/"
+    "source_url": "https://www.norvalfoundation.org/exhibitions/",
+    "images": [
+      {
+        "url": "/images/seed/zvavahera-1.jpg",
+        "width": 1200,
+        "height": 1600,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1552250575-e508473b090f",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      },
+      {
+        "url": "/images/seed/zvavahera-2.jpg",
+        "width": 1200,
+        "height": 800,
+        "is_primary": false,
+        "sort_rank": 1,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1587824992101-b86cc807f3ed",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      },
+      {
+        "url": "/images/seed/zvavahera-3.jpg",
+        "width": 1600,
+        "height": 1083,
+        "is_primary": false,
+        "sort_rank": 2,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1545052482-2c7be8b56e91",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ]
   },
   {
     "slug": "norval-coopoo-tears-now-2026",
     "type": "exhibition",
+    "kind": "event",
     "title": "Githan Coopoo: Tears Now But Heaven Tomorrow",
     "body": "An exhibition at the Norval Foundation honouring the South African artist Githan Coopoo and his work with clay.",
     "gallery_slug": "norval-foundation",
@@ -57,11 +166,25 @@
     "ends_on": "2026-10-04",
     "featured": false,
     "source": "gallery_site",
-    "source_url": "https://www.norvalfoundation.org/exhibitions/"
+    "source_url": "https://www.norvalfoundation.org/exhibitions/",
+    "images": [
+      {
+        "url": "/images/seed/coopoo-clay.jpg",
+        "width": 1800,
+        "height": 2497,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1569084024058-1632922a4e1d",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ]
   },
   {
     "slug": "norval-brett-murray-wild-life-2026",
     "type": "exhibition",
+    "kind": "event",
     "title": "Brett Murray: Wild Life",
     "body": "A solo exhibition of more than eighty sculptures spanning four decades of Brett Murray's career, at the Norval Foundation.",
     "gallery_slug": "norval-foundation",
@@ -69,11 +192,25 @@
     "ends_on": "2026-11-22",
     "featured": false,
     "source": "gallery_site",
-    "source_url": "https://www.norvalfoundation.org/exhibitions/"
+    "source_url": "https://www.norvalfoundation.org/exhibitions/",
+    "images": [
+      {
+        "url": "/images/seed/brett-sculpture.jpg",
+        "width": 1200,
+        "height": 800,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1572947650440-e8a97ef053b2",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ]
   },
   {
     "slug": "stevenson-both-and-2026",
     "type": "opening",
+    "kind": "event",
     "title": "Both, and",
     "body": "A group exhibition opening at Stevenson Cape Town, spilling beyond the main gallery into private and administrative spaces, with work by current gallery artists and guests. Opening Thursday 5 July, 6 to 8pm.",
     "gallery_slug": "stevenson-cape-town",
@@ -81,11 +218,25 @@
     "ends_on": null,
     "featured": false,
     "source": "gallery_site",
-    "source_url": "https://www.stevenson.info/exhibitions-upcoming"
+    "source_url": "https://www.stevenson.info/exhibitions-upcoming",
+    "images": [
+      {
+        "url": "/images/seed/stevenson-opening.jpg",
+        "width": 1600,
+        "height": 1083,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1545052482-2c7be8b56e91",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ]
   },
   {
     "slug": "first-thursdays-cape-town-july-2026",
     "type": "event",
+    "kind": "event",
     "title": "First Thursdays: Cape Town city centre",
     "body": "On the first Thursday of the month, galleries and cultural spaces across the city centre stay open into the evening. Walk between shows on foot through the City Bowl.",
     "gallery_slug": null,
@@ -95,11 +246,29 @@
     "ends_on": "2026-07-02",
     "featured": false,
     "source": "listing_site",
-    "source_url": "https://first-thursdays.co.za"
+    "source_url": "https://first-thursdays.co.za",
+    "images": [
+      {
+        "url": "/images/seed/first-thursdays.jpg",
+        "width": 2400,
+        "height": 1800,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1615184697985-c9bde1b07da7",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ],
+    "links": [
+      { "label": "Website", "url": "https://first-thursdays.co.za", "sort_rank": 0 },
+      { "label": "Instagram", "url": "https://www.instagram.com/firstthursdaysct/", "sort_rank": 1 }
+    ]
   },
   {
     "slug": "ga-winter-art-walk-guide-2026",
     "type": "post",
+    "kind": "announcement",
     "title": "Where to start with Cape Town art this winter",
     "body": "A short Grounded Art guide to the shows worth a trip across the city right now, from the Woodstock galleries to the city centre and the Waterfront.",
     "gallery_slug": null,
@@ -109,6 +278,7 @@
   {
     "slug": "sample-emerging-artist-spotlight",
     "type": "post",
+    "kind": "art_post",
     "title": "Studio spotlight: emerging Cape Town artist",
     "body": "Placeholder seed post for an emerging artist working without gallery representation, linking to their own digital presence. Replace with curated content. This item exists to exercise the location-less feed path.",
     "gallery_slug": null,
@@ -118,6 +288,56 @@
     "starts_on": "2026-06-30",
     "ends_on": "2026-07-01",
     "featured": false,
-    "source": "sample_seed"
+    "source": "sample_seed",
+    "images": [
+      {
+        "url": "/images/seed/spotlight-1.jpg",
+        "width": 1200,
+        "height": 1600,
+        "is_primary": true,
+        "sort_rank": 0,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1552250575-e508473b090f",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      },
+      {
+        "url": "/images/seed/spotlight-2.jpg",
+        "width": 1200,
+        "height": 1595,
+        "is_primary": false,
+        "sort_rank": 1,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1541512416146-3cf58d6b27cc",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      },
+      {
+        "url": "/images/seed/spotlight-3.jpg",
+        "width": 1200,
+        "height": 800,
+        "is_primary": false,
+        "sort_rank": 2,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1587824992101-b86cc807f3ed",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      },
+      {
+        "url": "/images/seed/spotlight-4.jpg",
+        "width": 2000,
+        "height": 1333,
+        "is_primary": false,
+        "sort_rank": 3,
+        "source": "manual",
+        "source_url": "https://images.unsplash.com/photo-1733886870851-82f45e3fad3c",
+        "permission_status": "cleared",
+        "attribution": "Unsplash (placeholder, cleared for dev seed)"
+      }
+    ],
+    "links": [
+      { "label": "Website", "url": "https://example.com", "sort_rank": 0 },
+      { "label": "Instagram", "url": "https://www.instagram.com/", "sort_rank": 1 }
+    ]
   }
 ]

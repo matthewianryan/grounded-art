@@ -23,7 +23,14 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 from app.db import SessionLocal
-from app.models import FeedItem, Gallery, GalleryExternalRef
+from app.models import (
+    FeedItem,
+    FeedItemImage,
+    FeedItemKind,
+    FeedItemLink,
+    Gallery,
+    GalleryExternalRef,
+)
 
 SEED_DIR = Path(__file__).resolve().parent.parent / "seed"
 
@@ -46,6 +53,7 @@ _GALLERY_FIELDS = (
 # Scalar columns copied straight from the feed item fixture.
 _FEED_FIELDS = (
     "type",
+    "kind",
     "title",
     "body",
     "creative_name",
@@ -118,10 +126,36 @@ def seed_galleries(session, now: datetime) -> int:
     return len(galleries)
 
 
+def _validate_feed_row(row: dict) -> None:
+    slug = row["slug"]
+    kind = row.get("kind")
+    if not kind:
+        raise ValueError(f"feed item {slug!r} is missing explicit kind")
+    images = row.get("images", [])
+    if kind == FeedItemKind.ANNOUNCEMENT:
+        if images:
+            raise ValueError(f"announcement {slug!r} must not have images")
+        return
+    if kind in (FeedItemKind.ART_POST, FeedItemKind.EVENT):
+        if not images:
+            raise ValueError(f"feed item {slug!r} ({kind}) must have at least one image")
+    primaries = [img for img in images if img.get("is_primary")]
+    if images and len(primaries) != 1:
+        raise ValueError(f"feed item {slug!r} must have exactly one primary image")
+
+
+def _primary_image_url(images: list[dict]) -> str | None:
+    if not images:
+        return None
+    primary = next((img for img in images if img.get("is_primary")), None)
+    return (primary or images[0])["url"]
+
+
 def seed_feed_items(session, now: datetime) -> int:
     galleries = {g.slug: g.id for g in session.query(Gallery.slug, Gallery.id).all()}
     count = 0
     for row in _load("feed_items.json"):
+        _validate_feed_row(row)
         slug = row["slug"]
         item = session.query(FeedItem).filter_by(slug=slug).one_or_none()
         if item is None:
@@ -143,6 +177,44 @@ def seed_feed_items(session, now: datetime) -> int:
         item.source_url = row.get("source_url")
         item.provenance = _provenance(row.get("source"), row.get("source_url"), now.date())
         item.last_refreshed_at = now
+
+        # Replace any existing images and links so a re-run stays idempotent. Flush the deletes
+        # first so re-inserting a primary image cannot collide on the one-primary unique index.
+        for image in list(item.images):
+            session.delete(image)
+        for link in list(item.links):
+            session.delete(link)
+        session.flush()
+
+        for index, image in enumerate(row.get("images", [])):
+            item.images.append(
+                FeedItemImage(
+                    url=image["url"],
+                    source=image.get("source", "manual"),
+                    source_url=image.get("source_url"),
+                    permission_status=image.get("permission_status", "cleared"),
+                    attribution=image.get("attribution"),
+                    width=image.get("width"),
+                    height=image.get("height"),
+                    is_primary=image.get("is_primary", index == 0),
+                    sort_rank=image.get("sort_rank", index),
+                )
+            )
+
+        # Carousel cover uses image_url; detail masonry uses FeedItemImage rows.
+        # Derive from the fixture, not the relationship, because old deleted image rows can
+        # remain in the in-memory collection until the session expires.
+        item.image_url = _primary_image_url(row.get("images", []))
+
+        for index, link in enumerate(row.get("links", [])):
+            item.links.append(
+                FeedItemLink(
+                    label=link["label"],
+                    url=link["url"],
+                    sort_rank=link.get("sort_rank", index),
+                )
+            )
+
         count += 1
 
     session.flush()

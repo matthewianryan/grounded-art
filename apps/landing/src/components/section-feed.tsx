@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Reveal } from "./reveal";
 
 // A snapshot of the feed: recent openings, exhibitions, and posts. The copy is illustrative of
@@ -43,14 +44,20 @@ export function SectionFeed() {
     <section id="feed" className="scroll-mt-24 border-t border-line">
       <div className="mx-auto max-w-6xl px-6 py-20">
         <Reveal className="max-w-2xl">
-          <p className="text-sm uppercase tracking-[0.2em] text-accent">The feed</p>
-          <h2 className="mt-5 font-display text-4xl leading-tight sm:text-5xl">
+          <p className="ga-kicker">The feed</p>
+          <h2 className="ga-display-section mt-5">
             What is happening, right now.
           </h2>
-          <p className="mt-6 text-lg leading-relaxed text-muted">
+          <p className="ga-body-intro mt-6">
             Openings, exhibitions, and posts from across Cape Town, gathered into one place and
             refreshed often, so what you see is what is on this week.
           </p>
+          <Link
+            href="/contact"
+            className="mt-8 inline-flex rounded-full border border-line px-6 py-3 text-sm font-medium text-ink transition hover:border-ink"
+          >
+            Send us an opening
+          </Link>
         </Reveal>
 
         <div className="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -66,12 +73,12 @@ export function SectionFeed() {
                     className="object-cover transition duration-700 group-hover:scale-[1.03]"
                   />
                 </div>
-                <p className="mt-4 text-xs uppercase tracking-[0.16em] text-accent">
+                <p className="ga-meta mt-4 text-accent">
                   {item.tag}
                 </p>
-                <h3 className="mt-2 font-display text-xl leading-snug">{item.title}</h3>
-                <p className="mt-1 text-sm text-muted">{item.place}</p>
-                <p className="mt-0.5 text-sm text-muted">{item.when}</p>
+                <h3 className="ga-display-card mt-2">{item.title}</h3>
+                <p className="ga-body mt-1">{item.place}</p>
+                <p className="ga-body mt-0.5">{item.when}</p>
               </article>
             </Reveal>
           ))}

@@ -9,6 +9,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useAuth } from "@/components/auth-provider";
+import { addSaved, fetchCheckIns, fetchSaved, removeSaved } from "@/lib/api-client";
 import {
   feedKey,
   galleryKey,
@@ -31,28 +33,73 @@ interface UserActionsContextValue {
 
 const UserActionsContext = createContext<UserActionsContextValue | null>(null);
 
+function savedKeysFromServer(items: { kind: string; slug: string }[]): SavedKey[] {
+  return items.map((item) =>
+    item.kind === "gallery" ? galleryKey(item.slug) : feedKey(item.slug),
+  );
+}
+
 export function UserActionsProvider({ children }: { children: ReactNode }) {
+  const { isSignedIn, ready: authReady } = useAuth();
   const [savedKeys, setSavedKeys] = useState<SavedKey[]>([]);
   const [checkedInSlugs, setCheckedInSlugs] = useState<string[]>([]);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setSavedKeys(readSavedKeys());
-    setCheckedInSlugs(readCheckedInSlugs());
-    setReady(true);
-  }, []);
+    if (!authReady) return;
 
-  const persistSaved = useCallback((keys: SavedKey[]) => {
-    const unique = [...new Set(keys)];
-    setSavedKeys(unique);
-    writeSavedKeys(unique);
-  }, []);
+    async function hydrate() {
+      if (isSignedIn) {
+        try {
+          const page = await fetchSaved();
+          setSavedKeys(savedKeysFromServer(page.items));
+        } catch {
+          setSavedKeys([]);
+        }
+        try {
+          const checkIns = await fetchCheckIns();
+          const slugs = [
+            ...new Set(
+              checkIns.items
+                .filter((item) => item.verified)
+                .map((item) => item.gallery_slug),
+            ),
+          ];
+          setCheckedInSlugs(slugs);
+        } catch {
+          setCheckedInSlugs([]);
+        }
+      } else {
+        setSavedKeys(readSavedKeys());
+        setCheckedInSlugs(readCheckedInSlugs());
+      }
+      setReady(true);
+    }
 
-  const persistCheckins = useCallback((slugs: string[]) => {
-    const unique = [...new Set(slugs)];
-    setCheckedInSlugs(unique);
-    writeCheckedInSlugs(unique);
-  }, []);
+    void hydrate();
+  }, [authReady, isSignedIn]);
+
+  const persistSaved = useCallback(
+    (keys: SavedKey[]) => {
+      const unique = [...new Set(keys)];
+      setSavedKeys(unique);
+      if (!isSignedIn) {
+        writeSavedKeys(unique);
+      }
+    },
+    [isSignedIn],
+  );
+
+  const persistCheckins = useCallback(
+    (slugs: string[]) => {
+      const unique = [...new Set(slugs)];
+      setCheckedInSlugs(unique);
+      if (!isSignedIn) {
+        writeCheckedInSlugs(unique);
+      }
+    },
+    [isSignedIn],
+  );
 
   const isSaved = useCallback(
     (key: SavedKey) => savedKeys.includes(key),
@@ -74,25 +121,57 @@ export function UserActionsProvider({ children }: { children: ReactNode }) {
       if (gallerySlug) keys.push(galleryKey(gallerySlug));
 
       const allSaved = keys.every((k) => savedKeys.includes(k));
+
+      if (isSignedIn) {
+        void (async () => {
+          for (const key of keys) {
+            const kind = key.startsWith("gallery:") ? "gallery" : "feed";
+            const slug = key.split(":")[1]!;
+            if (allSaved) {
+              await removeSaved(kind, slug);
+            } else if (!savedKeys.includes(key)) {
+              await addSaved(kind, slug);
+            }
+          }
+          const page = await fetchSaved();
+          setSavedKeys(savedKeysFromServer(page.items));
+        })();
+        return;
+      }
+
       if (allSaved) {
         persistSaved(savedKeys.filter((k) => !keys.includes(k)));
       } else {
         persistSaved([...savedKeys, ...keys]);
       }
     },
-    [persistSaved, savedKeys],
+    [isSignedIn, persistSaved, savedKeys],
   );
 
   const toggleSaveGallery = useCallback(
     (gallerySlug: string) => {
       const key = galleryKey(gallerySlug);
+
+      if (isSignedIn) {
+        void (async () => {
+          if (savedKeys.includes(key)) {
+            await removeSaved("gallery", gallerySlug);
+          } else {
+            await addSaved("gallery", gallerySlug);
+          }
+          const page = await fetchSaved();
+          setSavedKeys(savedKeysFromServer(page.items));
+        })();
+        return;
+      }
+
       if (savedKeys.includes(key)) {
         persistSaved(savedKeys.filter((k) => k !== key));
       } else {
         persistSaved([...savedKeys, key]);
       }
     },
-    [persistSaved, savedKeys],
+    [isSignedIn, persistSaved, savedKeys],
   );
 
   const isCheckedIn = useCallback(

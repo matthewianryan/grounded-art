@@ -1,79 +1,93 @@
 import { listFeed, listGalleries } from "@/lib/api";
-import type { FeedItemType, FeedView } from "@/lib/types";
+import type { FeedView } from "@/lib/types";
 import { FeedFilters } from "@/components/feed-filters";
-import { FeedListClient } from "@/components/feed-list-client";
-import type { GallerySummary } from "@/components/feed-card";
+import { FeedBrowse } from "@/components/feed-browse";
+import { FeedPageShell } from "@/components/feed-page-shell";
+import { buildGalleryMaps } from "@/lib/feed-display";
 
 const FEED_VIEWS: FeedView[] = ["this_weekend", "opening_this_week", "closing_soon"];
-const FEED_TYPES: FeedItemType[] = ["exhibition", "opening", "event", "post"];
 
 function asView(value: string | undefined): FeedView | undefined {
   return value && (FEED_VIEWS as string[]).includes(value) ? (value as FeedView) : undefined;
 }
 
-function asType(value: string | undefined): FeedItemType | undefined {
-  return value && (FEED_TYPES as string[]).includes(value) ? (value as FeedItemType) : undefined;
-}
-
 export default async function FeedPage({
   searchParams,
 }: {
-  searchParams: Promise<{ view?: string; type?: string; saved?: string }>;
+  searchParams: Promise<{ view?: string; saved?: string; q?: string }>;
 }) {
   const params = await searchParams;
   const view = asView(params.view);
-  const type = asType(params.type);
   const savedOnly = params.saved === "1";
+  const q = params.q?.trim() ?? "";
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="font-display text-4xl font-semibold tracking-tight">Feed</h1>
-      <p className="mt-4 max-w-xl text-muted">
-        Recent exhibitions, openings, and gallery posts from across Cape Town, kept current.
-      </p>
-
-      <div className="mt-8">
-        <FeedFilters view={view} type={type} saved={savedOnly} />
-      </div>
-
-      <FeedList view={view} type={type} savedOnly={savedOnly} />
-    </main>
+    <FeedPageShell
+      toolbar={
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <form method="get" className="flex flex-1 gap-2 sm:max-w-md">
+            {view ? <input type="hidden" name="view" value={view} /> : null}
+            {savedOnly ? <input type="hidden" name="saved" value="1" /> : null}
+            <label className="block flex-1">
+              <span className="sr-only">Search feed</span>
+              <input
+                type="search"
+                name="q"
+                defaultValue={q}
+                placeholder="Search feed"
+                className="w-full rounded-full border border-line bg-paper px-4 py-2.5 text-sm text-ink placeholder:text-muted"
+              />
+            </label>
+            <button
+              type="submit"
+              className="rounded-full border border-line px-4 py-2.5 text-sm text-muted transition hover:border-ink hover:text-ink"
+            >
+              Search
+            </button>
+          </form>
+          <FeedFilters view={view} saved={savedOnly} q={q} />
+        </div>
+      }
+    >
+      <FeedList view={view} savedOnly={savedOnly} q={q} />
+    </FeedPageShell>
   );
 }
 
 async function FeedList({
   view,
-  type,
   savedOnly,
+  q,
 }: {
   view: FeedView | undefined;
-  type: FeedItemType | undefined;
   savedOnly: boolean;
+  q: string;
 }) {
-  let items;
-  let galleriesById: Map<string, GallerySummary>;
   try {
     const [feed, galleries] = await Promise.all([
-      listFeed({ view, type, limit: 100 }),
+      listFeed({ view, limit: 100 }),
       listGalleries({ limit: 200 }),
     ]);
-    items = feed.items;
-    galleriesById = new Map(
-      galleries.items.map((g) => [g.id, { name: g.name, slug: g.slug }]),
+    const { galleriesById, fullGalleriesById } = buildGalleryMaps(galleries.items);
+    // Curated gallery public profile cards on the feed canvas use the featured flag as the
+    // curation signal, in feed order behind the interleave.
+    const featuredGalleries = galleries.items.filter((gallery) => gallery.featured);
+
+    return (
+      <FeedBrowse
+        items={feed.items}
+        galleriesById={galleriesById}
+        fullGalleriesById={fullGalleriesById}
+        featuredGalleries={featuredGalleries}
+        savedOnly={savedOnly}
+        searchTerm={q}
+      />
     );
   } catch {
     return (
-      <p className="mt-10 text-sm text-muted">
+      <p className="mx-auto max-w-6xl px-4 text-sm text-muted sm:px-6">
         The feed could not be loaded right now. Please try again shortly.
       </p>
     );
   }
-
-  return (
-    <FeedListClient
-      items={items}
-      galleriesById={galleriesById}
-      savedOnly={savedOnly}
-    />
-  );
 }

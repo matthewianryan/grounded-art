@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+import { mapHref, feedHref } from "@/lib/app-url";
 
 gsap.registerPlugin(useGSAP, SplitText, DrawSVGPlugin);
 
@@ -85,7 +86,7 @@ export function Hero() {
         <p className="hero-kicker mb-6 text-sm uppercase tracking-[0.22em] text-muted">
           Cape Town
         </p>
-        <h1 className="hero-headline font-display text-5xl leading-[1.1] sm:text-6xl lg:text-7xl">
+        <h1 className="hero-headline ga-display-page leading-[1.1] lg:text-7xl">
           Where the city&apos;s art lives.
         </h1>
         <svg
@@ -97,21 +98,21 @@ export function Hero() {
         >
           <path d="M0 1H160" stroke="currentColor" strokeWidth="1.5" />
         </svg>
-        <p className="hero-sub mt-7 max-w-md text-lg leading-relaxed text-muted">
+        <p className="hero-sub ga-body-intro mt-7 max-w-md">
           Every gallery, exhibition, and opening in one place, kept current.
         </p>
         <div className="mt-9 flex flex-wrap gap-4">
           <a
-            href="#atlas"
+            href={feedHref()}
             className="hero-cta rounded-full bg-ink px-6 py-3 text-sm font-medium text-paper transition hover:bg-accent"
           >
-            Explore the atlas
+            See what is on
           </a>
           <a
-            href="#feed"
+            href={mapHref()}
             className="hero-cta rounded-full border border-line px-6 py-3 text-sm font-medium text-ink transition hover:border-ink"
           >
-            See what&apos;s on
+            Explore the atlas
           </a>
         </div>
       </div>

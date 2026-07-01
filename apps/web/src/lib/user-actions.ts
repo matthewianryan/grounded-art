@@ -4,7 +4,7 @@
 const SAVED_COOKIE = "ga-saved";
 const CHECKINS_COOKIE = "ga-checkins";
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 365; // one year
-const COOKIE_PATH = "/app";
+const COOKIE_PATH = process.env.NEXT_PUBLIC_COOKIE_PATH ?? "/";
 
 export type SavedKey = `feed:${string}` | `gallery:${string}`;
 

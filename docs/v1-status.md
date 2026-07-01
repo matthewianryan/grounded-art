@@ -43,7 +43,7 @@ See [Follow-ups](follow-ups.md) for the running worklist.
 
 - The animation stack, Motion and GSAP with the free SplitText and DrawSVG plugins, is
   installed in the landing app only.
-- The landing and web apps are stitched under one domain with Next.js multi-zones. The landing
-  owns the root and the web app owns the `/app` path.
+- The landing and web apps are separated by origin. The landing owns the root domain; the web
+  app owns the app subdomain.
 - In v1 the Map and Feed links point to in-page previews on the landing. They become live links
   into the web app when v2 ships.

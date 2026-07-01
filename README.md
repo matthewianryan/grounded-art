@@ -3,12 +3,13 @@
 Grounded Art connects people in Cape Town with local art, galleries, and artists.
 
 This is a pnpm and Turborepo monorepo. The landing page and the web app are separate
-Next.js apps stitched into one site under one domain using Next.js multi-zones.
+Next.js apps: the landing is a static Cloudflare Pages site, and the app runs on its own
+origin with the API behind it.
 
 ## Structure
 
 - `apps/landing` - Next.js landing site. Owns the domain root.
-- `apps/web` - Next.js web app (map, feed). Served under `/app` via multi-zones.
+- `apps/web` - Next.js web app (map, feed). Served at the app origin root.
 - `apps/api` - FastAPI and PostgreSQL backend.
 - `packages/tailwind-config` - shared Tailwind theme tokens.
 - `packages/tsconfig` - shared TypeScript base config.
@@ -21,6 +22,7 @@ Next.js apps stitched into one site under one domain using Next.js multi-zones.
 - [Product](docs/product.md) - core product decisions
 - [Data model](docs/data-model.md) - entities, canonical identity, and source of truth
 - [External dependencies](docs/external-dependencies.md) - external reliances and decoupling paths
+- [Cloudflare deployment](docs/cloudflare-deployment.md) - current landing-site launch path
 - [Design](docs/design.md) - aesthetic and visual decisions
 - [Home page](docs/pages/home.md) - landing page sections
 - [Posts feed](docs/pages/posts.md) - the content feed
@@ -36,49 +38,41 @@ Next.js apps stitched into one site under one domain using Next.js multi-zones.
 - [Interactions](docs/interactions.md) - carousel, unmask reveal, gesture model, map styling
 - [Wallet and presence](docs/wallet-and-presence.md) - verified check-in, points wallet, accounts
 - [Profile and account](docs/pages/profile.md) and [Contact](docs/pages/contact.md) - new surfaces
+- [Contact email and abuse controls](docs/contact-email-and-abuse.md) - Resend DNS, root env,
+  rate limiting, honeypot, and optional Turnstile
 
 ## Local development
 
 ### Prerequisites
 
 - Node 22 and pnpm 10
-- Python 3.12 or newer and uv
-- Docker (for Postgres)
+- Docker
 
-### Frontend
+### Full local stack
 
 ```bash
 pnpm install
-pnpm dev
-```
-
-This runs both Next apps together:
-
-- Landing: http://localhost:3000
-- Web app: http://localhost:3000/app (the landing app proxies `/app` to the web app on
-  port 3001)
-
-### Database
-
-```bash
-docker compose up -d db
-```
-
-### API
-
-```bash
-cd apps/api
 cp .env.example .env
-uv sync
-uv run uvicorn app.main:app --reload --port 8000
+pnpm dev:local
 ```
+
+This builds and runs the real app stack in Docker:
+
+- Web app: http://localhost:3001
+- API: http://localhost:8000
+- Reverse proxy: http://localhost:8080
+- Postgres: Docker service `db`, persisted in the `grounded-art-db-data` volume
+
+If `3001` or `8080` is already in use, `pnpm dev:local` automatically uses `3101` or `8180`
+and prints the actual URLs.
 
 Health check: http://localhost:8000/health
 
 ### Migrations
 
 ```bash
-cd apps/api
-uv run alembic revision --autogenerate -m "describe the change"
-uv run alembic upgrade head
+pnpm docker:migrate
 ```
+
+Create new migration files from the API package with `uv run alembic revision --autogenerate -m
+"describe the change"` when working outside Docker.

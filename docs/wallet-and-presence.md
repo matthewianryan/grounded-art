@@ -31,22 +31,31 @@ Points belong to an account, so a check-in that awards a point requires a signed
 
 ## Verification
 
-A check-in is verified when the server confirms presence. The proposed mechanism:
+A check-in is verified when the server confirms presence. The current mechanism is deliberately
+layered rather than absolute, because a browser cannot prove its location.
 
-- The client sends its coordinates and a timestamp with the check-in request.
+- The client requests high-accuracy browser geolocation and sends latitude, longitude, and the
+  device-reported accuracy when available.
 - The server computes the distance to the gallery and accepts it when it is within the radius
   (100m, the existing threshold).
-- To resist a posted coordinate, the server issues a short-lived challenge token when the
-  gallery card is opened, and the check-in must return it. This is the proof-of-presence
-  challenge already named in the deferred list. The token binds the check-in to a recent,
-  server-issued session rather than a value a script can post directly.
-- A check-in that fails verification still records as an unverified check-in for the user's
-  history, but awards no point.
+- The server rejects coarse location fixes above the configured accuracy threshold when the
+  browser reports one. Missing accuracy is tolerated for compatibility, but recorded as absent.
+- A short-lived challenge token binds the submission to the signed-in session and selected
+  gallery. It is freshness and route-binding evidence, not a true proof of physical presence.
+- A per-gallery venue code can be presented when the user arrived through an on-site QR/link.
+  This records the stronger `venue_code` method. Missing or stale codes fall back to
+  `geolocation` instead of blocking the user.
+- A check-in that fails server verification can still record as an unverified check-in for
+  history and audit, but awards no point.
 
 ## Anti-farming
 
 - One point per gallery per 24 hours per account. Repeat check-ins at the same gallery inside
   the window record in history but award no further points.
+- Implausible travel is checked against the account's previous point-awarded check-in, so a bad
+  or out-of-range attempt cannot poison the next valid visit.
+- For this version, geolocation and venue-code check-ins both earn points. Requiring venue codes
+  should be a later configuration change after codes are actually deployed at galleries.
 - The award is written in the same transaction that records the check-in, so a check-in and its
   point cannot drift apart.
 

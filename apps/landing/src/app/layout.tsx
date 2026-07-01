@@ -1,21 +1,7 @@
 import type { Metadata } from "next";
-import { DM_Sans, Noto_Serif } from "next/font/google";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-dm-sans",
-  display: "swap",
-});
-
-const notoSerif = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-noto-serif",
-  display: "swap",
-});
-
-const SITE_URL = "https://www.grounded-art.co.za";
+const SITE_URL = "https://grounded-art.co.za";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -56,11 +42,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${dmSans.variable} ${notoSerif.variable}`}
-    >
+    <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-paper text-ink font-sans antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         {children}

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { Reveal } from "@/components/reveal";
+import { mapHref, feedHref } from "@/lib/app-url";
 
 export const metadata: Metadata = {
   title: "About",
@@ -97,18 +97,18 @@ export default function AboutPage() {
                 Come and find something you love.
               </h2>
               <div className="mt-10 flex flex-wrap justify-center gap-4">
-                <Link
-                  href="/#atlas"
+                <a
+                  href={feedHref()}
                   className="rounded-full bg-ink px-7 py-3 text-sm font-medium text-paper transition hover:bg-accent"
                 >
-                  Explore the atlas
-                </Link>
-                <Link
-                  href="/#feed"
+                  See what is on
+                </a>
+                <a
+                  href={mapHref()}
                   className="rounded-full border border-line px-7 py-3 text-sm font-medium text-ink transition hover:border-ink"
                 >
-                  See what&apos;s on
-                </Link>
+                  Explore the atlas
+                </a>
               </div>
             </Reveal>
           </div>

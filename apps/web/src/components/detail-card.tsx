@@ -1,22 +1,34 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { FeedItem, FeedItemType, Gallery } from "@/lib/types";
 import { formatDateRange } from "@/lib/format";
+import {
+  feedCarouselImage,
+  feedDisplayName,
+  postBadges,
+  toFeedGalleryContext,
+} from "@/lib/feed-display";
 import { resolveActionRowContext } from "@/lib/action-row";
+import { currentReturnTo, signInHref } from "@/lib/auth-gate";
 import {
   evaluateCheckIn,
   GeolocationError,
   getUserPosition,
 } from "@/lib/check-in";
+import { galleryDirectionsUrl } from "@/lib/maps";
+import { requestCheckInChallenge, submitCheckIn } from "@/lib/api-client";
 import { galleryKey } from "@/lib/user-actions";
+import { useAuth } from "@/components/auth-provider";
 import { useUserActions } from "@/components/user-actions-provider";
 import { CheckInCelebration } from "@/components/check-in-celebration";
 import {
   CheckInStatus,
   type CheckInStatusVariant,
 } from "@/components/check-in-status";
+import { PostBadges } from "@/components/post-badges";
+import { FeedPostImage } from "@/components/feed-post-card";
 
 const TYPE_LABELS: Record<FeedItemType, string> = {
   exhibition: "Exhibition",
@@ -36,17 +48,57 @@ const DAY_LABELS: Record<(typeof DAY_ORDER)[number], string> = {
   sun: "Sun",
 };
 
+function currentCheckInCode(gallerySlug: string): string | undefined {
+  if (typeof window === "undefined") return undefined;
+
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("check_in_code") ?? params.get("code");
+  if (!code) return undefined;
+
+  const galleryParam = params.get("gallery");
+  if (galleryParam && galleryParam !== gallerySlug) return undefined;
+
+  return code;
+}
+
+function statusForDeclineReason(reason: string | null): CheckInStatusVariant {
+  switch (reason) {
+    case "out_of_range":
+      return "out_of_range";
+    case "low_accuracy":
+      return "low_accuracy";
+    case "already_earned_today":
+      return "already_earned_today";
+    case "implausible_travel":
+      return "implausible_travel";
+    case "method_not_eligible":
+      return "method_not_eligible";
+    default:
+      return "verification_failed";
+  }
+}
+
 export interface DetailCardProps {
   item?: FeedItem;
   gallery?: Gallery;
+  variant?: "default" | "feed";
 }
 
-export function DetailCard({ item, gallery }: DetailCardProps) {
+export function DetailCard({ item, gallery, variant = "default" }: DetailCardProps) {
   const actions = resolveActionRowContext(item, gallery);
+  const isFeed = variant === "feed" && item;
 
   return (
-    <article className="rounded-sm border border-line bg-paper p-5">
-      {item ? <FeedDetailContent item={item} gallery={gallery} /> : null}
+    <article
+      className={`${isFeed ? "rounded-card border border-line bg-card-bg p-5 shadow-card" : "rounded-sm border border-line bg-paper p-5"}`}
+    >
+      {item ? (
+        isFeed ? (
+          <FeedDetailContent item={item} gallery={gallery} />
+        ) : (
+          <LegacyFeedDetailContent item={item} gallery={gallery} />
+        )
+      ) : null}
       {gallery && !item ? <GalleryDetailContent gallery={gallery} /> : null}
 
       <ActionRow item={item} gallery={gallery} actions={actions} />
@@ -61,12 +113,24 @@ function FeedDetailContent({
   item: FeedItem;
   gallery: Gallery | undefined;
 }) {
+  const galleryContext = gallery ? toFeedGalleryContext(gallery) : undefined;
+  const displayName = feedDisplayName(item);
+  const badges = postBadges(item, galleryContext);
+  const imageUrl = feedCarouselImage(item, galleryContext);
   const dates = formatDateRange(item.starts_on, item.ends_on);
 
   return (
     <>
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs text-muted">
-        <span className="uppercase tracking-[0.16em]">{TYPE_LABELS[item.type]}</span>
+      <div className="overflow-hidden rounded-card">
+        <FeedPostImage
+          imageUrl={imageUrl}
+          displayName={displayName}
+          className="aspect-[4/3] w-full object-cover"
+        />
+      </div>
+
+      <div className="ga-meta mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span>{TYPE_LABELS[item.type]}</span>
         {dates && (
           <>
             <span aria-hidden="true">·</span>
@@ -75,7 +139,42 @@ function FeedDetailContent({
         )}
       </div>
 
-      <h1 className="mt-2 font-display text-2xl leading-snug tracking-tight">{item.title}</h1>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <h1 className="ga-display-card">{displayName}</h1>
+        <PostBadges badges={badges} />
+      </div>
+
+      {gallery && <p className="ga-body mt-2">{gallery.name}</p>}
+
+      {item.body && (
+        <p className="ga-body-intro mt-4 max-w-2xl">{item.body}</p>
+      )}
+    </>
+  );
+}
+
+function LegacyFeedDetailContent({
+  item,
+  gallery,
+}: {
+  item: FeedItem;
+  gallery: Gallery | undefined;
+}) {
+  const dates = formatDateRange(item.starts_on, item.ends_on);
+
+  return (
+    <>
+      <div className="ga-meta flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span>{TYPE_LABELS[item.type]}</span>
+        {dates && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>{dates}</span>
+          </>
+        )}
+      </div>
+
+      <h1 className="ga-display-card mt-2">{item.title}</h1>
 
       <FeedAttribution item={item} gallery={gallery} />
 
@@ -87,7 +186,7 @@ function FeedDetailContent({
       )}
 
       {item.body && (
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">{item.body}</p>
+        <p className="ga-body-intro mt-3 max-w-2xl">{item.body}</p>
       )}
     </>
   );
@@ -101,18 +200,18 @@ function FeedAttribution({
   gallery: Gallery | undefined;
 }) {
   if (gallery) {
-    return <p className="mt-1 text-sm text-ink">{gallery.name}</p>;
+    return <p className="ga-body mt-1 text-ink">{gallery.name}</p>;
   }
   if (item.creative_name) {
     return (
-      <p className="mt-1 text-sm text-ink">
+      <p className="ga-body mt-1 text-ink">
         {item.creative_name}
         {item.location_text && <span className="text-muted">, {item.location_text}</span>}
       </p>
     );
   }
   if (item.location_text) {
-    return <p className="mt-1 text-sm text-muted">{item.location_text}</p>;
+    return <p className="ga-body mt-1">{item.location_text}</p>;
   }
   return null;
 }
@@ -122,10 +221,10 @@ function GalleryDetailContent({ gallery }: { gallery: Gallery }) {
 
   return (
     <>
-      <h2 className="font-display text-2xl leading-snug tracking-tight">{gallery.name}</h2>
-      {gallery.suburb && <p className="mt-1 text-sm text-muted">{gallery.suburb}</p>}
+      <h2 className="ga-display-card">{gallery.name}</h2>
+      {gallery.suburb && <p className="ga-body mt-1">{gallery.suburb}</p>}
 
-      <ul className="mt-4 space-y-2 text-sm text-muted">
+      <ul className="ga-body mt-4 space-y-2">
         {gallery.formatted_address && (
           <li className="flex gap-2">
             <PinIcon />
@@ -156,7 +255,7 @@ function GalleryDetailContent({ gallery }: { gallery: Gallery }) {
   );
 }
 
-function ActionRow({
+export function ActionRow({
   item,
   gallery,
   actions,
@@ -173,14 +272,47 @@ function ActionRow({
     isCheckedIn,
     markCheckedIn,
   } = useUserActions();
+  const { isSignedIn, ready: authReady } = useAuth();
 
   const [checkingIn, setCheckingIn] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
+  const [celebrationBalance, setCelebrationBalance] = useState<number | undefined>();
   const [statusVariant, setStatusVariant] = useState<CheckInStatusVariant | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | undefined>();
+  const [shareMessage, setShareMessage] = useState<string | null>(null);
+  const challengeTokenRef = useRef<string | null>(null);
 
   const gallerySlug = gallery?.slug ?? actions.mapGallerySlug ?? undefined;
   const galleryName = gallery?.name ?? "this gallery";
+
+  useEffect(() => {
+    if (!authReady || !isSignedIn || !gallerySlug) {
+      challengeTokenRef.current = null;
+      return;
+    }
+
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const challenge = await requestCheckInChallenge(
+          gallerySlug,
+          currentCheckInCode(gallerySlug),
+        );
+        if (!cancelled) {
+          challengeTokenRef.current = challenge.challenge_token;
+        }
+      } catch {
+        if (!cancelled) {
+          challengeTokenRef.current = null;
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authReady, isSignedIn, gallerySlug]);
 
   const saved = item
     ? isFeedItemSaved(item.slug, gallerySlug)
@@ -189,9 +321,18 @@ function ActionRow({
       : false;
 
   const checkedIn = gallerySlug ? isCheckedIn(gallerySlug) : false;
+  const directionsUrl = gallery && actions.directions ? galleryDirectionsUrl(gallery) : null;
 
   async function handleCheckIn() {
     if (!gallery || gallery.latitude == null || gallery.longitude == null) return;
+
+    if (!authReady || !isSignedIn) {
+      const returnTo = gallerySlug
+        ? `/map?gallery=${encodeURIComponent(gallerySlug)}`
+        : currentReturnTo();
+      window.location.assign(signInHref(returnTo));
+      return;
+    }
 
     setCheckingIn(true);
     setStatusVariant(null);
@@ -199,16 +340,56 @@ function ActionRow({
 
     try {
       const position = await getUserPosition();
-      const result = evaluateCheckIn(position, gallery);
+      const clientResult = evaluateCheckIn(position, gallery);
 
-      if (result.status === "success") {
-        markCheckedIn(gallery.slug);
-        setCelebrating(true);
-      } else if (result.status === "out_of_range") {
+      if (clientResult.status === "out_of_range") {
         setStatusVariant("out_of_range");
-      } else if (result.status === "unavailable") {
+        return;
+      }
+
+      if (clientResult.status === "unavailable") {
         setStatusVariant("unavailable");
-        setStatusMessage(result.message);
+        setStatusMessage(clientResult.message);
+        return;
+      }
+
+      let challengeToken = challengeTokenRef.current;
+      if (!challengeToken) {
+        try {
+          const challenge = await requestCheckInChallenge(
+            gallery.slug,
+            currentCheckInCode(gallery.slug),
+          );
+          challengeToken = challenge.challenge_token;
+          challengeTokenRef.current = challengeToken;
+        } catch {
+          setStatusVariant("unavailable");
+          setStatusMessage("Could not start check-in. Try again in a moment.");
+          return;
+        }
+      }
+
+      const result = await submitCheckIn({
+        gallery_slug: gallery.slug,
+        latitude: position.lat,
+        longitude: position.lng,
+        challenge_token: challengeToken,
+        accuracy: position.accuracy,
+      });
+
+      challengeTokenRef.current = null;
+
+      if (result.verified) {
+        markCheckedIn(gallery.slug);
+
+        if (result.point_awarded) {
+          setCelebrationBalance(result.balance);
+          setCelebrating(true);
+        } else {
+          setStatusVariant(statusForDeclineReason(result.decline_reason));
+        }
+      } else {
+        setStatusVariant(statusForDeclineReason(result.decline_reason));
       }
     } catch (error) {
       if (error instanceof GeolocationError) {
@@ -218,6 +399,7 @@ function ActionRow({
         if (error.code === "unavailable") setStatusMessage(error.message);
       } else {
         setStatusVariant("unavailable");
+        setStatusMessage("Could not complete check-in. Try again in a moment.");
       }
     } finally {
       setCheckingIn(false);
@@ -232,9 +414,41 @@ function ActionRow({
     }
   }
 
+  async function handleShare() {
+    if (typeof window === "undefined") return;
+
+    setShareMessage(null);
+
+    const url =
+      !item && gallerySlug
+        ? `${window.location.origin}/map?gallery=${encodeURIComponent(gallerySlug)}`
+        : window.location.href;
+    const title = item?.title ?? gallery?.name ?? "Grounded Art";
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setShareMessage("Link copied.");
+    } catch {
+      setShareMessage("Could not copy the link.");
+    }
+  }
+
   return (
     <>
       <div className="mt-6 flex flex-wrap gap-2">
+        {!item && directionsUrl && (
+          <ActionPill
+            label="Directions"
+            icon={<DirectionsIcon />}
+            href={directionsUrl}
+            external
+          />
+        )}
+
         <ActionPill
           label={saved ? "Saved" : "Save"}
           icon={saved ? undefined : <BookmarkIcon />}
@@ -267,7 +481,21 @@ function ActionRow({
             pressed={checkedIn}
           />
         )}
+
+        {actions.share && (
+          <ActionPill
+            label="Share"
+            icon={<ShareIcon />}
+            onClick={handleShare}
+          />
+        )}
       </div>
+
+      {shareMessage && (
+        <p className="mt-3 text-sm text-muted" role="status">
+          {shareMessage}
+        </p>
+      )}
 
       {statusVariant && (
         <CheckInStatus
@@ -280,7 +508,12 @@ function ActionRow({
       {celebrating && (
         <CheckInCelebration
           galleryName={galleryName}
-          onDismiss={() => setCelebrating(false)}
+          balance={celebrationBalance}
+          pointAwarded={celebrationBalance !== undefined}
+          onDismiss={() => {
+            setCelebrating(false);
+            setCelebrationBalance(undefined);
+          }}
         />
       )}
     </>
@@ -294,6 +527,7 @@ function ActionPill({
   onClick,
   disabled,
   pressed,
+  external,
 }: {
   label: string;
   icon?: ReactNode;
@@ -301,6 +535,7 @@ function ActionPill({
   onClick?: () => void;
   disabled?: boolean;
   pressed?: boolean;
+  external?: boolean;
 }) {
   const className = `inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition ${
     pressed
@@ -309,6 +544,15 @@ function ActionPill({
   } ${disabled ? "opacity-60" : ""}`;
 
   if (href) {
+    if (external) {
+      return (
+        <a href={href} target="_blank" rel="noreferrer" className={className}>
+          {icon}
+          {label}
+        </a>
+      );
+    }
+
     return (
       <Link href={href} className={className}>
         {icon}
@@ -378,6 +622,27 @@ function TargetIcon() {
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.5" />
       <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function DirectionsIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 3l9 9-9 9-9-9 9-9z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M9 13h4a2 2 0 002-2V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M13 8l2-2 2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ShareIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="18" cy="5" r="3" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="6" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="18" cy="19" r="3" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }

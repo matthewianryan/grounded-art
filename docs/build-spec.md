@@ -15,7 +15,7 @@ todos:
     content: Build DetailCard in detail-card.tsx with conditional ActionRow; reuse FeedCard typography tokens
     status: pending
   - id: post-detail-route
-    content: Add /app/feed/[slug] page using getFeedItem + optional getGallery resolution
+    content: Add /feed/[slug] page using getFeedItem + optional getGallery resolution
     status: pending
   - id: check-in-ui
     content: Wire check-in flow, graceful states, celebration with prefers-reduced-motion
@@ -51,12 +51,12 @@ isProject: false
 
 A thin, optional layer on top of the existing directory:
 
-1. **Post detail route** at `/app/feed/[slug]` (user-confirmed), server-fetched via existing [`getFeedItem(slug)`](apps/web/src/lib/api.ts), with optional gallery resolution via [`getGallery(slug)`](apps/web/src/lib/api.ts) when `gallery_id` is set.
+1. **Post detail route** at `/feed/[slug]` (user-confirmed), server-fetched via existing [`getFeedItem(slug)`](apps/web/src/lib/api.ts), with optional gallery resolution via [`getGallery(slug)`](apps/web/src/lib/api.ts) when `gallery_id` is set.
 2. **One shared detail card** with **one action row**, reused on post detail and the map gallery side panel. No parallel card implementations.
 3. **Conditional actions** resolved from data (see below).
 4. **Check-in flow:** browser geolocation, haversine distance to gallery coordinates, success celebration if within radius. No backend, accounts, tokens, points, leaderboard, or content gating.
 5. **Saved and checked-in state** persisted on-device via **first-party cookies** (user-confirmed). Survives return visits. No `localStorage` (theme's `ga-theme` in [`theme-toggle.tsx`](apps/web/src/components/theme-toggle.tsx) remains the only localStorage use).
-6. **View on map** deep link from post detail to `/app/map?gallery={slug}`, focusing/selecting that gallery (contract with map increment).
+6. **View on map** deep link from post detail to `/map?gallery={slug}`, focusing/selecting that gallery (contract with map increment).
 7. **Graceful check-in states** with warm copy: permission denied, unavailable, out-of-range ("not there yet"), and success. No error walls.
 8. **Celebration moment** on valid check-in, motion gated behind `prefers-reduced-motion` via `motion/react` and `useReducedMotion()` (added to `apps/web`).
 9. **Saved filter pill** on the feed: a "Saved" option in [`feed-filters.tsx`](apps/web/src/components/feed-filters.tsx) that client-side filters the feed list against keys in the `ga-saved` cookie via `UserActionsProvider`.
@@ -80,21 +80,21 @@ flowchart LR
 
 | Prerequisite | Why |
 |---|---|
-| Feed cards link to `/app/feed/[slug]` | Detail route is useless without entry points from [`feed-card.tsx`](apps/web/src/components/feed-card.tsx) |
+| Feed cards link to `/feed/[slug]` | Detail route is useless without entry points from [`feed-card.tsx`](apps/web/src/components/feed-card.tsx) |
 | Post-led image layout (optional but expected) | [`feature-list.md`](docs/feature-list.md) lists image layout as part of feed work; detail page should render `image_url` when present |
-| Feed list still resolves `gallery_id` to gallery name/slug | Same pattern as [`feed/page.tsx`](apps/web/src/app/feed/page.tsx) today |
+| Feed list still resolves `gallery_id` to gallery name/slug | Same pattern as [`feed/page.tsx`](apps/web/src/feed/page.tsx) today |
 
-**Contract this increment expects from feed:** tapping a feed item navigates to `/app/feed/{slug}`. The existing "More" external link on locationless items ([`sample-emerging-artist-spotlight`](apps/api/seed/feed_items.json)) can remain; the card body becomes tappable or gains a "View post" link per design.
+**Contract this increment expects from feed:** tapping a feed item navigates to `/feed/{slug}`. The existing "More" external link on locationless items ([`sample-emerging-artist-spotlight`](apps/api/seed/feed_items.json)) can remain; the card body becomes tappable or gains a "View post" link per design.
 
 ### Map surface increment (prerequisite)
 
 | Prerequisite | Why |
 |---|---|
 | Google Maps base layer via [`maps.ts`](apps/web/src/lib/maps.ts) provider boundary | Check-in needs real gallery `latitude` / `longitude` from [`types.ts`](apps/web/src/lib/types.ts) |
-| Gallery markers and side panel | [`maps.md`](docs/pages/maps.md) spec; today [`map/page.tsx`](apps/web/src/app/map/page.tsx) is a stub |
+| Gallery markers and side panel | [`maps.md`](docs/pages/maps.md) spec; today [`map/page.tsx`](apps/web/src/map/page.tsx) is a stub |
 | `?gallery={slug}` query param handling | Map pans/zooms and opens side panel for that gallery when arriving from "View on map" |
 
-**Map deep link contract (confirmed):** `?gallery={slug}` on `/app/map`. Checked against the repo today: [`map/page.tsx`](apps/web/src/app/map/page.tsx) is still a stub with no `searchParams` handling and no alternate param name in use. The map increment should implement `gallery` as the query key. If the map increment lands first with a different param, one increment must change before merge to avoid a broken "View on map" link.
+**Map deep link contract (confirmed):** `?gallery={slug}` on `/map`. Checked against the repo today: [`map/page.tsx`](apps/web/src/map/page.tsx) is still a stub with no `searchParams` handling and no alternate param name in use. The map increment should implement `gallery` as the query key. If the map increment lands first with a different param, one increment must change before merge to avoid a broken "View on map" link.
 
 **Contract this increment provides to map:** a shared card component the map side panel imports instead of building its own card + action row.
 
@@ -108,7 +108,7 @@ Resolve from a small pure helper (e.g. `resolveActionRowContext` in a new lib mo
 |---|---|---|
 | **Save** | Always | Toggle saved state. On post detail: always `feed:{slug}`; when the item resolves to a gallery, also `gallery:{slug}` (both keys). On map card: `gallery:{slug}` only. Either key marks the item or gallery as saved. |
 | **Go to artist** | `external_url` is non-null on feed item | Links to `external_url` (new tab). `creative_name` alone is display-only in the content area, not an action. A button with no destination is a trap; never show Go to artist without `external_url`. Icon: person when `creative_name` is set, external-link when locationless per design. Hidden on gallery-only map card. |
-| **View on map** | Resolved gallery has non-null `latitude` and `longitude` | Links to `/app/map?gallery={gallery.slug}` |
+| **View on map** | Resolved gallery has non-null `latitude` and `longitude` | Links to `/map?gallery={gallery.slug}` |
 | **Check in** | Same as View on map | Runs geolocation check against gallery coordinates |
 
 **Locationless example:** seed item `sample-emerging-artist-spotlight` ([`feed_items.json`](apps/api/seed/feed_items.json)) has `gallery_slug: null`, `creative_name`, `external_url`. Shows Save + Go to artist only. `creative_name` appears in attribution; Go to artist appears because `external_url` is set. Matches [`posts.md`](docs/pages/posts.md).
@@ -147,7 +147,7 @@ No porting from MVP proof-of-presence: no challenge tokens, server verification,
 
 - `apps/web/src/lib/user-actions.ts`: read/write cookie helpers, slug set types
 - `apps/web/src/components/user-actions-provider.tsx`: `"use client"` React context at root layout, hydrates from cookies on mount, exposes `isSaved(key)`, `toggleSave(key)`, `isCheckedIn(gallerySlug)`, `markCheckedIn(gallerySlug)`
-- Cookie names (suggestion): `ga-saved`, `ga-checkins`: compact JSON arrays, `SameSite=Lax`, `Path=/app`, long `Max-Age`, no `HttpOnly` (client-only writes)
+- Cookie names (suggestion): `ga-saved`, `ga-checkins`: compact JSON arrays, `SameSite=Lax`, `Path=/`, long `Max-Age`, no `HttpOnly` (client-only writes)
 
 **Checked-in key:** gallery slug only (check-in is always at a physical gallery).
 
@@ -175,7 +175,7 @@ Structure:
 
 | Surface | File | Exists? |
 |---|---|---|
-| Post detail | `apps/web/src/app/feed/[slug]/page.tsx` | *planned (new)* |
+| Post detail | `apps/web/src/feed/[slug]/page.tsx` | *planned (new)* |
 | Map side panel | Map increment's gallery panel component (path TBD by map increment) | *not built* |
 
 Extract shared typography helpers from `FeedCard` only if needed to avoid drift; do not fork styles.
@@ -205,8 +205,8 @@ Tokens: reuse [`theme.css`](packages/tailwind-config/theme.css) (`paper`, `ink`,
 
 | Path | Role |
 |---|---|
-| `src/app/feed/[slug]/page.tsx` | Post detail server page |
-| `src/app/feed/[slug]/loading.tsx` | Optional skeleton matching feed loading pattern |
+| `src/feed/[slug]/page.tsx` | Post detail server page |
+| `src/feed/[slug]/loading.tsx` | Optional skeleton matching feed loading pattern |
 | `src/components/detail-card.tsx` | Shared card + embedded action row |
 | `src/components/check-in-celebration.tsx` | Success moment |
 | `src/components/check-in-status.tsx` | Non-success inline states (or fold into celebration) |
@@ -222,7 +222,7 @@ Tokens: reuse [`theme.css`](packages/tailwind-config/theme.css) (`paper`, `ink`,
 | [`src/app/layout.tsx`](apps/web/src/app/layout.tsx) | Wrap with `UserActionsProvider` |
 | [`package.json`](apps/web/package.json) | Add `motion/react` |
 | [`src/components/feed-filters.tsx`](apps/web/src/components/feed-filters.tsx) | Add Saved filter pill |
-| [`src/app/feed/page.tsx`](apps/web/src/app/feed/page.tsx) | Client filter wrapper for Saved view |
+| [`src/feed/page.tsx`](apps/web/src/feed/page.tsx) | Client filter wrapper for Saved view |
 
 ### Modified by prerequisite increments (not this PR)
 
@@ -249,10 +249,10 @@ Tokens: reuse [`theme.css`](packages/tailwind-config/theme.css) (`paper`, `ink`,
 
 ### Manual (local)
 
-1. Start API + web app. Open `/app/feed`, tap a gallery-linked item, confirm detail at `/app/feed/{slug}`.
+1. Start API + web app. Open `/feed`, tap a gallery-linked item, confirm detail at `/feed/{slug}`.
 2. **Locationless item:** open `sample-emerging-artist-spotlight` detail. Action row shows Save + Go to artist only. No View on map or Check in.
 3. **creative_name only:** if seed data has `creative_name` without `external_url`, Go to artist is hidden. Name still renders in attribution.
-4. **Gallery-linked item:** all applicable actions visible. "View on map" opens `/app/map?gallery={slug}` with gallery selected (requires map increment).
+4. **Gallery-linked item:** all applicable actions visible. "View on map" opens `/map?gallery={slug}` with gallery selected (requires map increment).
 5. **Save (gallery-linked):** tap Save on post detail. Reload. Both `feed:{slug}` and `gallery:{slug}` in `ga-saved`. Item shows "Saved".
 6. **Save (map card):** tap Save on map gallery card. Same `gallery:{slug}` key; post detail for a linked feed item also shows saved.
 7. **Saved filter:** save two items, activate Saved pill. Feed shows only saved items. URL reflects `?saved=1`.
@@ -280,7 +280,7 @@ Tokens: reuse [`theme.css`](packages/tailwind-config/theme.css) (`paper`, `ink`,
 |---|---|
 | Save semantics | Both: gallery-linked post detail writes `feed:{slug}` and `gallery:{slug}`; map card writes `gallery:{slug}` only |
 | Go to artist | Shown only when `external_url` is non-null; `creative_name` is display-only |
-| Map deep link | `?gallery={slug}` on `/app/map` (repo check: map stub has no param yet; map increment must implement this key) |
+| Map deep link | `?gallery={slug}` on `/map` (repo check: map stub has no param yet; map increment must implement this key) |
 | Motion | Add `motion/react` to `apps/web`; use `useReducedMotion()` for check-in celebration |
 | Component filename | `detail-card.tsx`, export `DetailCard` |
 

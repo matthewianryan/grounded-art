@@ -17,9 +17,15 @@ importers:
       '@grounded-art/tailwind-config':
         specifier: workspace:*
         version: link:../../packages/tailwind-config
+      '@grounded-art/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@gsap/react':
         specifier: ^2.1.2
         version: 2.1.2(gsap@3.15.0)(react@19.2.7)
+      '@next/env':
+        specifier: ^15.5.19
+        version: 15.5.19
       gsap:
         specifier: ^3.15.0
         version: 3.15.0
@@ -60,6 +66,12 @@ importers:
       eslint-config-next:
         specifier: ^15.0.0
         version: 15.5.19(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3)
+      eslint-plugin-react:
+        specifier: ^7.37.5
+        version: 7.37.5(eslint@9.39.4(jiti@2.7.0))
+      eslint-plugin-react-hooks:
+        specifier: ^5.2.0
+        version: 5.2.0(eslint@9.39.4(jiti@2.7.0))
       tailwindcss:
         specifier: ^4.0.0
         version: 4.3.1
@@ -75,12 +87,21 @@ importers:
       '@grounded-art/tailwind-config':
         specifier: workspace:*
         version: link:../../packages/tailwind-config
+      '@grounded-art/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@next/env':
+        specifier: ^15.5.19
+        version: 15.5.19
       motion:
         specifier: ^12.40.0
         version: 12.40.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       next:
         specifier: ^15.0.0
         version: 15.5.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      ogl:
+        specifier: ^1.0.11
+        version: 1.0.11
       react:
         specifier: ^19.0.0
         version: 19.2.7
@@ -115,6 +136,12 @@ importers:
       eslint-config-next:
         specifier: ^15.0.0
         version: 15.5.19(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3)
+      eslint-plugin-react:
+        specifier: ^7.37.5
+        version: 7.37.5(eslint@9.39.4(jiti@2.7.0))
+      eslint-plugin-react-hooks:
+        specifier: ^5.2.0
+        version: 5.2.0(eslint@9.39.4(jiti@2.7.0))
       tailwindcss:
         specifier: ^4.0.0
         version: 4.3.1
@@ -125,6 +152,28 @@ importers:
   packages/tailwind-config: {}
 
   packages/tsconfig: {}
+
+  packages/ui:
+    dependencies:
+      next:
+        specifier: ^15.0.0
+        version: 15.5.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      '@grounded-art/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.17
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
 
   tooling/screencast:
     devDependencies:
@@ -1900,6 +1949,9 @@ packages:
   object.values@1.2.1:
     resolution: {integrity: sha512-gXah6aZrcUxjWg2zR2MwouP2eHlCBzdV4pygudehaKXSGW4v2AsRQUK+lwwXhii6KFZcunEnmSUoYp5CXibxtA==}
     engines: {node: '>= 0.4'}
+
+  ogl@1.0.11:
+    resolution: {integrity: sha512-kUpC154AFfxi16pmZUK4jk3J+8zxwTWGPo03EoYA8QPbzikHoaC82n6pNTbd+oEaJonaE8aPWBlX7ad9zrqLsA==}
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -4050,6 +4102,8 @@ snapshots:
       call-bound: 1.0.4
       define-properties: 1.2.1
       es-object-atoms: 1.1.2
+
+  ogl@1.0.11: {}
 
   optionator@0.9.4:
     dependencies:

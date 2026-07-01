@@ -46,3 +46,13 @@ and replaceable.
 - Decoupling path: scraped content is owned in our database, attributed and tracked by
   source, and replaced by gallery-provided content as relationships form. See
   [Content pipeline](content-pipeline.md).
+
+## Resend
+
+- Role: Live. Transactional email for passwordless sign-in codes only.
+- Provides: delivery of one-time login codes when `EMAIL_PROVIDER=resend` on the API.
+- Setup: verify `grounded-art.co.za` in Resend and add SPF and DKIM DNS records. Set
+  `RESEND_API_KEY` and `EMAIL_FROM` on the API. Local development uses `EMAIL_PROVIDER=console`
+  and logs codes to the API process instead.
+- Decoupling path: the sender is behind `get_email_sender()` in `apps/api/app/services/email.py`.
+  Another provider can be added without changing the auth flow.

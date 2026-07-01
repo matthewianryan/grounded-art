@@ -1,7 +1,12 @@
 export type CheckInStatusVariant =
   | "out_of_range"
   | "permission_denied"
-  | "unavailable";
+  | "unavailable"
+  | "low_accuracy"
+  | "already_earned_today"
+  | "implausible_travel"
+  | "method_not_eligible"
+  | "verification_failed";
 
 const COPY: Record<
   CheckInStatusVariant,
@@ -18,6 +23,26 @@ const COPY: Record<
   unavailable: {
     title: "Location unavailable.",
     body: "We couldn't read your position right now. Try again in a moment.",
+  },
+  low_accuracy: {
+    title: "Location too fuzzy.",
+    body: "Your location signal is too broad to award a point. Try again with a clearer signal.",
+  },
+  already_earned_today: {
+    title: "Checked in.",
+    body: "You already earned a point here today. Come back tomorrow.",
+  },
+  implausible_travel: {
+    title: "Checked in.",
+    body: "This visit was recorded, but we could not award a point from this location jump.",
+  },
+  method_not_eligible: {
+    title: "Checked in.",
+    body: "This visit was recorded, but this check-in method does not earn points right now.",
+  },
+  verification_failed: {
+    title: "Could not verify.",
+    body: "This check-in was recorded without a point. Open the gallery card and try again.",
   },
 };
 
@@ -40,8 +65,8 @@ export function CheckInStatus({
       >
         <LocationOffIcon />
       </div>
-      <p className="mt-3 font-display text-lg tracking-tight">{copy.title}</p>
-      <p className="mt-1 text-sm text-muted">{message ?? copy.body}</p>
+      <p className="ga-display-card mt-3">{copy.title}</p>
+      <p className="ga-body mt-1">{message ?? copy.body}</p>
       {onDismiss && (
         <button
           type="button"
