@@ -42,7 +42,7 @@
 | Gallery detail route /galleries/[slug] | Not built | getGallery(slug) client exists |
 | Feed-to-gallery cross-link | Built | Feed cards link to detail; save writes gallery key |
 | View-on-map deep link | Built | /app/map?gallery={slug} |
-| Check-in (browser geolocation) | Built | v1: client-only, 100 m radius, no backend |
+| Check-in (browser geolocation) | Built | Client requests location for fast feedback; server is authoritative for signed-in points |
 | Check-in celebration moment | Built | motion/react with useReducedMotion |
 | Saved items (local state) | Built | ga-saved cookie, feed and gallery keys |
 | Web app shared nav | Built | Sticky, active-route highlight; Contact us is landing-only (footer links to /contact) |
@@ -70,7 +70,7 @@ starting point for the redesign build.
 | Accounts and sign-in | Built | Passwordless email, one-time code, unified sign-up/sign-in |
 | Account gate on Check in, profile, wallet | Built | Map and feed browsing stay open |
 | Cookie-to-account merge on first sign-in | Built | Migrates ga-saved state |
-| Server-side check-in verification | Built | Challenge token, 100 m server radius |
+| Server-side check-in verification | Built | Challenge token, 100 m server radius, accuracy audit, optional venue-code tier |
 | Points wallet (append-only ledger) | Built | +1 per verified check-in |
 | Anti-farming (one award per gallery per 24h) | Built | Same transaction as check-in |
 | Profile (avatar, display name, bio) | Built | /app/profile home |

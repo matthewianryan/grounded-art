@@ -184,6 +184,7 @@ def get_check_ins(
                 checked_in_at=row.checked_in_at,
                 verified=row.verified,
                 point_awarded=row.point_awarded,
+                presence_method=row.presence_method,
             )
             for row in rows
         ]
@@ -198,7 +199,7 @@ def post_check_in_challenge(
 ) -> CheckInChallengeRead:
     _, session = session_ctx
     try:
-        result = issue_challenge(db, session, body.gallery_slug)
+        result = issue_challenge(db, session, body.gallery_slug, body.code)
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     return CheckInChallengeRead(
@@ -223,6 +224,7 @@ def post_check_in(
             latitude=body.latitude,
             longitude=body.longitude,
             challenge_token=body.challenge_token,
+            accuracy=body.accuracy,
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -232,4 +234,6 @@ def post_check_in(
         point_awarded=result.point_awarded,
         already_earned_today=result.already_earned_today,
         balance=result.balance,
+        presence_method=result.presence_method,
+        decline_reason=result.decline_reason,
     )

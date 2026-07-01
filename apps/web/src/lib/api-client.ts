@@ -143,10 +143,13 @@ export function fetchCheckIns(): Promise<CheckInPage> {
   return apiMeFetch<CheckInPage>("/check-ins");
 }
 
-export function requestCheckInChallenge(gallerySlug: string): Promise<CheckInChallenge> {
+export function requestCheckInChallenge(
+  gallerySlug: string,
+  code?: string,
+): Promise<CheckInChallenge> {
   return apiMeFetch<CheckInChallenge>("/check-in-challenge", {
     method: "POST",
-    json: { gallery_slug: gallerySlug },
+    json: { gallery_slug: gallerySlug, code },
   });
 }
 

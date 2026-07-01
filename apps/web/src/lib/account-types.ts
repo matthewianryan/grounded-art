@@ -55,6 +55,7 @@ export interface CheckInRecord {
   checked_in_at: string;
   verified: boolean;
   point_awarded: boolean;
+  presence_method: "geolocation" | "venue_code";
 }
 
 export interface CheckInPage {
@@ -71,6 +72,7 @@ export interface CheckInSubmitBody {
   latitude: number;
   longitude: number;
   challenge_token: string;
+  accuracy?: number;
 }
 
 export interface CheckInResult {
@@ -79,4 +81,13 @@ export interface CheckInResult {
   point_awarded: boolean;
   already_earned_today: boolean;
   balance: number;
+  presence_method: "geolocation" | "venue_code";
+  decline_reason:
+    | "out_of_range"
+    | "low_accuracy"
+    | "unverified"
+    | "implausible_travel"
+    | "already_earned_today"
+    | "method_not_eligible"
+    | null;
 }

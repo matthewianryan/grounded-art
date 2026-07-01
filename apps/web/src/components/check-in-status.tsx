@@ -2,7 +2,10 @@ export type CheckInStatusVariant =
   | "out_of_range"
   | "permission_denied"
   | "unavailable"
+  | "low_accuracy"
   | "already_earned_today"
+  | "implausible_travel"
+  | "method_not_eligible"
   | "verification_failed";
 
 const COPY: Record<
@@ -21,9 +24,21 @@ const COPY: Record<
     title: "Location unavailable.",
     body: "We couldn't read your position right now. Try again in a moment.",
   },
+  low_accuracy: {
+    title: "Location too fuzzy.",
+    body: "Your location signal is too broad to award a point. Try again with a clearer signal.",
+  },
   already_earned_today: {
     title: "Checked in.",
     body: "You already earned a point here today. Come back tomorrow.",
+  },
+  implausible_travel: {
+    title: "Checked in.",
+    body: "This visit was recorded, but we could not award a point from this location jump.",
+  },
+  method_not_eligible: {
+    title: "Checked in.",
+    body: "This visit was recorded, but this check-in method does not earn points right now.",
   },
   verification_failed: {
     title: "Could not verify.",

@@ -48,6 +48,36 @@ const DAY_LABELS: Record<(typeof DAY_ORDER)[number], string> = {
   sun: "Sun",
 };
 
+function currentCheckInCode(gallerySlug: string): string | undefined {
+  if (typeof window === "undefined") return undefined;
+
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("check_in_code") ?? params.get("code");
+  if (!code) return undefined;
+
+  const galleryParam = params.get("gallery");
+  if (galleryParam && galleryParam !== gallerySlug) return undefined;
+
+  return code;
+}
+
+function statusForDeclineReason(reason: string | null): CheckInStatusVariant {
+  switch (reason) {
+    case "out_of_range":
+      return "out_of_range";
+    case "low_accuracy":
+      return "low_accuracy";
+    case "already_earned_today":
+      return "already_earned_today";
+    case "implausible_travel":
+      return "implausible_travel";
+    case "method_not_eligible":
+      return "method_not_eligible";
+    default:
+      return "verification_failed";
+  }
+}
+
 export interface DetailCardProps {
   item?: FeedItem;
   gallery?: Gallery;
@@ -265,7 +295,10 @@ export function ActionRow({
 
     void (async () => {
       try {
-        const challenge = await requestCheckInChallenge(gallerySlug);
+        const challenge = await requestCheckInChallenge(
+          gallerySlug,
+          currentCheckInCode(gallerySlug),
+        );
         if (!cancelled) {
           challengeTokenRef.current = challenge.challenge_token;
         }
@@ -323,7 +356,10 @@ export function ActionRow({
       let challengeToken = challengeTokenRef.current;
       if (!challengeToken) {
         try {
-          const challenge = await requestCheckInChallenge(gallery.slug);
+          const challenge = await requestCheckInChallenge(
+            gallery.slug,
+            currentCheckInCode(gallery.slug),
+          );
           challengeToken = challenge.challenge_token;
           challengeTokenRef.current = challengeToken;
         } catch {
@@ -338,18 +374,22 @@ export function ActionRow({
         latitude: position.lat,
         longitude: position.lng,
         challenge_token: challengeToken,
+        accuracy: position.accuracy,
       });
 
-      markCheckedIn(gallery.slug);
       challengeTokenRef.current = null;
 
-      if (result.verified && result.point_awarded) {
-        setCelebrationBalance(result.balance);
-        setCelebrating(true);
-      } else if (result.verified && result.already_earned_today) {
-        setStatusVariant("already_earned_today");
-      } else if (!result.verified) {
-        setStatusVariant("verification_failed");
+      if (result.verified) {
+        markCheckedIn(gallery.slug);
+
+        if (result.point_awarded) {
+          setCelebrationBalance(result.balance);
+          setCelebrating(true);
+        } else {
+          setStatusVariant(statusForDeclineReason(result.decline_reason));
+        }
+      } else {
+        setStatusVariant(statusForDeclineReason(result.decline_reason));
       }
     } catch (error) {
       if (error instanceof GeolocationError) {

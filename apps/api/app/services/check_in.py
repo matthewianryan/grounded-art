@@ -121,10 +121,10 @@ def _accuracy_ok(accuracy: float | None) -> bool:
     return accuracy <= limit
 
 
-def _last_check_in(db: Session, account_id: object) -> CheckIn | None:
+def _last_awarded_check_in(db: Session, account_id: object) -> CheckIn | None:
     return db.scalars(
         select(CheckIn)
-        .where(CheckIn.account_id == account_id)
+        .where(CheckIn.account_id == account_id, CheckIn.point_awarded.is_(True))
         .order_by(CheckIn.checked_in_at.desc())
         .limit(1)
     ).first()
@@ -227,7 +227,7 @@ def submit_check_in(
     already_earned_today = False
     point_awarded = False
     if verified:
-        if _travel_implausible(_last_check_in(db, account.id), latitude, longitude):
+        if _travel_implausible(_last_awarded_check_in(db, account.id), latitude, longitude):
             decline_reason = CheckInDeclineReason.IMPLAUSIBLE_TRAVEL
         elif _has_recent_award(db, account.id, gallery.id):
             already_earned_today = True

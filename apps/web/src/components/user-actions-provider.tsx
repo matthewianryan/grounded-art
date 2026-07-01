@@ -58,7 +58,13 @@ export function UserActionsProvider({ children }: { children: ReactNode }) {
         }
         try {
           const checkIns = await fetchCheckIns();
-          const slugs = [...new Set(checkIns.items.map((item) => item.gallery_slug))];
+          const slugs = [
+            ...new Set(
+              checkIns.items
+                .filter((item) => item.verified)
+                .map((item) => item.gallery_slug),
+            ),
+          ];
           setCheckedInSlugs(slugs);
         } catch {
           setCheckedInSlugs([]);

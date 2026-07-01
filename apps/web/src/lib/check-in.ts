@@ -1,5 +1,5 @@
-// Client-only check-in: browser geolocation and distance to gallery coordinates.
-// No server verification. Radius is a single global default tuned for city-centre GPS drift.
+// Browser geolocation helpers for check-in. The client uses these for fast local feedback, but
+// the API remains the source of truth for verified check-ins and wallet points.
 
 import type { Gallery } from "@/lib/types";
 
@@ -9,6 +9,7 @@ export const CHECK_IN_RADIUS_METRES = 100;
 export interface LatLng {
   lat: number;
   lng: number;
+  accuracy?: number;
 }
 
 export type CheckInResult =
@@ -42,6 +43,7 @@ export function getUserPosition(): Promise<LatLng> {
         resolve({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
+          accuracy: position.coords.accuracy,
         });
       },
       (error) => {
