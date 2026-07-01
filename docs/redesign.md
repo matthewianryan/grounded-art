@@ -74,10 +74,11 @@ static fallback, and the map stays a real, legible map. The adopted wording in t
   Share. Check in now verifies presence server-side and can award a point. The custom cream
   and black map style is applied.
 - Post detail. The full-display post via the unmask reveal.
-- Artist and gallery account. A profile rendered as a card on the feed canvas, unmasking to the
-  account view. For artists the card shows their information in place of a post. There is no
-  "scroll up for more" on the artist card in v1, since we are limiting what artists display
-  for now.
+- Artist and gallery public profile cards. A curated profile-style card can appear on the feed
+  canvas in place of a post. Gallery cards use the existing gallery record and unmask to an
+  account-style gallery view backed by current gallery data. Artist cards use the existing
+  creative-led feed item fields and stay card-only in v1, with no "scroll up for more"
+  expansion. This phase does not add self-managed artist or gallery accounts.
 - Profile and account. A signed-in user has a profile with a bio and avatar, a wallet, a saved
   list, a check-in history, and an account editor. See [Profile](pages/profile.md).
 - Contact. A site-wide contact page with a form that reaches us. See [Contact](pages/contact.md).

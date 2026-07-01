@@ -68,14 +68,24 @@ states from [Wallet and presence](wallet-and-presence.md) behave. The ledger bal
 Gate: the profile and account screens match the mockup intent in Grounded Art tokens with no
 orange. Saved items carried from session appear. The wallet view reads from Phase 3.
 
-## Phase 5. Artist and gallery account view, brand badges
+## Phase 5. Artist and gallery public profile cards
 
-- [ ] The profile-as-card on the feed canvas, unmasking to the account view.
-- [ ] The artist card without the scroll-up expansion for v1.
-- [ ] Brand badges beside the name on post cards.
+- [ ] Gallery public profile cards on the feed canvas, using the existing `Gallery` records.
+      Selecting one unmasks to a gallery account-style view backed by the current gallery data:
+      description, images, location details, links, and relevant actions.
+- [ ] Artist public profile cards on the feed canvas, using the existing creative-led feed item
+      fields (`creative_name`, `external_url`, images, and links). For v1 these cards do not
+      have the scroll-up expansion; the card itself is the display surface.
+- [x] Brand badges beside the name on post cards. These are already wired from optional gallery
+      brand data and tied-location data.
 
-Gate: the artist and gallery card reads correctly. Badges render only when a brand or location
-is present, and never compete with the art.
+Scope note: Phase 5 does not introduce self-managed artist or gallery accounts, profile
+claiming, ownership, roles, or public account editing. Those belong to a deeper future layer
+tracked in [Follow-ups](follow-ups.md).
+
+Gate: the artist and gallery public profile cards read correctly as curated Grounded Art
+surfaces. Gallery cards unmask to the account-style gallery view. Artist cards remain card-only
+for v1. Badges render only when a brand or location is present, and never compete with the art.
 
 ## Phase 6. Contact page and navigation
 

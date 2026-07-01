@@ -36,3 +36,8 @@ temporal views.
 ## After v1
 
 - Editorial stories layer over the directory.
+- Deeper artist and gallery account layer. Phase 5 uses curated public profile-style cards
+  backed by existing gallery and feed item data. A later phase should define and build the real
+  self-managed artist or gallery presence, including the product rules for public profiles,
+  account ownership or claiming, editing permissions, moderation, and attribution. Do not
+  predefine the schema or permission model until that layer is actively planned.

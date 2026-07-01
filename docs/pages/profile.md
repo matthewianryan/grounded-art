@@ -27,12 +27,12 @@ title, avatar), from personal information, which is private (first name, last na
 Saving confirms, discarding reverts. The orange Wix accents in the mockup are replaced by the
 Grounded Art tokens, with rust used only for the primary action.
 
-## Artist and gallery account
+## Artist and gallery public profile cards
 
-An artist or gallery account is shown on the feed canvas as a card in place of a post, and
-unmasks to the account view. For artists in v1 the card shows their information without a
-"scroll up for more" expansion, since we are limiting what artists display for now. See
-[Redesign](../redesign.md).
+Artist and gallery cards on the feed canvas are curated public profile-style cards, not
+self-managed accounts in this phase. Gallery cards use the existing gallery data and unmask to
+an account-style gallery view. Artist cards use existing creative-led feed item fields and do
+not have a "scroll up for more" expansion in v1. See [Redesign](../redesign.md).
 
 ## Presentation
 
