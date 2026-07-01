@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useAuth } from "@/components/auth-provider";
 import { signInHref } from "@/lib/auth-gate";
+import { ICON_BUTTON, Icon, FeedIcon, BookmarkIcon } from "@/components/icons";
 
 // The app has no header or footer: the whole viewport belongs to the content (map, feed,
 // profile). Navigation lives in a single floating control at the top-left. Closed, it is
@@ -28,9 +29,6 @@ const accountLinks: {
   { href: "/profile/check-ins", label: "Check-ins", icon: <PinIcon /> },
   { href: "/profile/account", label: "Account", icon: <SlidersIcon /> },
 ];
-
-const ICON_BUTTON =
-  "inline-flex h-11 w-11 items-center justify-center rounded-full border shadow-[0_6px_16px_-6px_rgb(22_19_14/0.35)] backdrop-blur transition";
 
 function iconButtonClass(active: boolean): string {
   return `${ICON_BUTTON} ${
@@ -232,24 +230,6 @@ function ThemeToggleIcon() {
   );
 }
 
-function Icon({ children }: { children: ReactNode }) {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {children}
-    </svg>
-  );
-}
-
 function MenuIcon() {
   return (
     <Icon>
@@ -276,15 +256,6 @@ function MapIcon() {
   );
 }
 
-function FeedIcon() {
-  return (
-    <Icon>
-      <path d="M12 3.5 3.5 8 12 12.5 20.5 8 12 3.5z" />
-      <path d="M4 12.5 12 17l8-4.5" />
-    </Icon>
-  );
-}
-
 function PersonIcon() {
   return (
     <Icon>
@@ -299,14 +270,6 @@ function WalletIcon() {
     <Icon>
       <rect x="3.5" y="6.5" width="17" height="11" rx="2" />
       <path d="M3.5 10.5h17" />
-    </Icon>
-  );
-}
-
-function BookmarkIcon() {
-  return (
-    <Icon>
-      <path d="M7 4.5h10a1 1 0 0 1 1 1V20l-6-3.5L6 20V5.5a1 1 0 0 1 1-1z" />
     </Icon>
   );
 }
