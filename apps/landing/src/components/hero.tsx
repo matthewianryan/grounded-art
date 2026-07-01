@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
-import { appHref } from "@/lib/app-url";
+import { mapHref, feedHref } from "@/lib/app-url";
 
 gsap.registerPlugin(useGSAP, SplitText, DrawSVGPlugin);
 
@@ -103,13 +103,13 @@ export function Hero() {
         </p>
         <div className="mt-9 flex flex-wrap gap-4">
           <a
-            href={appHref("/feed")}
+            href={feedHref()}
             className="hero-cta rounded-full bg-ink px-6 py-3 text-sm font-medium text-paper transition hover:bg-accent"
           >
             See what is on
           </a>
           <a
-            href={appHref("/map")}
+            href={mapHref()}
             className="hero-cta rounded-full border border-line px-6 py-3 text-sm font-medium text-ink transition hover:border-ink"
           >
             Explore the atlas

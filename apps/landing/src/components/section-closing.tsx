@@ -1,5 +1,5 @@
 import { Reveal } from "./reveal";
-import { appHref } from "@/lib/app-url";
+import { feedHref } from "@/lib/app-url";
 
 // Closing call to action: invites people back into the atlas and the feed.
 export function SectionClosing() {
@@ -12,7 +12,7 @@ export function SectionClosing() {
           </h2>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <a
-              href={appHref("/feed")}
+              href={feedHref()}
               className="rounded-full bg-ink px-7 py-3 text-sm font-medium text-paper transition hover:bg-accent"
             >
               Open the feed

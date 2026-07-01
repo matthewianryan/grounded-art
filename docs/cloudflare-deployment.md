@@ -20,6 +20,19 @@ always links out to the app origin even if the Pages project has no env var set.
 `NEXT_PUBLIC_APP_URL` in the build environment only to override that (e.g. a staging app
 origin).
 
+### Map / Feed links while the app is offline
+
+The web app is not deployed yet, so pointing Map/Feed at `app.grounded-art.co.za` would send
+visitors to a dead origin. The landing gates these links on `NEXT_PUBLIC_APP_LIVE`:
+
+- **Unset or `false` (current default):** Map/Feed stay on the landing and scroll to the
+  on-page explainer sections (`/#atlas`, `/#feed`).
+- **`true`:** Map/Feed point at the real app (`NEXT_PUBLIC_APP_URL` + `/map` / `/feed`).
+
+At launch, once `app.grounded-art.co.za` is serving, set `NEXT_PUBLIC_APP_LIVE=true` in the
+Cloudflare Pages project's environment variables (Production) and redeploy. That single flag
+is the switch; `NEXT_PUBLIC_APP_URL` already defaults to the production app origin.
+
 ## What is not live yet
 
 Do not expect these to be served by Cloudflare Pages:

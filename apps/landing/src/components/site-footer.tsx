@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { appHref } from "@/lib/app-url";
+import { mapHref, feedHref } from "@/lib/app-url";
 
 // Shared footer: a short blurb, the contact email, social profiles, and a clear takedown and
 // opt-out contact. Kept restrained so it closes the page without competing with the work above.
@@ -18,10 +18,10 @@ export function SiteFooter() {
 
         <nav className="flex flex-col gap-3 text-sm">
           <span className="ga-meta tracking-[0.18em]">Explore</span>
-          <a href={appHref("/map")} className="text-muted transition hover:text-ink">
+          <a href={mapHref()} className="text-muted transition hover:text-ink">
             Map
           </a>
-          <a href={appHref("/feed")} className="text-muted transition hover:text-ink">
+          <a href={feedHref()} className="text-muted transition hover:text-ink">
             Feed
           </a>
           <Link href="/about" className="text-muted transition hover:text-ink">
