@@ -214,6 +214,7 @@ class CheckInRead(BaseModel):
     checked_in_at: datetime
     verified: bool
     point_awarded: bool
+    presence_method: str
 
 
 class CheckInPage(BaseModel):
@@ -222,6 +223,9 @@ class CheckInPage(BaseModel):
 
 class CheckInChallengeBody(BaseModel):
     gallery_slug: str = Field(min_length=1, max_length=255)
+    # The on-site venue code, when the user reached the gallery card by scanning it. A missing
+    # or non-matching code silently falls back to the geolocation tier; it never blocks.
+    code: str | None = Field(default=None, max_length=64)
 
 
 class CheckInChallengeRead(BaseModel):
@@ -234,6 +238,8 @@ class CheckInCreateBody(BaseModel):
     latitude: float
     longitude: float
     challenge_token: str = Field(min_length=1)
+    # Device-reported fix accuracy in metres. Coarse fixes are rejected before a point is awarded.
+    accuracy: float | None = Field(default=None, ge=0)
 
 
 class CheckInResultRead(BaseModel):
@@ -242,3 +248,6 @@ class CheckInResultRead(BaseModel):
     point_awarded: bool
     already_earned_today: bool
     balance: int
+    presence_method: str
+    # One of CheckInDeclineReason when no point was awarded; null when a point was awarded.
+    decline_reason: str | None = None

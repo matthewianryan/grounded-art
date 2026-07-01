@@ -97,6 +97,30 @@ class WalletTransactionReason(StrEnum):
     SHOP_SPEND = "shop_spend"
 
 
+class CheckInMethod(StrEnum):
+    """How presence was established for a check-in, in increasing order of trust.
+
+    GEOLOCATION is a device GPS fix alone; it is convenient but forgeable. VENUE_CODE means the
+    check-in carried a secret bound to the physical gallery (a printed or on-screen code), which
+    a remote user cannot obtain. The method is recorded per check-in so the award is a policy
+    decision, not baked into verification.
+    """
+
+    GEOLOCATION = "geolocation"
+    VENUE_CODE = "venue_code"
+
+
+class CheckInDeclineReason(StrEnum):
+    """Why a check-in did not award a point. Null on the record means a point was awarded."""
+
+    OUT_OF_RANGE = "out_of_range"
+    LOW_ACCURACY = "low_accuracy"
+    UNVERIFIED = "unverified"
+    IMPLAUSIBLE_TRAVEL = "implausible_travel"
+    ALREADY_EARNED_TODAY = "already_earned_today"
+    METHOD_NOT_ELIGIBLE = "method_not_eligible"
+
+
 class SavedItemKind(StrEnum):
     FEED = "feed"
     GALLERY = "gallery"
@@ -173,6 +197,11 @@ class Gallery(Base, TimestampMixin):
     # Optional brand for badge and pin rendering on post cards and the map.
     brand_name: Mapped[str | None] = mapped_column(String(255))
     brand_logo_url: Mapped[str | None] = mapped_column(String(512))
+
+    # Optional on-site check-in code. When set, a check-in that presents it is the trust anchor
+    # for verified presence (a printed or on-screen code the gallery displays). Null means the
+    # gallery has no code yet and check-ins fall back to the geolocation tier.
+    check_in_code: Mapped[str | None] = mapped_column(String(64))
 
     external_refs: Mapped[list["GalleryExternalRef"]] = relationship(
         back_populates="gallery", cascade="all, delete-orphan"
@@ -460,6 +489,9 @@ class Session(Base, TimestampMixin):
     check_in_challenge_gallery_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("gallery.id", ondelete="SET NULL"), index=True
     )
+    # The presence method the challenge was issued for, carried from challenge to submission so
+    # the venue-code tier cannot be claimed at submit time. One of CheckInMethod.
+    check_in_challenge_method: Mapped[str | None] = mapped_column(String(16))
 
     account: Mapped["Account"] = relationship(back_populates="sessions")
     check_in_challenge_gallery: Mapped["Gallery | None"] = relationship()
@@ -492,6 +524,14 @@ class CheckIn(Base, TimestampMixin):
     )
     verified: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
     point_awarded: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
+    # How presence was established. One of CheckInMethod.
+    presence_method: Mapped[str] = mapped_column(
+        String(16), nullable=False, server_default=CheckInMethod.GEOLOCATION
+    )
+    # The device-reported fix accuracy in metres, kept for auditing and abuse review.
+    accuracy_metres: Mapped[float | None] = mapped_column(Float)
+    # Why no point was awarded. One of CheckInDeclineReason; null when a point was awarded.
+    decline_reason: Mapped[str | None] = mapped_column(String(32))
 
     account: Mapped["Account"] = relationship(back_populates="check_ins")
     gallery: Mapped["Gallery"] = relationship(back_populates="check_ins")

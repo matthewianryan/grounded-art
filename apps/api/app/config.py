@@ -56,6 +56,23 @@ class Settings(BaseSettings):
     check_in_radius_metres: int = 100
     check_in_challenge_ttl_minutes: int = 5
     check_in_award_window_hours: int = 24
+    # A browser cannot prove its location, so presence is treated as layered evidence and the
+    # award is a policy decision, not a fixed rule. See docs/wallet-and-presence.md.
+    #
+    # Reject a position fix coarser than this (metres). A real on-site phone fix is well under
+    # it; a desktop IP-based fix is far above it. 0 or negative disables the accuracy gate.
+    check_in_max_accuracy_metres: float = 250.0
+    # Implausible travel between an account's consecutive check-ins withholds the point. An
+    # implied speed above this (km/h) is treated as spoofing. 0 or negative disables the guard.
+    check_in_max_speed_kmh: float = 150.0
+    # Which presence methods earn a point, comma-separated. "geolocation" earns on a GPS fix
+    # alone (the launch default, since no venue codes are deployed yet); "venue_code" requires
+    # an on-site code scan. Tightening to "venue_code" later is a config change, not a rebuild.
+    check_in_awarding_methods: str = "geolocation,venue_code"
+
+    @property
+    def awarding_methods(self) -> frozenset[str]:
+        return frozenset(m.strip() for m in self.check_in_awarding_methods.split(",") if m.strip())
 
     @field_validator("database_url")
     @classmethod
