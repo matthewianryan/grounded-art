@@ -45,8 +45,8 @@
 | Check-in (browser geolocation) | Built | Client requests location for fast feedback; server is authoritative for signed-in points |
 | Check-in celebration moment | Built | motion/react with useReducedMotion |
 | Saved items (local state) | Built | ga-saved cookie, feed and gallery keys |
-| Web app shared nav | Built | Sticky, active-route highlight; Contact us is landing-only (footer links to /contact) |
-| Web app shared footer | Built | |
+| Web app shared nav | Built | Map, Feed, Profile only; Contact us is landing-only |
+| Web app shared footer | Built | Omitted on profile routes; no Contact us link |
 | Light/dark toggle | Built | Mirrors landing mechanism |
 | App home (entry point) | Built | Minimal; may be folded into multi-zone |
 

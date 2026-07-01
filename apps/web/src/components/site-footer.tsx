@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 // Footer for the web app. Restrained, matching the landing, with the clear takedown and opt-out
-// contact carried through so it is reachable from every page of the app.
+// contact. Omitted on profile routes via LayoutFooter.
 export function SiteFooter() {
   return (
     <footer className="border-t border-line">
@@ -26,9 +26,6 @@ export function SiteFooter() {
           <Link href="/profile" className="text-muted transition hover:text-ink">
             Profile
           </Link>
-          <a href="/contact" className="text-muted transition hover:text-ink">
-            Contact us
-          </a>
         </nav>
 
         <nav className="flex flex-col gap-3 text-sm">

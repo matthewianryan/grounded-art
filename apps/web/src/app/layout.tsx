@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { SiteFooter } from "@/components/site-footer";
+import { LayoutFooter } from "@/components/layout-footer";
 import { SiteNav } from "@/components/site-nav";
 import { AuthProvider } from "@/components/auth-provider";
 import { UserActionsProvider } from "@/components/user-actions-provider";
@@ -29,7 +29,7 @@ export default function RootLayout({
           <UserActionsProvider>
             <SiteNav />
             <div className="flex-1">{children}</div>
-            <SiteFooter />
+            <LayoutFooter />
           </UserActionsProvider>
         </AuthProvider>
       </body>
