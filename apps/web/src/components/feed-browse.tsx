@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, useReducedMotion } from "motion/react";
-import type { FeedItem, FeedGalleryContext, FeedItemKind, Gallery } from "@/lib/types";
+import type { FeedItem, FeedGalleryContext, Gallery } from "@/lib/types";
 import {
   buildFeedCanvasItems,
   feedPostKind,
@@ -23,19 +23,12 @@ import { FEED_CAROUSEL_STAGE_CLASS } from "@/lib/feed-carousel-layout";
 
 type FeedMode = "browse" | "expanded" | "unmask";
 
-function kindFilterLabel(kind: FeedItemKind): string {
-  if (kind === "art_post") return "art";
-  if (kind === "event") return "events";
-  return "announcements";
-}
-
 export function FeedBrowse({
   items,
   galleriesById,
   fullGalleriesById,
   featuredGalleries,
   savedOnly,
-  kindFilter,
   searchTerm,
 }: {
   items: FeedItem[];
@@ -43,7 +36,6 @@ export function FeedBrowse({
   fullGalleriesById: Map<string, Gallery>;
   featuredGalleries: Gallery[];
   savedOnly: boolean;
-  kindFilter?: FeedItemKind;
   searchTerm: string;
 }) {
   const { ready, isSaved } = useUserActions();
@@ -63,7 +55,7 @@ export function FeedBrowse({
   useEffect(() => {
     setActiveIndex(0);
     setMode("browse");
-  }, [items, savedOnly, kindFilter, normalizedSearch]);
+  }, [items, savedOnly, normalizedSearch]);
 
   useEffect(() => {
     feedPageShell?.reportMode(mode);
@@ -99,13 +91,9 @@ export function FeedBrowse({
             return gallery ? isSaved(galleryKey(gallery.slug)) : false;
           });
 
-    const kindFiltered = kindFilter
-      ? savedFiltered.filter((item) => feedPostKind(item) === kindFilter)
-      : savedFiltered;
+    if (!normalizedSearch) return savedFiltered;
 
-    if (!normalizedSearch) return kindFiltered;
-
-    return kindFiltered.filter((item) => {
+    return savedFiltered.filter((item) => {
       const gallery = item.gallery_id ? galleriesById.get(item.gallery_id) : undefined;
       const haystack = [
         item.title,
@@ -121,12 +109,9 @@ export function FeedBrowse({
 
       return haystack.includes(normalizedSearch);
     });
-  }, [items, savedOnly, kindFilter, ready, isSaved, galleriesById, normalizedSearch]);
+  }, [items, savedOnly, ready, isSaved, galleriesById, normalizedSearch]);
 
   const visibleGalleries = useMemo(() => {
-    // Gallery cards are not a post kind, so a kind filter hides them.
-    if (kindFilter) return [];
-
     let list = featuredGalleries;
     if (savedOnly) {
       if (!ready) return [];
@@ -142,7 +127,7 @@ export function FeedBrowse({
         .toLowerCase();
       return haystack.includes(normalizedSearch);
     });
-  }, [featuredGalleries, kindFilter, savedOnly, ready, isSaved, normalizedSearch]);
+  }, [featuredGalleries, savedOnly, ready, isSaved, normalizedSearch]);
 
   const canvasItems = useMemo(
     () => buildFeedCanvasItems(visibleFeed, galleriesById, fullGalleriesById, visibleGalleries),
@@ -270,18 +255,15 @@ export function FeedBrowse({
   }
 
   if (canvasItems.length === 0) {
-    const kindPhrase = kindFilter ? ` ${kindFilterLabel(kindFilter)}` : "";
     return (
       <p className="text-sm text-muted">
         {normalizedSearch
           ? savedOnly
-            ? `No saved${kindPhrase} items match that search. Try another term or clear filters.`
-            : `No${kindPhrase} feed items match that search. Try another term or filter.`
+            ? "No saved items match that search. Try another term or clear filters."
+            : "No feed items match that search. Try another term or view."
           : savedOnly
-            ? `Nothing saved${kindPhrase} yet. Save exhibitions and posts as you browse.`
-            : kindFilter
-              ? `No${kindPhrase} in this view yet. Try another filter, or check back soon.`
-              : "Nothing in this view yet. Try another filter, or check back soon."}
+            ? "Nothing saved yet. Save exhibitions and posts as you browse."
+            : "Nothing in this view yet. Try another view, or check back soon."}
       </p>
     );
   }

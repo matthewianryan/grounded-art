@@ -100,14 +100,38 @@ web app. The page is in Grounded Art tokens.
 
 ## Phase 7. Cross-cutting polish
 
-- [ ] Dark mode pass across every new screen.
-- [ ] Reduced-motion audit on the circular gallery and all unmask reveals.
-- [ ] Accessibility pass: keyboard, focus order, screen reader labels, contrast.
-- [ ] Performance pass on the circular gallery and image loading.
-- [ ] Empty, loading, and error states for the new surfaces.
+- [x] Dark mode pass across every new screen. Feed carousel, expanded card, post detail, map
+      side panel, sign-in, profile, and the error surface all read correctly in dark.
+- [x] Reduced-motion audit on the circular gallery and all unmask reveals. The WebGL carousel
+      swaps to a static snap gallery under reduced motion, and the unmask reveal falls back to a
+      plain scroll into the static detail.
+- [x] Accessibility pass: keyboard, focus order, screen reader labels, contrast. Carousel has
+      arrow-key and Enter control with a labelled list, dialogs carry roles and move focus, and
+      the pin badge is labelled. One open item recorded below.
+- [x] Performance pass on the circular gallery and image loading. The WebGL gallery is loaded
+      lazily (no SSR) and only builds textures for visible items; feed images carry intrinsic
+      sizes.
+- [x] Empty, loading, and error states for the new surfaces. Feed, map, and profile sections
+      have empty and error copy, and a shared app error boundary now covers the profile and
+      account area.
 
-Gate: a full design and accessibility QA pass against [Design](design.md), on desktop and
-mobile, in light and dark.
+Gate result (2026-07-01): passed with fixes, on desktop and mobile, in light and dark.
+
+Fixes applied during the QA pass:
+
+- Removed the feed category filter row (Art, Events, Announcements). It contradicted D11, which
+  keeps the feed sliced only by the temporal views. The feed item type stays internal.
+- Added Contact us to the web app top nav so it matches the footer and the Phase 6 nav spec. It
+  is a cross-zone link to the landing contact page, since contact lives outside the /app zone.
+- Added an app-level error boundary so a failed server read in the profile or account area shows
+  a calm recovery surface with the nav and footer intact, instead of an unhandled crash.
+
+Open recommendation (a designer call, not shipped):
+
+- Text input borders sit near 1.2:1 against the ground in dark mode and about the same in light,
+  under the 3:1 non-text contrast guideline, because the field background matches the page. This
+  is deliberate quiet styling, so the stronger border is left as a design decision rather than
+  forced here. Affects sign-in, feed search, and the account editor.
 
 ## Notes
 

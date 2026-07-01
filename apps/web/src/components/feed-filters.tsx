@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { FeedItemKind, FeedView } from "@/lib/types";
+import type { FeedView } from "@/lib/types";
 
 const VIEW_OPTIONS: { label: string; value: FeedView | undefined }[] = [
   { label: "All", value: undefined },
@@ -8,22 +8,12 @@ const VIEW_OPTIONS: { label: string; value: FeedView | undefined }[] = [
   { label: "Closing soon", value: "closing_soon" },
 ];
 
-const KIND_OPTIONS: { label: string; value: FeedItemKind | undefined }[] = [
-  { label: "All", value: undefined },
-  { label: "Art", value: "art_post" },
-  { label: "Events", value: "event" },
-  { label: "Announcements", value: "announcement" },
-];
-
-function hrefFor(
-  view: FeedView | undefined,
-  saved: boolean,
-  q: string,
-  kind: FeedItemKind | undefined,
-): string {
+// The feed is not sliced by category. Per redesign decision D11 the only slicing is the
+// temporal views (plus the personal "Saved" view); the feed item type is internal and is
+// never exposed as a filter.
+function hrefFor(view: FeedView | undefined, saved: boolean, q: string): string {
   const params = new URLSearchParams();
   if (view) params.set("view", view);
-  if (kind) params.set("kind", kind);
   if (saved) params.set("saved", "1");
   if (q) params.set("q", q);
   const query = params.toString();
@@ -49,41 +39,27 @@ function Pill({ href, active, label }: { href: string; active: boolean; label: s
 export function FeedFilters({
   view,
   saved,
-  kind,
   q = "",
 }: {
   view: FeedView | undefined;
   saved: boolean;
-  kind: FeedItemKind | undefined;
   q?: string;
 }) {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap gap-2" role="group" aria-label="Temporal views">
-        {VIEW_OPTIONS.map((opt) => (
-          <Pill
-            key={opt.label}
-            href={hrefFor(opt.value, false, q, kind)}
-            active={!saved && view === opt.value}
-            label={opt.label}
-          />
-        ))}
+    <div className="flex flex-wrap gap-2" role="group" aria-label="Temporal views">
+      {VIEW_OPTIONS.map((opt) => (
         <Pill
-          href={saved ? hrefFor(view, false, q, kind) : hrefFor(view, true, q, kind)}
-          active={saved}
-          label="Saved"
+          key={opt.label}
+          href={hrefFor(opt.value, false, q)}
+          active={!saved && view === opt.value}
+          label={opt.label}
         />
-      </div>
-      <div className="flex flex-wrap gap-2" role="group" aria-label="Post types">
-        {KIND_OPTIONS.map((opt) => (
-          <Pill
-            key={opt.label}
-            href={hrefFor(view, saved, q, opt.value)}
-            active={kind === opt.value}
-            label={opt.label}
-          />
-        ))}
-      </div>
+      ))}
+      <Pill
+        href={saved ? hrefFor(view, false, q) : hrefFor(view, true, q)}
+        active={saved}
+        label="Saved"
+      />
     </div>
   );
 }
