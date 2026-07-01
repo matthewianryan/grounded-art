@@ -225,7 +225,7 @@ function GalleryDetailContent({ gallery }: { gallery: Gallery }) {
   );
 }
 
-function ActionRow({
+export function ActionRow({
   item,
   gallery,
   actions,

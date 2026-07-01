@@ -70,10 +70,10 @@ orange. Saved items carried from session appear. The wallet view reads from Phas
 
 ## Phase 5. Artist and gallery public profile cards
 
-- [ ] Gallery public profile cards on the feed canvas, using the existing `Gallery` records.
+- [x] Gallery public profile cards on the feed canvas, using the existing `Gallery` records.
       Selecting one unmasks to a gallery account-style view backed by the current gallery data:
       description, images, location details, links, and relevant actions.
-- [ ] Artist public profile cards on the feed canvas, using the existing creative-led feed item
+- [x] Artist public profile cards on the feed canvas, using the existing creative-led feed item
       fields (`creative_name`, `external_url`, images, and links). For v1 these cards do not
       have the scroll-up expansion; the card itself is the display surface.
 - [x] Brand badges beside the name on post cards. These are already wired from optional gallery

@@ -56,6 +56,14 @@ export function feedDisplayName(item: FeedItem): string {
   return item.creative_name?.trim() || item.title;
 }
 
+/**
+ * A creative-led feed item: it carries a creative's name and stands in for an artist with no
+ * physical space, so it has no linked gallery. These render as artist public profile cards.
+ */
+export function isCreativeLed(item: FeedItem): boolean {
+  return Boolean(item.creative_name?.trim()) && !item.gallery_id;
+}
+
 export function postBadges(
   item: FeedItem,
   gallery: FeedGalleryContext | undefined,
@@ -149,6 +157,22 @@ export function feedPostImages(item: FeedItem, gallery: Gallery | undefined): st
   return feedPostImageSet(item, gallery).map((image) => image.url);
 }
 
+/** The single lead image for a feed item, preferring image_url then the primary image. */
+export function feedItemPrimaryImage(item: FeedItem): string | null {
+  if (item.image_url) return item.image_url;
+  return sortByPrimaryThenRank(item.images)[0]?.url ?? null;
+}
+
+/** The full set of display images for a gallery, for the account-style gallery view. */
+export function galleryImageSet(gallery: Gallery): FeedDisplayImage[] {
+  return sortByPrimaryThenRank(gallery.images).map((img) => ({
+    url: img.url,
+    width: img.width,
+    height: img.height,
+    attribution: img.attribution,
+  }));
+}
+
 export function toFeedCarouselItem(
   item: FeedItem,
   gallery: FeedGalleryContext | undefined,
@@ -167,6 +191,98 @@ export function feedGalleryImageUrl(imageUrl: string | null, label: string): str
   const safe = label.slice(0, 40).replace(/[<>&"]/g, "");
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000"><rect fill="#2a2419" width="100%" height="100%"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#968a75" font-family="Georgia,serif" font-size="22">${safe}</text></svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
+/** Badges for a gallery card: its brand, and a pin when it has a location. */
+export function galleryBadges(gallery: Gallery): PostBadgeInfo {
+  return {
+    showBrand: Boolean(gallery.brand_name),
+    brandName: gallery.brand_name ?? null,
+    showPin: gallery.latitude != null || Boolean(gallery.formatted_address),
+  };
+}
+
+export function toArtistCarouselItem(item: FeedItem): FeedCarouselItem {
+  return {
+    id: `artist-${item.id}`,
+    slug: item.slug,
+    imageUrl: feedItemPrimaryImage(item),
+    displayName: feedDisplayName(item),
+    badges: postBadges(item, undefined),
+  };
+}
+
+export function toGalleryCarouselItem(gallery: Gallery): FeedCarouselItem {
+  return {
+    id: `gallery-${gallery.id}`,
+    slug: gallery.slug,
+    imageUrl: galleryPrimaryImage(gallery),
+    displayName: gallery.name,
+    badges: galleryBadges(gallery),
+  };
+}
+
+/**
+ * A single card on the feed canvas. Three curated surfaces share the carousel: ordinary posts,
+ * artist public profile cards (creative-led items, card-only in v1), and gallery public profile
+ * cards (existing gallery records, which unmask to the account-style gallery view).
+ */
+export type FeedCanvasItem =
+  | {
+      type: "post";
+      carousel: FeedCarouselItem;
+      item: FeedItem;
+      gallery: Gallery | undefined;
+      galleryContext: FeedGalleryContext | undefined;
+    }
+  | { type: "artist"; carousel: FeedCarouselItem; item: FeedItem }
+  | { type: "gallery"; carousel: FeedCarouselItem; gallery: Gallery };
+
+// Gallery cards are woven into the feed at a steady cadence so they read as curated punctuation
+// rather than a separate list, without ever crowding out the art.
+const GALLERY_CARD_CADENCE = 4;
+
+/**
+ * Build the mixed feed canvas: feed items become post or artist cards, and the given gallery
+ * cards are interleaved among them at a steady cadence, with any remainder appended.
+ */
+export function buildFeedCanvasItems(
+  feedItems: FeedItem[],
+  galleriesById: Map<string, FeedGalleryContext>,
+  fullGalleriesById: Map<string, Gallery>,
+  galleryCards: Gallery[],
+): FeedCanvasItem[] {
+  const fromFeed: FeedCanvasItem[] = feedItems.map((item) => {
+    if (isCreativeLed(item)) {
+      return { type: "artist", carousel: toArtistCarouselItem(item), item };
+    }
+    const galleryContext = item.gallery_id ? galleriesById.get(item.gallery_id) : undefined;
+    const gallery = item.gallery_id ? fullGalleriesById.get(item.gallery_id) : undefined;
+    return {
+      type: "post",
+      carousel: toFeedCarouselItem(item, galleryContext),
+      item,
+      gallery,
+      galleryContext,
+    };
+  });
+
+  if (galleryCards.length === 0) return fromFeed;
+
+  const out: FeedCanvasItem[] = [];
+  let next = 0;
+  fromFeed.forEach((entry, index) => {
+    out.push(entry);
+    if ((index + 1) % GALLERY_CARD_CADENCE === 0 && next < galleryCards.length) {
+      const gallery = galleryCards[next++];
+      out.push({ type: "gallery", carousel: toGalleryCarouselItem(gallery), gallery });
+    }
+  });
+  while (next < galleryCards.length) {
+    const gallery = galleryCards[next++];
+    out.push({ type: "gallery", carousel: toGalleryCarouselItem(gallery), gallery });
+  }
+  return out;
 }
 
 export function buildGalleryMaps(galleries: Gallery[]) {

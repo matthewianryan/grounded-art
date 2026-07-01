@@ -1,15 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, useReducedMotion } from "motion/react";
 import type { FeedItem, FeedGalleryContext, FeedItemKind, Gallery } from "@/lib/types";
-import { feedPostKind, kindOpensDetail, toFeedCarouselItem } from "@/lib/feed-display";
+import {
+  buildFeedCanvasItems,
+  feedPostKind,
+  kindOpensDetail,
+} from "@/lib/feed-display";
 import { useVerticalSwipe } from "@/lib/use-axis-lock";
 import { useUserActions } from "@/components/user-actions-provider";
 import { galleryKey, feedKey } from "@/lib/user-actions";
 import { FeedCircularGallery } from "@/components/feed-circular-gallery";
 import { FeedExpandedCard } from "@/components/feed-expanded-card";
+import { FeedArtistCard } from "@/components/feed-artist-card";
+import { FeedGalleryCard } from "@/components/feed-gallery-card";
 import { FeedUnmaskReveal } from "@/components/feed-unmask-reveal";
+import { PostDetail } from "@/components/post-detail";
+import { GalleryProfileView } from "@/components/gallery-profile-view";
 import { useFeedPageShell } from "@/components/feed-page-shell";
 import { FEED_CAROUSEL_STAGE_CLASS } from "@/lib/feed-carousel-layout";
 
@@ -25,6 +33,7 @@ export function FeedBrowse({
   items,
   galleriesById,
   fullGalleriesById,
+  featuredGalleries,
   savedOnly,
   kindFilter,
   searchTerm,
@@ -32,6 +41,7 @@ export function FeedBrowse({
   items: FeedItem[];
   galleriesById: Map<string, FeedGalleryContext>;
   fullGalleriesById: Map<string, Gallery>;
+  featuredGalleries: Gallery[];
   savedOnly: boolean;
   kindFilter?: FeedItemKind;
   searchTerm: string;
@@ -78,7 +88,7 @@ export function FeedBrowse({
     };
   }, [mode]);
 
-  const visible = useMemo(() => {
+  const visibleFeed = useMemo(() => {
     const savedFiltered = !savedOnly
       ? items
       : !ready
@@ -113,29 +123,43 @@ export function FeedBrowse({
     });
   }, [items, savedOnly, kindFilter, ready, isSaved, galleriesById, normalizedSearch]);
 
-  const carouselItems = useMemo(
-    () =>
-      visible.map((item) => {
-        const galleryContext = item.gallery_id
-          ? galleriesById.get(item.gallery_id)
-          : undefined;
-        return toFeedCarouselItem(item, galleryContext);
-      }),
-    [visible, galleriesById],
+  const visibleGalleries = useMemo(() => {
+    // Gallery cards are not a post kind, so a kind filter hides them.
+    if (kindFilter) return [];
+
+    let list = featuredGalleries;
+    if (savedOnly) {
+      if (!ready) return [];
+      list = list.filter((gallery) => isSaved(galleryKey(gallery.slug)));
+    }
+
+    if (!normalizedSearch) return list;
+
+    return list.filter((gallery) => {
+      const haystack = [gallery.name, gallery.description, gallery.suburb, gallery.brand_name]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(normalizedSearch);
+    });
+  }, [featuredGalleries, kindFilter, savedOnly, ready, isSaved, normalizedSearch]);
+
+  const canvasItems = useMemo(
+    () => buildFeedCanvasItems(visibleFeed, galleriesById, fullGalleriesById, visibleGalleries),
+    [visibleFeed, galleriesById, fullGalleriesById, visibleGalleries],
   );
 
-  const safeIndex = Math.min(activeIndex, Math.max(0, visible.length - 1));
-  const activeItem = visible[safeIndex];
-  const activeGalleryContext = activeItem?.gallery_id
-    ? galleriesById.get(activeItem.gallery_id)
-    : undefined;
-  const activeGallery = activeItem?.gallery_id
-    ? fullGalleriesById.get(activeItem.gallery_id)
-    : undefined;
-  // Announcements stop at the expanded card; only art posts and events open the full detail.
-  const activeOpensDetail = activeItem
-    ? kindOpensDetail(feedPostKind(activeItem))
-    : false;
+  const carouselItems = useMemo(() => canvasItems.map((entry) => entry.carousel), [canvasItems]);
+
+  const safeIndex = Math.min(activeIndex, Math.max(0, canvasItems.length - 1));
+  const activeCanvas = canvasItems[safeIndex];
+  const activeLabel = activeCanvas?.carousel.displayName ?? "post";
+  // Artist cards are card-only in v1; posts open the full detail (unless announcements) and
+  // gallery cards open the account-style gallery view. Only those two run the reveal.
+  const activeOpensDetail =
+    activeCanvas?.type === "post"
+      ? kindOpensDetail(feedPostKind(activeCanvas.item))
+      : activeCanvas?.type === "gallery";
 
   const openExpanded = useCallback(() => setMode("expanded"), []);
   const closeExpanded = useCallback(() => {
@@ -245,7 +269,7 @@ export function FeedBrowse({
     return <p className="text-sm text-muted">Loading your saved items...</p>;
   }
 
-  if (visible.length === 0) {
+  if (canvasItems.length === 0) {
     const kindPhrase = kindFilter ? ` ${kindFilterLabel(kindFilter)}` : "";
     return (
       <p className="text-sm text-muted">
@@ -262,16 +286,31 @@ export function FeedBrowse({
     );
   }
 
-  const expandedCard =
-    activeItem && (mode === "expanded" || mode === "unmask") ? (
-      <FeedExpandedCard
-        item={activeItem}
-        gallery={activeGallery}
-        galleryContext={activeGalleryContext}
-        onClose={closeExpanded}
-        onReveal={enterUnmask}
-      />
-    ) : null;
+  const showExpanded = activeCanvas && (mode === "expanded" || mode === "unmask");
+  let expandedCard: ReactNode = null;
+  if (showExpanded) {
+    if (activeCanvas.type === "post") {
+      expandedCard = (
+        <FeedExpandedCard
+          item={activeCanvas.item}
+          gallery={activeCanvas.gallery}
+          galleryContext={activeCanvas.galleryContext}
+          onClose={closeExpanded}
+          onReveal={enterUnmask}
+        />
+      );
+    } else if (activeCanvas.type === "artist") {
+      expandedCard = <FeedArtistCard item={activeCanvas.item} onClose={closeExpanded} />;
+    } else {
+      expandedCard = (
+        <FeedGalleryCard
+          gallery={activeCanvas.gallery}
+          onClose={closeExpanded}
+          onReveal={enterUnmask}
+        />
+      );
+    }
+  }
 
   const scenePinned = mode === "unmask" && !reduce;
   const fillContainer = mode === "browse";
@@ -300,7 +339,7 @@ export function FeedBrowse({
         />
 
         <AnimatePresence>
-          {mode === "expanded" && activeItem && (
+          {mode === "expanded" && activeCanvas && (
             <>
               <button
                 type="button"
@@ -314,7 +353,7 @@ export function FeedBrowse({
                 className="pointer-events-none fixed inset-0 z-[70] flex items-center justify-center px-3 py-6 outline-none md:px-4 md:py-8"
                 role="dialog"
                 aria-modal="true"
-                aria-label={`${activeItem.title} detail`}
+                aria-label={`${activeLabel} detail`}
               >
                 <div className="pointer-events-auto relative w-full max-w-4xl">
                   {expandedCard}
@@ -322,14 +361,14 @@ export function FeedBrowse({
               </div>
             </>
           )}
-          {mode === "unmask" && activeItem && (
+          {mode === "unmask" && activeCanvas && (
             <div
               ref={dialogRef}
               tabIndex={-1}
               className={`absolute inset-x-0 top-0 z-20 flex ${FEED_CAROUSEL_STAGE_CLASS} pointer-events-none items-center justify-center px-3 py-6 outline-none md:px-4 md:py-8`}
               role="dialog"
               aria-modal="true"
-              aria-label={`${activeItem.title} detail`}
+              aria-label={`${activeLabel} detail`}
             >
               <div className="pointer-events-auto relative w-full max-w-4xl">
                 {expandedCard}
@@ -340,13 +379,20 @@ export function FeedBrowse({
       </div>
 
       {/* Sheet: the full-width detail rising over the pinned scene on scroll (z-index only). */}
-      {mode === "unmask" && activeItem && (
+      {mode === "unmask" && activeCanvas && (
         <div ref={unmaskRef} className="relative z-10">
-          <FeedUnmaskReveal
-            item={activeItem}
-            gallery={activeGallery}
-            headingId={sheetHeadingId}
-          />
+          <FeedUnmaskReveal>
+            {activeCanvas.type === "gallery" ? (
+              <GalleryProfileView gallery={activeCanvas.gallery} headingId={sheetHeadingId} />
+            ) : activeCanvas.type === "post" ? (
+              <PostDetail
+                item={activeCanvas.item}
+                gallery={activeCanvas.gallery}
+                headingId={sheetHeadingId}
+                fullBleed
+              />
+            ) : null}
+          </FeedUnmaskReveal>
         </div>
       )}
     </div>

@@ -78,12 +78,16 @@ async function FeedList({
       listGalleries({ limit: 200 }),
     ]);
     const { galleriesById, fullGalleriesById } = buildGalleryMaps(galleries.items);
+    // Curated gallery public profile cards on the feed canvas use the featured flag as the
+    // curation signal, in feed order behind the interleave.
+    const featuredGalleries = galleries.items.filter((gallery) => gallery.featured);
 
     return (
       <FeedBrowse
         items={feed.items}
         galleriesById={galleriesById}
         fullGalleriesById={fullGalleriesById}
+        featuredGalleries={featuredGalleries}
         savedOnly={savedOnly}
         kindFilter={kindFilter}
         searchTerm={q}
