@@ -13,24 +13,23 @@ Host the landing site on Cloudflare Pages:
 - Build output directory: `apps/landing/out`
 - Root directory: `/`
 
-The landing app is configured as a static Next.js export for Cloudflare Pages. The local
-multi-zone `/app` proxy is not included in the static export.
+The landing app is configured as a static Next.js export for Cloudflare Pages. It links to
+the app through `NEXT_PUBLIC_APP_URL`; it does not proxy the app.
 
 ## What is not live yet
 
-Do not expect these to work from Cloudflare Pages yet:
+Do not expect these to be served by Cloudflare Pages:
 
-- `/app/map`
-- `/app/feed`
-- `/app/sign-in`
+- `/map`
+- `/feed`
+- `/sign-in`
 - the contact form, unless `NEXT_PUBLIC_API_URL` points to a deployed API
 
 The web app needs a Next.js server runtime and the API needs FastAPI plus Postgres. Those are
-separate deployment decisions.
+served by Docker on xneelo.
 
-For the landing-only launch, public navigation stays on the landing pages and section anchors.
-`apps/landing/public/_redirects` still sends `/app/*` back to `/` so old or guessed app URLs do
-not hit a 404 while the app is not deployed.
+`apps/landing/public/_redirects` sends old `/app/*` URLs to `app.grounded-art.co.za` so
+bookmarked or guessed app paths land on the app origin once it is deployed.
 
 ## Local verification
 

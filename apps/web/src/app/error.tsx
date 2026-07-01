@@ -5,6 +5,7 @@
 // when the API is unreachable) and shows a calm, on-brand recovery surface instead of an
 // unhandled crash. The root layout stays mounted, so the nav and footer remain in place.
 import { useEffect } from "react";
+import Link from "next/link";
 
 export default function AppError({
   error,
@@ -32,12 +33,12 @@ export default function AppError({
         >
           Try again
         </button>
-        <a
-          href="/app/feed"
+        <Link
+          href="/feed"
           className="inline-flex rounded-full border border-line px-5 py-2 text-sm text-muted transition hover:border-ink hover:text-ink"
         >
           Back to feed
-        </a>
+        </Link>
       </div>
     </main>
   );

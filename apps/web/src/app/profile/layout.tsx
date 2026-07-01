@@ -12,7 +12,7 @@ export default async function ProfileLayout({
   const account = await getMe(cookieHeader);
 
   if (!account) {
-    redirect(signInHref("/app/profile"));
+    redirect(signInHref("/profile"));
   }
 
   return (

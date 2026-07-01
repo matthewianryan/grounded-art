@@ -28,7 +28,7 @@ async function sample(page, url, navLabel) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 
   const landing = await sample(page, "http://localhost:3000/about", "Map");
-  const app = await sample(page, "http://localhost:3000/app/profile", "Map");
+  const app = await sample(page, "http://localhost:3001/profile", "Map");
 
   console.log(JSON.stringify({ landing, app }, null, 2));
 

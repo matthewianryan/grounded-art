@@ -5,7 +5,7 @@ import { signInHref } from "@/lib/auth-gate";
 
 export default async function ProfileWalletPage() {
   const cookieHeader = await getSessionCookieHeader();
-  if (!cookieHeader) redirect(signInHref("/app/profile/wallet"));
+  if (!cookieHeader) redirect(signInHref("/profile/wallet"));
 
   const wallet = await getWallet(cookieHeader);
 

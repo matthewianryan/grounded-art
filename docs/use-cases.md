@@ -25,7 +25,7 @@ A fifth actor is implicit and equally important:
 ### UC-1 Browse the feed for what is on this weekend
 
 Actor: Local or Visitor
-Entry: Landing page Feed CTA, or direct to /app/feed
+Entry: Landing page Feed CTA, or direct to /feed
 Precondition: Feed has active items with starts_on and ends_on dates in range
 
 Steps:
@@ -44,7 +44,7 @@ Outcome: User has a plan for the weekend with a gallery location confirmed on th
 ### UC-2 Discover a gallery on the map and plan a visit
 
 Actor: Local or Visitor
-Entry: Landing page Atlas CTA, or direct to /app/map
+Entry: Landing page Atlas CTA, or direct to /map
 Precondition: Galleries are seeded with coordinates
 
 Steps:
@@ -155,7 +155,7 @@ Steps:
 2. Hero communicates what Grounded Art is
 3. Visitor scrolls: sees the atlas preview, the feed preview
 4. Taps "Explore the atlas" CTA
-5. Arrives at /app/map
+5. Arrives at /map
 6. Sees galleries spread across Cape Town
 7. Taps a marker in the City Bowl (nearest, most walkable)
 8. Reads gallery card: name, suburb, hours, description
@@ -174,11 +174,11 @@ feature set does not address. The API already supports a suburb filter
 ### UC-8 A local returns regularly to see what is new
 
 Actor: Local (repeat visitor)
-Entry: Direct URL or bookmark to /app/feed
+Entry: Direct URL or bookmark to /feed
 Precondition: Feed is kept current with new items
 
 Steps:
-1. Local visits /app/feed on a Thursday evening
+1. Local visits /feed on a Thursday evening
 2. Default feed shows all recent items, newest first
 3. Local sees what has been added since their last visit
 4. Taps "Opening this week" to narrow to new shows
@@ -206,8 +206,8 @@ Steps:
 1. Curator identifies a new gallery or exhibition to add
 2. Adds gallery record via seed or direct insert
 3. Adds feed item linked to gallery
-4. Confirms item appears in feed at /app/feed
-5. Confirms gallery appears on map at /app/map
+4. Confirms item appears in feed at /feed
+5. Confirms gallery appears on map at /map
 6. Updates last_refreshed_at as information is verified
 
 Outcome: Content is live. No admin UI exists in v1.

@@ -2,50 +2,63 @@ import { spawn, spawnSync } from "node:child_process";
 import net from "node:net";
 
 const root = new URL("..", import.meta.url).pathname;
-const apiDir = new URL("../apps/api", import.meta.url).pathname;
-const children = new Set();
+let composeChild;
+let composeEnv = process.env;
 
 function log(message) {
   process.stdout.write(`[dev:local] ${message}\n`);
 }
 
-function run(command, args, options = {}) {
+function run(command, args) {
   log(`${command} ${args.join(" ")}`);
   const result = spawnSync(command, args, {
-    cwd: options.cwd ?? root,
+    cwd: root,
     stdio: "inherit",
-    env: process.env,
+    env: composeEnv,
   });
   if (result.status !== 0) {
     process.exit(result.status ?? 1);
   }
 }
 
-function tryRun(command, args, options = {}) {
+function tryRun(command, args) {
   const result = spawnSync(command, args, {
-    cwd: options.cwd ?? root,
-    stdio: options.stdio ?? "ignore",
+    cwd: root,
+    stdio: "ignore",
     env: process.env,
   });
   return result.status === 0;
 }
 
-function start(command, args, options = {}) {
+function start(command, args) {
   log(`starting ${command} ${args.join(" ")}`);
   const child = spawn(command, args, {
-    cwd: options.cwd ?? root,
+    cwd: root,
     stdio: "inherit",
-    env: process.env,
+    env: composeEnv,
   });
-  children.add(child);
   child.on("exit", (code) => {
-    children.delete(child);
     if (!shuttingDown && code !== 0 && code !== null) {
-      log(`${command} exited with ${code}`);
-      shutdown(code);
+      process.exit(code);
     }
   });
   return child;
+}
+
+async function waitForOk(url, label, timeoutMs = 90000) {
+  const startTime = Date.now();
+  let lastStatus = "no response";
+  while (Date.now() - startTime < timeoutMs) {
+    try {
+      const response = await fetch(url, { cache: "no-store" });
+      lastStatus = `${response.status} ${response.statusText}`;
+      if (response.ok) return;
+    } catch (error) {
+      lastStatus = error instanceof Error ? error.message : String(error);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  throw new Error(`${label} was not ready at ${url}: ${lastStatus}`);
 }
 
 function isPortOpen(port) {
@@ -64,29 +77,13 @@ function isPortOpen(port) {
   });
 }
 
-async function waitForPort(port, label, timeoutMs = 30000) {
-  const startTime = Date.now();
-  while (Date.now() - startTime < timeoutMs) {
-    if (await isPortOpen(port)) return;
-    await new Promise((resolve) => setTimeout(resolve, 500));
+async function choosePort(envName, preferred, fallback) {
+  if (process.env[envName]) return process.env[envName];
+  if (await isPortOpen(preferred)) {
+    log(`port ${preferred} is busy; using ${fallback} for ${envName}`);
+    return String(fallback);
   }
-  throw new Error(`${label} did not open port ${port}`);
-}
-
-async function waitForOk(url, label, timeoutMs = 30000) {
-  const startTime = Date.now();
-  let lastStatus = "no response";
-  while (Date.now() - startTime < timeoutMs) {
-    try {
-      const response = await fetch(url, { cache: "no-store" });
-      lastStatus = `${response.status} ${response.statusText}`;
-      if (response.ok) return;
-    } catch (error) {
-      lastStatus = error instanceof Error ? error.message : String(error);
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-  throw new Error(`${label} was not ready at ${url}: ${lastStatus}`);
+  return String(preferred);
 }
 
 async function ensureDocker() {
@@ -106,45 +103,12 @@ async function ensureDocker() {
   throw new Error("Docker daemon did not become available. Open Docker Desktop and try again.");
 }
 
-async function ensureDb() {
-  await ensureDocker();
-  run("docker", ["compose", "up", "-d", "db"]);
-  await waitForPort(5432, "Postgres");
-}
-
-async function ensureApi() {
-  run("uv", ["run", "alembic", "upgrade", "head"], { cwd: apiDir });
-  run("uv", ["run", "python", "-m", "app.seed"], { cwd: apiDir });
-
-  if (await isPortOpen(8000)) {
-    log("API already listening on 8000");
-  } else {
-    start("uv", ["run", "uvicorn", "app.main:app", "--reload", "--port", "8000"], {
-      cwd: apiDir,
-    });
-  }
-
-  await waitForOk("http://localhost:8000/health", "API health");
-  await waitForOk("http://localhost:8000/galleries?limit=1", "API galleries");
-}
-
-async function ensureFrontend() {
-  const landingOpen = await isPortOpen(3000);
-  const webOpen = await isPortOpen(3001);
-  if (landingOpen && webOpen) {
-    log("frontend already listening on 3000 and 3001");
-  } else {
-    start("pnpm", ["dev"]);
-  }
-  await waitForOk("http://localhost:3000/app/map", "web app map", 60000);
-}
-
 let shuttingDown = false;
 
 function shutdown(code = 0) {
   shuttingDown = true;
-  for (const child of children) {
-    child.kill("SIGINT");
+  if (composeChild) {
+    composeChild.kill("SIGINT");
   }
   process.exit(code);
 }
@@ -153,16 +117,36 @@ process.on("SIGINT", () => shutdown(0));
 process.on("SIGTERM", () => shutdown(0));
 
 try {
-  await ensureDb();
-  await ensureApi();
-  await ensureFrontend();
-  log("ready: http://localhost:3000/app/map");
-  if (children.size === 0) {
-    log("all services were already running; exiting");
-  } else {
-    log("press Ctrl-C to stop API/frontend processes started by this command");
-    await new Promise(() => {});
-  }
+  await ensureDocker();
+  const webPort = await choosePort("WEB_PORT", 3001, 3101);
+  const proxyPort = await choosePort("CADDY_HTTP_PORT", 8080, 8180);
+  composeEnv = {
+    ...process.env,
+    WEB_PORT: webPort,
+    CADDY_HTTP_PORT: proxyPort,
+  };
+
+  run("docker", ["compose", "up", "-d", "db"]);
+  run("docker", ["compose", "build", "api", "web"]);
+  run("docker", ["compose", "run", "--rm", "api", "alembic", "upgrade", "head"]);
+  run("docker", ["compose", "run", "--rm", "api", "python", "-m", "app.seed"]);
+
+  composeChild = start("docker", ["compose", "up", "api", "web", "caddy"]);
+
+  await waitForOk("http://localhost:8000/health", "API health");
+  await waitForOk("http://localhost:8000/galleries?limit=1", "API galleries");
+  await waitForOk(`http://localhost:${webPort}/map`, "web app map");
+  await waitForOk(`http://localhost:${webPort}/feed`, "web app feed");
+  await waitForOk(`http://localhost:${proxyPort}/map`, "proxy map");
+
+  log("ready:");
+  log(`  app:   http://localhost:${webPort}/feed`);
+  log(`  map:   http://localhost:${webPort}/map`);
+  log("  api:   http://localhost:8000/health");
+  log(`  proxy: http://localhost:${proxyPort}/feed`);
+  log("press Ctrl-C to stop API/web/proxy containers; db keeps its Docker volume");
+
+  await new Promise(() => {});
 } catch (error) {
   log(error instanceof Error ? error.message : String(error));
   shutdown(1);

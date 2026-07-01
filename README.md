@@ -3,12 +3,13 @@
 Grounded Art connects people in Cape Town with local art, galleries, and artists.
 
 This is a pnpm and Turborepo monorepo. The landing page and the web app are separate
-Next.js apps stitched into one site under one domain using Next.js multi-zones.
+Next.js apps: the landing is a static Cloudflare Pages site, and the app runs on its own
+origin with the API behind it.
 
 ## Structure
 
 - `apps/landing` - Next.js landing site. Owns the domain root.
-- `apps/web` - Next.js web app (map, feed). Served under `/app` via multi-zones.
+- `apps/web` - Next.js web app (map, feed). Served at the app origin root.
 - `apps/api` - FastAPI and PostgreSQL backend.
 - `packages/tailwind-config` - shared Tailwind theme tokens.
 - `packages/tsconfig` - shared TypeScript base config.
@@ -45,43 +46,33 @@ Next.js apps stitched into one site under one domain using Next.js multi-zones.
 ### Prerequisites
 
 - Node 22 and pnpm 10
-- Python 3.12 or newer and uv
-- Docker (for Postgres)
+- Docker
 
-### Frontend
+### Full local stack
 
 ```bash
 pnpm install
 cp .env.example .env
-pnpm dev
+pnpm dev:local
 ```
 
-This runs both Next apps together:
+This builds and runs the real app stack in Docker:
 
-- Landing: http://localhost:3000
-- Web app: http://localhost:3000/app (the landing app proxies `/app` to the web app on
-  port 3001)
+- Web app: http://localhost:3001
+- API: http://localhost:8000
+- Reverse proxy: http://localhost:8080
+- Postgres: Docker service `db`, persisted in the `grounded-art-db-data` volume
 
-### Database
-
-```bash
-docker compose up -d db
-```
-
-### API
-
-```bash
-cd apps/api
-uv sync
-uv run uvicorn app.main:app --reload --port 8000
-```
+If `3001` or `8080` is already in use, `pnpm dev:local` automatically uses `3101` or `8180`
+and prints the actual URLs.
 
 Health check: http://localhost:8000/health
 
 ### Migrations
 
 ```bash
-cd apps/api
-uv run alembic revision --autogenerate -m "describe the change"
-uv run alembic upgrade head
+pnpm docker:migrate
 ```
+
+Create new migration files from the API package with `uv run alembic revision --autogenerate -m
+"describe the change"` when working outside Docker.

@@ -13,7 +13,7 @@
     "source_url": "https://blankprojects.com/Gallery",
     "images": [
       {
-        "url": "/app/images/seed/blank-projects.jpg",
+        "url": "/images/seed/blank-projects.jpg",
         "width": 1800,
         "height": 2119,
         "is_primary": true,
@@ -39,7 +39,7 @@
     "source_url": "https://goodman-gallery.com/exhibitions",
     "images": [
       {
-        "url": "/app/images/seed/goodman-1.jpg",
+        "url": "/images/seed/goodman-1.jpg",
         "width": 1200,
         "height": 1600,
         "is_primary": true,
@@ -50,7 +50,7 @@
         "attribution": "Unsplash (placeholder, cleared for dev seed)"
       },
       {
-        "url": "/app/images/seed/goodman-2.jpg",
+        "url": "/images/seed/goodman-2.jpg",
         "width": 1800,
         "height": 2497,
         "is_primary": false,
@@ -61,7 +61,7 @@
         "attribution": "Unsplash (placeholder, cleared for dev seed)"
       },
       {
-        "url": "/app/images/seed/goodman-3.jpg",
+        "url": "/images/seed/goodman-3.jpg",
         "width": 1200,
         "height": 1595,
         "is_primary": false,
@@ -95,7 +95,7 @@
     "source_url": "https://ocula.com/art-galleries/thk-gallery/exhibitions/i-find-you-all-around-me/",
     "images": [
       {
-        "url": "/app/images/seed/thk-group.jpg",
+        "url": "/images/seed/thk-group.jpg",
         "width": 2000,
         "height": 1333,
         "is_primary": true,
@@ -121,7 +121,7 @@
     "source_url": "https://www.norvalfoundation.org/exhibitions/",
     "images": [
       {
-        "url": "/app/images/seed/zvavahera-1.jpg",
+        "url": "/images/seed/zvavahera-1.jpg",
         "width": 1200,
         "height": 1600,
         "is_primary": true,
@@ -132,7 +132,7 @@
         "attribution": "Unsplash (placeholder, cleared for dev seed)"
       },
       {
-        "url": "/app/images/seed/zvavahera-2.jpg",
+        "url": "/images/seed/zvavahera-2.jpg",
         "width": 1200,
         "height": 800,
         "is_primary": false,
@@ -143,7 +143,7 @@
         "attribution": "Unsplash (placeholder, cleared for dev seed)"
       },
       {
-        "url": "/app/images/seed/zvavahera-3.jpg",
+        "url": "/images/seed/zvavahera-3.jpg",
         "width": 1600,
         "height": 1083,
         "is_primary": false,
@@ -169,7 +169,7 @@
     "source_url": "https://www.norvalfoundation.org/exhibitions/",
     "images": [
       {
-        "url": "/app/images/seed/coopoo-clay.jpg",
+        "url": "/images/seed/coopoo-clay.jpg",
         "width": 1800,
         "height": 2497,
         "is_primary": true,
@@ -195,7 +195,7 @@
     "source_url": "https://www.norvalfoundation.org/exhibitions/",
     "images": [
       {
-        "url": "/app/images/seed/brett-sculpture.jpg",
+        "url": "/images/seed/brett-sculpture.jpg",
         "width": 1200,
         "height": 800,
         "is_primary": true,
@@ -221,7 +221,7 @@
     "source_url": "https://www.stevenson.info/exhibitions-upcoming",
     "images": [
       {
-        "url": "/app/images/seed/stevenson-opening.jpg",
+        "url": "/images/seed/stevenson-opening.jpg",
         "width": 1600,
         "height": 1083,
         "is_primary": true,
@@ -249,7 +249,7 @@
     "source_url": "https://first-thursdays.co.za",
     "images": [
       {
-        "url": "/app/images/seed/first-thursdays.jpg",
+        "url": "/images/seed/first-thursdays.jpg",
         "width": 2400,
         "height": 1800,
         "is_primary": true,
@@ -291,7 +291,7 @@
     "source": "sample_seed",
     "images": [
       {
-        "url": "/app/images/seed/spotlight-1.jpg",
+        "url": "/images/seed/spotlight-1.jpg",
         "width": 1200,
         "height": 1600,
         "is_primary": true,
@@ -302,7 +302,7 @@
         "attribution": "Unsplash (placeholder, cleared for dev seed)"
       },
       {
-        "url": "/app/images/seed/spotlight-2.jpg",
+        "url": "/images/seed/spotlight-2.jpg",
         "width": 1200,
         "height": 1595,
         "is_primary": false,
@@ -313,7 +313,7 @@
         "attribution": "Unsplash (placeholder, cleared for dev seed)"
       },
       {
-        "url": "/app/images/seed/spotlight-3.jpg",
+        "url": "/images/seed/spotlight-3.jpg",
         "width": 1200,
         "height": 800,
         "is_primary": false,
@@ -324,7 +324,7 @@
         "attribution": "Unsplash (placeholder, cleared for dev seed)"
       },
       {
-        "url": "/app/images/seed/spotlight-4.jpg",
+        "url": "/images/seed/spotlight-4.jpg",
         "width": 2000,
         "height": 1333,
         "is_primary": false,

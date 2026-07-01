@@ -144,11 +144,11 @@ def _validate_feed_row(row: dict) -> None:
         raise ValueError(f"feed item {slug!r} must have exactly one primary image")
 
 
-def _primary_image_url(item: FeedItem) -> str | None:
-    if not item.images:
+def _primary_image_url(images: list[dict]) -> str | None:
+    if not images:
         return None
-    primary = next((img for img in item.images if img.is_primary), None)
-    return primary.url if primary else item.images[0].url
+    primary = next((img for img in images if img.get("is_primary")), None)
+    return (primary or images[0])["url"]
 
 
 def seed_feed_items(session, now: datetime) -> int:
@@ -202,7 +202,9 @@ def seed_feed_items(session, now: datetime) -> int:
             )
 
         # Carousel cover uses image_url; detail masonry uses FeedItemImage rows.
-        item.image_url = _primary_image_url(item)
+        # Derive from the fixture, not the relationship, because old deleted image rows can
+        # remain in the in-memory collection until the session expires.
+        item.image_url = _primary_image_url(row.get("images", []))
 
         for index, link in enumerate(row.get("links", [])):
             item.links.append(

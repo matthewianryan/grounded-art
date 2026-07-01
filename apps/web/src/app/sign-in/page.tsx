@@ -1,7 +1,7 @@
 import { SignInFlow } from "@/components/sign-in-flow";
 
 function safeReturnTo(value: string | undefined): string {
-  if (!value || !value.startsWith("/app/")) return "/app/map";
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/map";
   return value;
 }
 
