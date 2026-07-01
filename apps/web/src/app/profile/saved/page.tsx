@@ -31,7 +31,7 @@ export default async function ProfileSavedPage() {
             const href =
               item.kind === "feed"
                 ? `/feed/${item.slug}`
-                : `/map?gallery=${encodeURIComponent(item.slug)}`;
+                : `/galleries/${encodeURIComponent(item.slug)}`;
             const subtitle =
               item.kind === "feed"
                 ? "Feed item"

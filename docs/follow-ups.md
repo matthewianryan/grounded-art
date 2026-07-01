@@ -18,14 +18,9 @@ The v2 redesign is tracked in [Redesign plan](redesign-plan.md), with the design
 [Redesign](redesign.md). The items below remain the baseline web app worklist.
 
 Built so far: the read API for galleries and the feed, the curated seed of real Cape Town
-galleries and feed items, the typed web API client, the app shell, and the Feed page with its
-temporal views.
+galleries and feed items, the typed web API client, the app shell, feed, map, gallery detail,
+auth, profile, wallet, check-in, and contact surfaces.
 
-- Map page: render the seeded galleries as nodes on the Cape Town base map, with a side-panel
-  card per gallery. The base layer goes through the provider boundary in `apps/web/src/lib/maps.ts`
-  and needs the Google Maps key in `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`.
-- Gallery detail surface for the card and any deep links, served from the existing
-  `/galleries/{slug}` endpoint.
 - API test suite covering the read endpoints, the status filtering, and the temporal views,
   run against a test database in CI.
 - Image pipeline: host gallery and feed images with source, permission status, and attribution,

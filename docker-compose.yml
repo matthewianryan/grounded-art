@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: grounded
       POSTGRES_DB: grounded_art
     ports:
-      - "5432:5432"
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
     volumes:
       - grounded-art-db-data:/var/lib/postgresql/data
     healthcheck:
@@ -28,7 +28,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql+psycopg://grounded:grounded@db:5432/grounded_art
-      CORS_ORIGINS: ${CORS_ORIGINS:-["http://localhost:3001","http://localhost:8080","https://app.grounded-art.co.za"]}
+      CORS_ORIGINS: ${CORS_ORIGINS:-["http://localhost:3001","http://localhost:8080","https://grounded-art.co.za","https://www.grounded-art.co.za","https://app.grounded-art.co.za"]}
       REDESIGN_SCHEMA_ENABLED: "true"
       SESSION_COOKIE_PATH: /
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
@@ -42,7 +42,7 @@ services:
       TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY:-}
       LOGIN_CODE_PEPPER: ${LOGIN_CODE_PEPPER:-dev-pepper-change-in-production}
     ports:
-      - "8000:8000"
+      - "127.0.0.1:${API_PORT:-8000}:8000"
     healthcheck:
       test:
         [
@@ -70,7 +70,7 @@ services:
       WEB_SESSION_COOKIE_PATH: /
       NEXT_PUBLIC_COOKIE_PATH: /
     ports:
-      - "${WEB_PORT:-3001}:3000"
+      - "127.0.0.1:${WEB_PORT:-3001}:3000"
     healthcheck:
       test:
         [

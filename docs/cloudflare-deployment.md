@@ -20,6 +20,10 @@ always links out to the app origin even if the Pages project has no env var set.
 `NEXT_PUBLIC_APP_URL` in the build environment only to override that (e.g. a staging app
 origin).
 
+Set `NEXT_PUBLIC_API_URL` in the Cloudflare Pages environment when the API is live. Without it,
+the static contact page intentionally falls back to opening an email draft instead of posting to
+a dead or localhost API.
+
 ### Map / Feed links while the app is offline
 
 The web app is not deployed yet, so pointing Map/Feed at `app.grounded-art.co.za` would send
@@ -40,7 +44,7 @@ Do not expect these to be served by Cloudflare Pages:
 - `/map`
 - `/feed`
 - `/sign-in`
-- the contact form, unless `NEXT_PUBLIC_API_URL` points to a deployed API
+- contact form API writes, unless `NEXT_PUBLIC_API_URL` points to the deployed API
 
 The web app needs a Next.js server runtime and the API needs FastAPI plus Postgres. Those are
 served by Docker on xneelo.

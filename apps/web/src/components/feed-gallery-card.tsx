@@ -89,6 +89,10 @@ export function FeedGalleryCard({ gallery, onClose, onReveal }: FeedGalleryCardP
             />
           )}
           <ActionPill
+            label="View page"
+            href={`/galleries/${encodeURIComponent(gallery.slug)}`}
+          />
+          <ActionPill
             label={saved ? "Saved" : "Save"}
             onClick={() => toggleSaveGallery(gallery.slug)}
             pressed={saved}

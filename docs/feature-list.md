@@ -13,7 +13,7 @@
 | Galleries and artists invitation | Built | mailto CTA, POPIA note |
 | Human and local teaser | Built | Links to About |
 | Closing CTA section | Built | |
-| App CTA (deep link to web app) | Not built | Opens /app feed carousel; nav Map/Feed links go live |
+| App CTA (deep link to web app) | Built | Map/Feed links switch from landing anchors to the app origin with `NEXT_PUBLIC_APP_LIVE=true` |
 | About page | Built | Values grid, full editorial layout |
 | Shared nav with wordmark and rust rule | Built | Links to in-page anchors in v1 |
 | Shared footer with takedown contact | Built | |
@@ -26,11 +26,11 @@
 | Feature | Status | Notes |
 |---------|--------|-------|
 | Feed page with temporal views | Built | This weekend, opening this week, closing soon, with local q search |
-| Feed type filters | Built | Art, events, and announcements pills; client-side kind filter on carousel |
+| Feed type filters | Removed | Per D11, the feed is sliced only by temporal views, saved state, and search |
 | Feed card (text layout) | Removed | Replaced by image carousel and post-led cards in Phase 1 |
-| Feed card image layout (post-led) | Not built | image_url field exists; needs rendering |
+| Feed card image layout (post-led) | Built | Carousel and expanded cards render post, gallery, or fallback images |
 | Feed loading skeleton | Built | Pulse animation, mirrors page frame |
-| Feed empty and error states | Partial | Minimal; needs copy and design pass |
+| Feed empty and error states | Built | Empty/search/saved messages and app error boundary are in place |
 | Feed saved filter pill | Built | Client-side filter via ga-saved cookie |
 | Map page | Built | Gallery map with side panel; list fallback without API key |
 | Map base layer (Google Maps) | Built | Loaded when NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is set |
@@ -39,14 +39,14 @@
 | Gallery side-panel card | Built | Shared DetailCard component |
 | No-key list fallback | Built | isMapConfigured() shows gallery list |
 | Post detail route | Built | /feed/[slug] with DetailCard |
-| Gallery detail route /galleries/[slug] | Not built | getGallery(slug) client exists |
+| Gallery detail route /galleries/[slug] | Built | Reuses the gallery profile view and links back to map |
 | Feed-to-gallery cross-link | Built | Feed cards link to detail; save writes gallery key |
 | View-on-map deep link | Built | /map?gallery={slug} |
 | Check-in (browser geolocation) | Built | Client requests location for fast feedback; server is authoritative for signed-in points |
 | Check-in celebration moment | Built | motion/react with useReducedMotion |
 | Saved items (local state) | Built | ga-saved cookie, feed and gallery keys |
-| Web app shared nav | Built | Map, Feed, Profile only; Contact us is landing-only |
-| Web app shared footer | Built | Omitted on profile routes; no Contact us link |
+| Web app shared nav | Built | Floating icon nav for Map, Feed, profile/account actions, and theme |
+| Web app shared footer | Removed | App surfaces use the full viewport; landing owns footer/contact links |
 | Light/dark toggle | Built | Mirrors landing mechanism |
 | App home (entry point) | Built | Minimal root redirect into the feed |
 
@@ -76,8 +76,8 @@ starting point for the redesign build.
 | Profile (avatar, display name, bio) | Built | /profile home |
 | Profile sections (Wallet, Saved, Check-ins, Account) | Built | Wallet and check-ins read from API |
 | Account editor (display vs personal info) | Built | No orange; rust only on the primary action |
-| Artist and gallery account card | Not built | Profile-as-card; no scroll-up expansion for v1 |
-| Contact page and form | Not built | Posts to API, stored and notified; "Send" not "Book Now" |
+| Artist and gallery account card | Built | Curated gallery profile cards unmask; artist cards are card-only for v1 |
+| Contact page and form | Built | Posts to API when configured; falls back to mailto when no live API is set |
 
 ### API (apps/api)
 
@@ -90,7 +90,7 @@ starting point for the redesign build.
 | Gallery seed (14 Cape Town galleries) | Built | All have coordinates; no images yet |
 | Feed seed (10 items) | Built | No image URLs yet |
 | Gallery image records | Not built | Model exists; no seed images |
-| Feed image URLs | Not built | image_url field exists; no seeded values |
+| Feed image URLs | Partial | Rendering exists; seed still uses mostly placeholder/no-image fallbacks |
 | Redesign schema migrations | Built | Phase 0; account, session, check-in, wallet, contact, gallery brand |
 | Auth and sessions | Built | Passwordless email, session cookie, sign out |
 | POST /check-ins (verify and award) | Built | POST /me/check-ins; verifies presence, awards atomically |
@@ -98,7 +98,7 @@ starting point for the redesign build.
 | GET /me, PATCH /me (profile and account) | Built | Per-account read and edit |
 | GET /me/wallet | Built | Ledger sum and recent transactions |
 | GET /me/saved | Built | Read and write saved galleries and feed items |
-| POST /contact | Not built | Stores the message and notifies us |
+| POST /contact | Built | Stores accepted messages, rate-limits abuse, supports Turnstile, and notifies through Resend |
 | API test suite | Not built | |
 
 ## Deferred (post-v1)

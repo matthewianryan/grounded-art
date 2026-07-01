@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
   if (!session) {
     const signIn = request.nextUrl.clone();
     signIn.pathname = "/sign-in";
-    signIn.searchParams.set("returnTo", `/app${pathname}${search}`);
+    signIn.searchParams.set("returnTo", `${pathname}${search}`);
     return NextResponse.redirect(signIn);
   }
 

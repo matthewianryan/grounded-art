@@ -43,13 +43,15 @@ proxying.
 | Variable | Staging / production |
 |----------|----------------------|
 | `DATABASE_URL` | `postgresql+psycopg://grounded:grounded@db:5432/grounded_art` inside Compose |
-| `CORS_ORIGINS` | JSON array with the exact web origin, e.g. `["https://app.staging.grounded-art.co.za"]` |
+| `CORS_ORIGINS` | JSON array with the exact landing and web origins, e.g. `["https://staging.grounded-art.co.za","https://app.staging.grounded-art.co.za"]` |
 | `COOKIE_SECURE` | `true` |
 | `LOGIN_CODE_PEPPER` | Unique per environment; never reuse the dev default |
 | `SESSION_COOKIE_PATH` | `/` |
 | `EMAIL_PROVIDER` | `resend` |
 | `RESEND_API_KEY` | From Resend dashboard |
 | `EMAIL_FROM` | Verified sender, e.g. `Grounded Art <noreply@grounded-art.co.za>` |
+| `CONTACT_NOTIFICATION_TO` | Inbox for contact form notifications |
+| `CONTACT_NOTIFICATION_FROM` | Verified Resend sender, e.g. `Grounded Art <notifications@grounded-art.co.za>` |
 
 Local development uses `EMAIL_PROVIDER=console` (codes log to the API process).
 
@@ -62,6 +64,15 @@ Local development uses `EMAIL_PROVIDER=console` (codes log to the API process).
 | `WEB_SESSION_COOKIE_PATH` | `/` |
 | `NEXT_PUBLIC_COOKIE_PATH` | `/` |
 
+### Landing (`apps/landing`)
+
+| Variable | Staging / production |
+|----------|----------------------|
+| `NEXT_PUBLIC_APP_URL` | The web app origin, e.g. `https://app.grounded-art.co.za` |
+| `NEXT_PUBLIC_APP_LIVE` | `true` only after the web app is serving |
+| `NEXT_PUBLIC_API_URL` | The public API origin for the contact form, e.g. `https://api.grounded-art.co.za` |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Optional; only set when Turnstile is enabled |
+
 ## Email (Resend)
 
 Sign-in codes require a real sender in staging and production. See
@@ -70,7 +81,9 @@ Sign-in codes require a real sender in staging and production. See
 1. Create a Resend account and verify `grounded-art.co.za`.
 2. Add SPF and DKIM DNS records at your registrar or Cloudflare DNS.
 3. Set `EMAIL_PROVIDER=resend`, `RESEND_API_KEY`, and `EMAIL_FROM` on the API.
-4. Send a test sign-in and confirm the code arrives in inbox (not API logs).
+4. Set `CONTACT_NOTIFICATION_FROM` to a verified sender on the same domain.
+5. Send a test sign-in and confirm the code arrives in inbox (not API logs).
+6. Submit the contact form and confirm the message is stored and a notification arrives.
 
 ## DNS
 
@@ -91,7 +104,8 @@ Sign-in codes require a real sender in staging and production. See
 4. Run `pnpm docker:migrate` and `pnpm docker:seed`, or the equivalent `docker compose run`
    commands on the server. These use the prebuilt API virtualenv inside the container.
 5. Run `docker compose up -d`.
-6. Deploy the landing to Cloudflare Pages with `NEXT_PUBLIC_APP_URL` set to the app origin.
+6. Deploy the landing to Cloudflare Pages with `NEXT_PUBLIC_APP_URL` set to the app origin,
+   `NEXT_PUBLIC_API_URL` set to the public API origin, and `NEXT_PUBLIC_APP_LIVE=true`.
 7. Run the smoke test below.
 
 ## Smoke test
@@ -102,6 +116,7 @@ Sign-in codes require a real sender in staging and production. See
 4. Map: Check in does not redirect to sign-in; geolocation and server check-in run.
 5. Profile: wallet, check-ins, and sign out work.
 6. Google Maps loads with the correct referrer restrictions.
+7. The contact form submits and sends a Resend notification.
 
 ## Promotion to production
 
@@ -124,10 +139,8 @@ Recommended branch mapping: `staging` branch to staging environments, `main` to 
 
 | Gap | Follow-up |
 |-----|-----------|
-| Contact form API (`POST /contact`) | Phase 6 in [redesign-plan.md](redesign-plan.md) |
 | CI deploy pipelines | Add when hosts are chosen |
 | API integration test suite | [feature-list.md](feature-list.md) |
-| Contact notification email | When contact form ships |
 | POPIA copy for stored emails | Content / legal |
 
 After the BFF auth change, users with stale API-origin cookies may need to sign in once more.
