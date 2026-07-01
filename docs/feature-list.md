@@ -38,17 +38,17 @@
 | Gallery markers on map | Built | Rust default, ink when selected |
 | Gallery side-panel card | Built | Shared DetailCard component |
 | No-key list fallback | Built | isMapConfigured() shows gallery list |
-| Post detail route | Built | /app/feed/[slug] with DetailCard |
+| Post detail route | Built | /feed/[slug] with DetailCard |
 | Gallery detail route /galleries/[slug] | Not built | getGallery(slug) client exists |
 | Feed-to-gallery cross-link | Built | Feed cards link to detail; save writes gallery key |
-| View-on-map deep link | Built | /app/map?gallery={slug} |
+| View-on-map deep link | Built | /map?gallery={slug} |
 | Check-in (browser geolocation) | Built | Client requests location for fast feedback; server is authoritative for signed-in points |
 | Check-in celebration moment | Built | motion/react with useReducedMotion |
 | Saved items (local state) | Built | ga-saved cookie, feed and gallery keys |
 | Web app shared nav | Built | Map, Feed, Profile only; Contact us is landing-only |
 | Web app shared footer | Built | Omitted on profile routes; no Contact us link |
 | Light/dark toggle | Built | Mirrors landing mechanism |
-| App home (entry point) | Built | Minimal; may be folded into multi-zone |
+| App home (entry point) | Built | Minimal root redirect into the feed |
 
 ### Web app redesign (v2)
 
@@ -59,7 +59,7 @@ starting point for the redesign build.
 |---------|--------|-------|
 | Shared redesign tokens (card, badge, action row, wallet) | Built | Phase 0; packages/tailwind-config |
 | Shared typography utilities (ga-kicker, ga-display-*, ga-body) | Built | packages/tailwind-config/typography.css; landing and web app |
-| Circular gallery shell (preview) | Built | Phase 0 isolated shell; /app/preview/patterns |
+| Circular gallery shell (preview) | Built | Phase 0 isolated shell; /preview/patterns |
 | Unmask reveal shell (preview) | Built | Phase 0 isolated shell; sticky scroll layering |
 | Circular gallery feed browse | Built | Live at /feed; all items, temporal views only |
 | Unmask-on-scroll post detail | Built | Wired from active carousel card to DetailCard |
@@ -73,7 +73,7 @@ starting point for the redesign build.
 | Server-side check-in verification | Built | Challenge token, 100 m server radius, accuracy audit, optional venue-code tier |
 | Points wallet (append-only ledger) | Built | +1 per verified check-in |
 | Anti-farming (one award per gallery per 24h) | Built | Same transaction as check-in |
-| Profile (avatar, display name, bio) | Built | /app/profile home |
+| Profile (avatar, display name, bio) | Built | /profile home |
 | Profile sections (Wallet, Saved, Check-ins, Account) | Built | Wallet and check-ins read from API |
 | Account editor (display vs personal info) | Built | No orange; rust only on the primary action |
 | Artist and gallery account card | Not built | Profile-as-card; no scroll-up expansion for v1 |

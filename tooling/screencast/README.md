@@ -15,13 +15,10 @@ pnpm --filter @grounded-art/screencast install-browser   # downloads the Chromiu
 
 ## Record
 
-Start the full stack first, each in its own terminal:
+Start the full Docker stack first:
 
 ```sh
-docker compose up -d db                                   # Postgres
-cd apps/api && uv run python -m app.seed                  # seed, if not already loaded
-cd apps/api && uv run uvicorn app.main:app --port 8000    # API
-pnpm --filter @grounded-art/web dev                       # web app on http://localhost:3001
+pnpm dev:local
 ```
 
 Then record:
@@ -34,8 +31,8 @@ The video is written to `tooling/screencast/recordings/grounded-art-<timestamp>.
 
 ## Options
 
-- `BASE_URL` — base URL of the web app including the `/app` zone prefix. Defaults to
-  `http://localhost:3001/app`. Point this at a deployed URL to record the live site.
+- `BASE_URL` — base URL of the web app. Defaults to `http://localhost:3001`. Point this at a
+  deployed URL to record the live site.
 - `DEMO_SPEED` — multiplier on every pause. `DEMO_SPEED=1.5` slows the walk down, `0.7` speeds it
   up. Defaults to `1`.
 

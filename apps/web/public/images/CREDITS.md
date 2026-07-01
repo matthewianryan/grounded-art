@@ -5,7 +5,7 @@ Unsplash (free to use under the [Unsplash License](https://unsplash.com/license)
 from the landing placeholder set where noted; cleared for local dev seed only. Swap for real
 Cape Town gallery and artist images before production.
 
-Served at `/app/images/seed/{filename}` (web app basePath).
+Served at `/images/seed/{filename}` from the app origin.
 
 | File | Dimensions | Unsplash photo id | License |
 | --- | --- | --- | --- |

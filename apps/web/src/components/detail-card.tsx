@@ -328,7 +328,7 @@ export function ActionRow({
 
     if (!authReady || !isSignedIn) {
       const returnTo = gallerySlug
-        ? `/app/map?gallery=${encodeURIComponent(gallerySlug)}`
+        ? `/map?gallery=${encodeURIComponent(gallerySlug)}`
         : currentReturnTo();
       window.location.assign(signInHref(returnTo));
       return;
@@ -421,7 +421,7 @@ export function ActionRow({
 
     const url =
       !item && gallerySlug
-        ? `${window.location.origin}/app/map?gallery=${encodeURIComponent(gallerySlug)}`
+        ? `${window.location.origin}/map?gallery=${encodeURIComponent(gallerySlug)}`
         : window.location.href;
     const title = item?.title ?? gallery?.name ?? "Grounded Art";
 

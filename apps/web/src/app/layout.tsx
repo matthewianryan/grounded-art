@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { LayoutFooter } from "@/components/layout-footer";
 import { SiteNav } from "@/components/site-nav";
 import { AuthProvider } from "@/components/auth-provider";
 import { UserActionsProvider } from "@/components/user-actions-provider";
@@ -23,13 +22,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="flex min-h-screen flex-col overflow-x-hidden bg-paper font-sans text-ink antialiased">
+      <body className="min-h-dvh overflow-x-hidden bg-paper font-sans text-ink antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <AuthProvider>
           <UserActionsProvider>
             <SiteNav />
-            <div className="flex-1">{children}</div>
-            <LayoutFooter />
+            {children}
           </UserActionsProvider>
         </AuthProvider>
       </body>

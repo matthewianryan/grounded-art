@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export const SESSION_COOKIE_NAME = "ga-session";
-export const WEB_SESSION_COOKIE_PATH = "/app";
+export const WEB_SESSION_COOKIE_PATH = process.env.WEB_SESSION_COOKIE_PATH ?? "/";
 export const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
 
 /** Extract ga-session value from Set-Cookie header(s). */

@@ -5,7 +5,7 @@ import { signInHref } from "@/lib/auth-gate";
 
 export default async function ProfileCheckInsPage() {
   const cookieHeader = await getSessionCookieHeader();
-  if (!cookieHeader) redirect(signInHref("/app/profile/check-ins"));
+  if (!cookieHeader) redirect(signInHref("/profile/check-ins"));
 
   const checkIns = await getCheckIns(cookieHeader);
 

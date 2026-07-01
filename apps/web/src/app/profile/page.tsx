@@ -6,7 +6,7 @@ import { signInHref } from "@/lib/auth-gate";
 export default async function ProfileHomePage() {
   const cookieHeader = await getSessionCookieHeader();
   const account = await getMe(cookieHeader);
-  if (!account) redirect(signInHref("/app/profile"));
+  if (!account) redirect(signInHref("/profile"));
 
   return (
     <section aria-labelledby="profile-summary-heading">

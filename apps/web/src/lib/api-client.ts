@@ -1,6 +1,6 @@
 // Browser-side API client for authenticated requests.
 //
-// Auth and /me endpoints go through the web app BFF (/app/api/auth, /app/api/me) so the session
+// Auth and /me endpoints go through the web app BFF (/api/auth, /api/me) so the session
 // cookie lives on the web origin. NEXT_PUBLIC_API_URL is used by the BFF server-side only.
 
 import type {
@@ -15,8 +15,8 @@ import type {
   Wallet,
 } from "@/lib/account-types";
 
-const AUTH_BASE = "/app/api/auth";
-const ME_BASE = "/app/api/me";
+const AUTH_BASE = "/api/auth";
+const ME_BASE = "/api/me";
 
 export class ApiClientError extends Error {
   constructor(

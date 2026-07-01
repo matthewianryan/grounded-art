@@ -7,7 +7,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
-const BASE_URL = (process.env.BASE_URL ?? "http://localhost:3001/app").replace(/\/$/, "");
+const BASE_URL = (process.env.BASE_URL ?? "http://localhost:3001").replace(/\/$/, "");
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = join(HERE, "recordings");
 const VIEWPORT = { width: 1366, height: 900 };

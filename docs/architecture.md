@@ -10,8 +10,8 @@
 ## Repository structure
 
 Grounded Art is one monorepo. The landing page and the web app are built as separate
-Next.js apps so Dylan and Matthew can work in parallel with minimal overlap, and they are
-served together as one site under one domain.
+Next.js apps so Dylan and Matthew can work in parallel with minimal overlap. The landing is
+served from the root domain, while the app runs on its own app subdomain.
 
 - `apps/landing` - Next.js + TypeScript. The marketing and information site. Owns the root
   routes. Built by Dylan.
@@ -20,16 +20,14 @@ served together as one site under one domain.
 - `apps/api` - FastAPI + Python. The web app backend. Built by Matthew.
 - `packages/` - shared configuration and the shared Tailwind theme.
 
-The landing app and the web app are stitched into one site using Next.js Multi-Zones. The
-landing app holds the domain root and routes the app paths through to the web app. The
-whole site is served from one domain.
+The landing app and the web app are no longer stitched with Next.js Multi-Zones. The
+landing app links to the app origin through `NEXT_PUBLIC_APP_URL`.
 
 ## Domain
 
-The site is served from www.grounded-art.co.za. The landing app is deployed to Cloudflare as a
-static-assets Worker: a static Next.js export (`pnpm pages:build`, output `apps/landing/out`)
-served from `apps/landing/wrangler.toml`. The `/app` multi-zone proxy is a server feature, so it
-is omitted from the static export until the web zone is deployed.
+The landing site is served from `grounded-art.co.za` and `www.grounded-art.co.za` on
+Cloudflare Pages. The app is served from `app.grounded-art.co.za`, and the API from
+`api.grounded-art.co.za`, both on the xneelo Docker server.
 
 Staging and production setup: [Deployment](deployment.md).
 
@@ -46,7 +44,8 @@ Staging and production setup: [Deployment](deployment.md).
 
 - The Python environment and dependencies are managed with uv.
 - Database access uses SQLAlchemy. Schema migrations use Alembic.
-- PostgreSQL runs locally through Docker Compose during development.
+- PostgreSQL, the API, the web app, and the reverse proxy run through Docker Compose during
+  development and on the xneelo server.
 
 ## Build order
 

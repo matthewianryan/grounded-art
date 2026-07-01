@@ -12,11 +12,11 @@ export default async function ProfileLayout({
   const account = await getMe(cookieHeader);
 
   if (!account) {
-    redirect(signInHref("/app/profile"));
+    redirect(signInHref("/profile"));
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10">
+    <div className="mx-auto max-w-3xl px-6 pb-10 pt-20">
       <header>
         <p className="ga-kicker">Your space</p>
         <h1 className="ga-display-section mt-5">Profile</h1>

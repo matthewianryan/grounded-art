@@ -3,7 +3,6 @@
 import {
   createContext,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -26,34 +25,25 @@ export function FeedPageShell({
   toolbar: ReactNode;
   children: ReactNode;
 }) {
-  const [navHeight, setNavHeight] = useState(0);
   const [mode, setMode] = useState<FeedBrowseMode>("browse");
   const browseLocked = mode === "browse";
 
-  useEffect(() => {
-    function measure() {
-      const header = document.querySelector("header");
-      setNavHeight(header?.offsetHeight ?? 0);
-    }
-
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
-
   const shellContext = useMemo(() => ({ reportMode: setMode }), []);
 
+  // No header: the feed owns the full viewport height. The toolbar leaves a top band clear
+  // for the floating menu button.
   return (
     <FeedPageShellContext.Provider value={shellContext}>
       <main
-        className={browseLocked ? "flex flex-col overflow-hidden" : "flex flex-col"}
-        style={
-          browseLocked && navHeight > 0
-            ? { height: `calc(100dvh - ${navHeight}px)` }
-            : undefined
+        className={
+          browseLocked
+            ? "flex h-dvh flex-col overflow-hidden"
+            : "flex flex-col"
         }
       >
-        <div className="mx-auto w-full max-w-6xl shrink-0 px-4 py-8 sm:px-6">{toolbar}</div>
+        <div className="mx-auto w-full max-w-6xl shrink-0 px-4 pb-8 pt-20 sm:px-6">
+          {toolbar}
+        </div>
         <section
           className={
             browseLocked ? "min-h-0 w-full flex-1 overflow-hidden" : "mt-2 w-full"

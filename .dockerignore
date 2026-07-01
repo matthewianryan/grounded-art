@@ -1,0 +1,17 @@
+**/node_modules
+**/.pnpm-store
+**/.next
+**/out
+**/.turbo
+**/.venv
+**/__pycache__
+*.pyc
+.git
+.env
+.env.local
+.env.*.local
+**/.vercel
+**/.wrangler
+tooling/screencast/recordings
+test-results
+playwright-report

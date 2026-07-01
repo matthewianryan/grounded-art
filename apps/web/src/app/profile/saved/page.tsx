@@ -6,7 +6,7 @@ import { signInHref } from "@/lib/auth-gate";
 
 export default async function ProfileSavedPage() {
   const cookieHeader = await getSessionCookieHeader();
-  if (!cookieHeader) redirect(signInHref("/app/profile/saved"));
+  if (!cookieHeader) redirect(signInHref("/profile/saved"));
 
   const saved = await getSaved(cookieHeader);
 
