@@ -14,7 +14,11 @@ Host the landing site on Cloudflare Pages:
 - Root directory: `/`
 
 The landing app is configured as a static Next.js export for Cloudflare Pages. It links to
-the app through `NEXT_PUBLIC_APP_URL`; it does not proxy the app.
+the app through `NEXT_PUBLIC_APP_URL`; it does not proxy the app. `pnpm pages:build` defaults
+`NEXT_PUBLIC_APP_URL` to `https://app.grounded-art.co.za`, so the deployed static export
+always links out to the app origin even if the Pages project has no env var set. Set
+`NEXT_PUBLIC_APP_URL` in the build environment only to override that (e.g. a staging app
+origin).
 
 ## What is not live yet
 
