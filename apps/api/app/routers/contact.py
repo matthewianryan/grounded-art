@@ -210,6 +210,9 @@ def _notify_contact_message(
             headers={
                 "Authorization": f"Bearer {resend_api_key}",
                 "Content-Type": "application/json",
+                # Resend sits behind Cloudflare, which blocks the default
+                # ``Python-urllib`` agent with a 403 "error code: 1010" page.
+                "User-Agent": "grounded-art-api",
             },
             method="POST",
         )
