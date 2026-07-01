@@ -3,3 +3,26 @@
 @import "@grounded-art/tailwind-config/fonts.css";
 @import "@grounded-art/tailwind-config/theme.css";
 @import "@grounded-art/tailwind-config/typography.css";
+
+/* Floating app menu reveal: primary destinations and account controls pop out from the
+   hamburger. Suppressed for reduced-motion. */
+@keyframes ga-menu-pop {
+  from {
+    opacity: 0;
+    transform: translate(-0.35rem, -0.35rem) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ga-menu-pop {
+  animation: ga-menu-pop 0.16s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ga-menu-pop {
+    animation: none;
+  }
+}

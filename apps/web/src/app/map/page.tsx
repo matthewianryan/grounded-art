@@ -15,7 +15,7 @@ export default async function MapPage({
     galleries = page.items;
   } catch {
     return (
-      <main className="flex min-h-[calc(100dvh-4.5rem)] items-center justify-center px-6">
+      <main className="flex min-h-dvh items-center justify-center px-6">
         <p className="text-sm text-muted">
           The gallery map could not be loaded right now. Please try again shortly.
         </p>
@@ -24,7 +24,7 @@ export default async function MapPage({
   }
 
   return (
-    <main className="min-h-[calc(100dvh-4.5rem)] overflow-hidden">
+    <main className="min-h-dvh overflow-hidden">
       <GalleryMap galleries={galleries} initialGallerySlug={initialGallerySlug} />
     </main>
   );

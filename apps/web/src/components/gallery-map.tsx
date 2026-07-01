@@ -45,7 +45,7 @@ export function GalleryMap({ galleries, initialGallerySlug }: GalleryMapProps) {
   }
 
   return (
-    <div className="relative h-[calc(100dvh-4.5rem)] min-h-[34rem] w-full overflow-hidden bg-line/20">
+    <div className="relative h-dvh min-h-[34rem] w-full overflow-hidden bg-line/20">
       <GoogleMapCanvas
         galleries={mapGalleries}
         selectedSlug={selectedSlug}
@@ -54,7 +54,7 @@ export function GalleryMap({ galleries, initialGallerySlug }: GalleryMapProps) {
         onLoadFailed={handleMapLoadFailed}
       />
       {selected ? (
-        <aside className="absolute inset-x-3 bottom-3 z-10 max-h-[42vh] overflow-y-auto rounded-sm border border-line bg-paper/95 p-4 shadow-card backdrop-blur md:inset-x-auto md:bottom-auto md:left-4 md:top-4 md:max-h-[calc(100%-2rem)] md:w-[18.5rem] [&>div>article]:border-0 [&>div>article]:bg-transparent [&>div>article]:p-0">
+        <aside className="absolute inset-x-3 bottom-3 z-10 max-h-[42vh] overflow-y-auto rounded-sm border border-line bg-paper/95 p-4 shadow-card backdrop-blur md:inset-x-auto md:bottom-auto md:left-20 md:top-4 md:max-h-[calc(100%-2rem)] md:w-[18.5rem] [&>div>article]:border-0 [&>div>article]:bg-transparent [&>div>article]:p-0">
           <div className="mx-auto max-w-lg md:max-w-none">
             <DetailCard gallery={selected} />
           </div>
@@ -78,8 +78,8 @@ function GalleryMapLayout({
   notice: string;
 }) {
   return (
-    <div className="grid h-[calc(100dvh-4.5rem)] min-h-[34rem] w-full overflow-hidden bg-line/20 md:grid-cols-[minmax(18rem,24rem)_minmax(0,1fr)]">
-      <div className="overflow-y-auto border-b border-line bg-paper/95 p-5 md:border-b-0 md:border-r">
+    <div className="grid h-dvh min-h-[34rem] w-full overflow-hidden bg-line/20 md:grid-cols-[minmax(18rem,24rem)_minmax(0,1fr)]">
+      <div className="overflow-y-auto border-b border-line bg-paper/95 px-5 pb-5 pt-20 md:border-b-0 md:border-r">
         <p className="text-sm text-muted">{notice}</p>
         <ul className="mt-6 divide-y divide-line">
           {galleries.map((g) => (
