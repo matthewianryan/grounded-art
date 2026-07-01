@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: grounded
-      POSTGRES_PASSWORD: grounded
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-grounded}
       POSTGRES_DB: grounded_art
     ports:
       - "127.0.0.1:${DB_PORT:-5432}:5432"
@@ -27,7 +27,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+psycopg://grounded:grounded@db:5432/grounded_art
+      DATABASE_URL: postgresql+psycopg://grounded:${POSTGRES_PASSWORD:-grounded}@db:5432/grounded_art
       CORS_ORIGINS: ${CORS_ORIGINS:-["http://localhost:3001","http://localhost:8080","https://grounded-art.co.za","https://www.grounded-art.co.za","https://app.grounded-art.co.za"]}
       REDESIGN_SCHEMA_ENABLED: "true"
       SESSION_COOKIE_PATH: /

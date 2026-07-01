@@ -119,7 +119,11 @@ def _verify_turnstile(token: str | None, remote_ip: str) -> None:
     verification_request = request.Request(
         settings.turnstile_siteverify_url,
         data=payload,
-        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        headers={
+            "Content-Type": "application/x-www-form-urlencoded",
+            # Cloudflare blocks the default ``Python-urllib`` agent.
+            "User-Agent": "grounded-art-api",
+        },
         method="POST",
     )
     try:

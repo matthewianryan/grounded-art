@@ -8,7 +8,7 @@
     "start": "next start --port 3000",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "pages:build": "STATIC_EXPORT=true NEXT_PUBLIC_APP_URL=\"${NEXT_PUBLIC_APP_URL:-https://app.grounded-art.co.za}\" next build",
+    "pages:build": "STATIC_EXPORT=true NEXT_PUBLIC_APP_URL=\"${NEXT_PUBLIC_APP_URL:-https://app.grounded-art.co.za}\" NEXT_PUBLIC_APP_LIVE=\"${NEXT_PUBLIC_APP_LIVE:-true}\" next build",
     "pages:preview": "wrangler pages dev out"
   },
   "dependencies": {
