@@ -8,10 +8,13 @@ import type { GalleryItem } from "@/components/ui/circular-gallery-2";
 import { buildFeedGalleryItems, isDarkTheme } from "@/lib/polaroid-texture";
 import {
   feedCarouselHitStyle,
+  FEED_CAROUSEL_MD_BREAKPOINT,
+  FEED_CAROUSEL_MOBILE_CARD_STAGE_CLASS,
   FEED_CAROUSEL_STAGE_CLASS,
   FEED_CAROUSEL_STAGE_FILL_CLASS,
 } from "@/lib/feed-carousel-layout";
 import { CircularGallery as PolaroidSnapGallery } from "@/components/circular-gallery";
+import { FeedFlatCarousel } from "@/components/feed-flat-carousel";
 
 const WebGLCircularGallery = dynamic(
   () => import("@/components/ui/circular-gallery-2").then((mod) => mod.CircularGallery),
@@ -76,7 +79,7 @@ export function FeedCircularGallery({
   }, []);
 
   useEffect(() => {
-    if (reduce || items.length === 0) {
+    if (reduce || items.length === 0 || viewportWidth < FEED_CAROUSEL_MD_BREAKPOINT) {
       setGalleryItems(null);
       return;
     }
@@ -91,7 +94,7 @@ export function FeedCircularGallery({
     return () => {
       cancelled = true;
     };
-  }, [items, dark, reduce]);
+  }, [items, dark, reduce, viewportWidth]);
 
   const hitStyle = feedCarouselHitStyle(viewportWidth);
 
@@ -103,6 +106,28 @@ export function FeedCircularGallery({
   const stageClass = `relative ${stageHeightClass} w-full touch-pan-y bg-paper ${
     interactive ? "" : "pointer-events-none"
   }`;
+
+  const isMobile = viewportWidth < FEED_CAROUSEL_MD_BREAKPOINT;
+
+  if (isMobile) {
+    // The flat carousel's card has its own mobile-specific height (see
+    // FEED_CAROUSEL_MOBILE_CARD_STAGE_CLASS), different from the shared FEED_CAROUSEL_STAGE_CLASS
+    // mobile clause, so this branch sizes itself independently rather than reusing stageClass
+    // (still respecting fillContainer for browse mode).
+    const mobileStageClass = `relative flex items-center ${
+      fillContainer ? FEED_CAROUSEL_STAGE_FILL_CLASS : FEED_CAROUSEL_MOBILE_CARD_STAGE_CLASS
+    } w-full touch-pan-y bg-paper ${interactive ? "" : "pointer-events-none"}`;
+    return (
+      <div className={mobileStageClass}>
+        <FeedFlatCarousel
+          items={items}
+          activeIndex={activeIndex}
+          onActiveIndexChange={interactive ? onActiveIndexChange : noop}
+          onActiveSelect={onCenterClick}
+        />
+      </div>
+    );
+  }
 
   if (reduce) {
     return (
