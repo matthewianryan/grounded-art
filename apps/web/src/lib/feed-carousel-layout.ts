@@ -16,6 +16,26 @@ export const FEED_CAROUSEL_HIT_CLASS =
 export const FEED_CAROUSEL_SNAP_PADDING_CLASS =
   "px-[max(0.75rem,calc(50%-min(39vw,11rem)))] md:px-[max(1rem,calc(50%-9rem))]";
 
+/**
+ * Mobile flat-carousel card dimensions: proportioned off the desktop fan's own card size (see
+ * feedCarouselHitStyle's desktop branch, clamp(18rem,34vw,28rem) / min(68vh,660px)), scaled down
+ * ~10% so the card reads as dominant without feeling oversized on a phone.
+ */
+export const FEED_CAROUSEL_MOBILE_CARD_WIDTH_CLASS = "w-[clamp(16rem,30vw,25rem)]";
+export const FEED_CAROUSEL_MOBILE_CARD_HEIGHT_CLASS = "h-[min(61vh,594px)]";
+/** Half of the mobile card's width floor (16rem), so peeks stay proportionate to the card. */
+export const FEED_CAROUSEL_MOBILE_CARD_PADDING_CLASS = "px-[max(1rem,calc(50%-8rem))]";
+
+/** Mobile flat-carousel track height: card height above plus a little breathing room. */
+export const FEED_CAROUSEL_MOBILE_CARD_STAGE_CLASS = "h-[min(63vh,610px)] min-h-0";
+
+/**
+ * Generous rounding to visually match desktop's WebGL rounded-box shader (uBorderRadius: 0.05
+ * in circular-gallery-2.tsx), which has no direct CSS-px equivalent since it's computed in the
+ * plane's normalized UV space — this is the closest clean Tailwind step to that look.
+ */
+export const FEED_CAROUSEL_MOBILE_CARD_RADIUS_CLASS = "rounded-3xl";
+
 export const FEED_CAROUSEL_MD_BREAKPOINT = 768;
 
 const DESKTOP_PLANE_PROFILE = { height: 1100, width: 585 };
