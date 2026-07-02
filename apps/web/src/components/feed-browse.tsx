@@ -1,14 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { AnimatePresence, useReducedMotion } from "motion/react";
 import type { FeedItem, FeedGalleryContext, Gallery } from "@/lib/types";
 import {
   buildFeedCanvasItems,
   feedPostKind,
   kindOpensDetail,
 } from "@/lib/feed-display";
-import { useVerticalSwipe } from "@/lib/use-axis-lock";
 import { useUserActions } from "@/components/user-actions-provider";
 import { galleryKey, feedKey } from "@/lib/user-actions";
 import { FeedCircularGallery } from "@/components/feed-circular-gallery";
@@ -18,10 +16,13 @@ import { FeedGalleryCard } from "@/components/feed-gallery-card";
 import { FeedUnmaskReveal } from "@/components/feed-unmask-reveal";
 import { PostDetail } from "@/components/post-detail";
 import { GalleryProfileView } from "@/components/gallery-profile-view";
-import { useFeedPageShell } from "@/components/feed-page-shell";
 import { FEED_CAROUSEL_STAGE_CLASS } from "@/lib/feed-carousel-layout";
 
-type FeedMode = "browse" | "expanded" | "unmask";
+type FeedMode = "browse" | "detail";
+
+// Matches the toolbar band in FeedPageShell (pt-20 + pb-8 + search row) so the pinned scene
+// keeps the same height as the browse carousel area.
+const FEED_SCENE_HEIGHT_CLASS = "h-[calc(100dvh-9.5rem)]";
 
 export function FeedBrowse({
   items,
@@ -39,16 +40,11 @@ export function FeedBrowse({
   searchTerm: string;
 }) {
   const { ready, isSaved } = useUserActions();
-  const reduce = useReducedMotion();
-  const feedPageShell = useFeedPageShell();
   const [mode, setMode] = useState<FeedMode>("browse");
   const [activeIndex, setActiveIndex] = useState(0);
   const sceneRef = useRef<HTMLDivElement>(null);
-  const unmaskRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
-  // True once the rising sheet has cleared the fold, so the retract listener can tell the entry
-  // scroll (which momentarily sits at the fold) apart from a genuine scroll back to the top.
-  const armedRef = useRef(false);
   const sheetHeadingId = "feed-detail-title";
   const normalizedSearch = searchTerm.trim().toLowerCase();
 
@@ -57,13 +53,9 @@ export function FeedBrowse({
     setMode("browse");
   }, [items, savedOnly, normalizedSearch]);
 
+  // Lock page scroll in browse; unlock in detail so the unmask sheet can rise on a normal scroll.
   useEffect(() => {
-    feedPageShell?.reportMode(mode);
-  }, [mode, feedPageShell]);
-
-  // Keep the page fixed while the carousel is moveable; scrolling is for expanded detail only.
-  useEffect(() => {
-    if (mode !== "browse") {
+    if (mode === "detail") {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
       return;
@@ -146,11 +138,17 @@ export function FeedBrowse({
       ? kindOpensDetail(feedPostKind(activeCanvas.item))
       : activeCanvas?.type === "gallery";
 
-  const openExpanded = useCallback(() => setMode("expanded"), []);
-  const closeExpanded = useCallback(() => {
+  const openDetail = useCallback(() => setMode("detail"), []);
+
+  const closeDetail = useCallback(() => {
+    window.scrollTo({ top: 0 });
     setMode("browse");
-    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  const scrollToSheet = useCallback(() => {
+    if (!activeOpensDetail) return;
+    sheetRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [activeOpensDetail]);
 
   const handleActiveIndexChange = useCallback(
     (index: number) => {
@@ -159,96 +157,43 @@ export function FeedBrowse({
     [mode],
   );
 
-  const enterUnmask = useCallback(() => {
-    if (!activeOpensDetail) return;
-    armedRef.current = false;
-    setMode("unmask");
-    requestAnimationFrame(() => {
-      if (reduce) {
-        // No progressive overlay: bring the static full-width detail into view.
-        unmaskRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-        return;
-      }
-      // Align the runway top to the viewport, then scroll down past it so the sheet rises about
-      // halfway over the pinned scene. One smooth scroll, pure scroll progress, no JS tweening.
-      const runwayTop = window.scrollY + (sceneRef.current?.getBoundingClientRect().top ?? 0);
-      window.scrollTo({
-        top: runwayTop + window.innerHeight * 0.5,
-        behavior: "smooth",
-      });
-    });
-  }, [activeOpensDetail, reduce]);
-
   useEffect(() => {
-    if (mode !== "expanded" && mode !== "unmask") return;
+    if (mode !== "detail") return;
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         event.preventDefault();
-        closeExpanded();
+        closeDetail();
       }
     }
 
     window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mode, closeDetail]);
 
-    if (mode !== "expanded") {
-      return () => window.removeEventListener("keydown", onKeyDown);
-    }
-
-    function onWheel(event: WheelEvent) {
-      if (event.deltaY > 20) {
-        event.preventDefault();
-        enterUnmask();
-      }
-    }
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("wheel", onWheel);
-    };
-  }, [mode, closeExpanded, enterUnmask]);
-
-  // Touch equivalent of the wheel-down handler: a downward swipe on the expanded card enters the
-  // reveal. Axis-locked so a sideways swipe is left to the carousel.
-  useVerticalSwipe(mode === "expanded" && activeOpensDetail, enterUnmask);
-
-  // Reversible retract: while the sheet is rising, track its top edge. Once it has cleared the
-  // fold we arm; when it retracts back to the fold (scroll returned to the runway top) we drop
-  // back to stage 1, which unmounts the sheet so no sliver is ever left behind. Skipped under
-  // reduced motion, where the sheet is a static surface rather than a scroll-driven overlay.
   useEffect(() => {
-    if (mode !== "unmask" || reduce) return;
-
-    function onScroll() {
-      const sheetTop = unmaskRef.current?.getBoundingClientRect().top;
-      if (sheetTop === undefined) return;
-      const fold = window.innerHeight;
-      if (!armedRef.current) {
-        if (sheetTop < fold - fold * 0.12) armedRef.current = true;
-        return;
-      }
-      if (sheetTop >= fold - 2) {
-        armedRef.current = false;
-        setMode("expanded");
-      }
-    }
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [mode, reduce]);
-
-  // Move focus to follow the reveal: into the expanded dialog on stage 1, and to the detail
-  // heading on stage 2, so keyboard and screen reader users track the surface that is in front.
-  useEffect(() => {
-    if (mode === "expanded") {
+    if (mode === "detail") {
       requestAnimationFrame(() => dialogRef.current?.focus({ preventScroll: true }));
-    } else if (mode === "unmask") {
-      requestAnimationFrame(() => {
-        document.getElementById(sheetHeadingId)?.focus({ preventScroll: true });
-      });
     }
   }, [mode]);
+
+  // #region agent log
+  useEffect(() => {
+    fetch("http://127.0.0.1:7600/ingest/0f8ab905-2030-4221-a6e1-3ce1dfa4f39e", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "7ab1cb" },
+      body: JSON.stringify({
+        sessionId: "7ab1cb",
+        runId: "verify-static-shell",
+        hypothesisId: "B",
+        location: "feed-browse.tsx:local-mode",
+        message: "local mode without shell provider",
+        data: { mode, detailOpen: mode === "detail" },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+  }, [mode]);
+  // #endregion
 
   if (!ready && savedOnly) {
     return <p className="text-sm text-muted">Loading your saved items...</p>;
@@ -268,101 +213,70 @@ export function FeedBrowse({
     );
   }
 
-  const showExpanded = activeCanvas && (mode === "expanded" || mode === "unmask");
+  const detailOpen = mode === "detail";
+  const fillContainer = mode === "detail";
+
   let expandedCard: ReactNode = null;
-  if (showExpanded) {
+  if (detailOpen && activeCanvas) {
     if (activeCanvas.type === "post") {
       expandedCard = (
         <FeedExpandedCard
           item={activeCanvas.item}
           gallery={activeCanvas.gallery}
           galleryContext={activeCanvas.galleryContext}
-          onClose={closeExpanded}
-          onReveal={enterUnmask}
+          onClose={closeDetail}
+          onReveal={scrollToSheet}
         />
       );
     } else if (activeCanvas.type === "artist") {
-      expandedCard = <FeedArtistCard item={activeCanvas.item} onClose={closeExpanded} />;
+      expandedCard = <FeedArtistCard item={activeCanvas.item} onClose={closeDetail} />;
     } else {
       expandedCard = (
         <FeedGalleryCard
           gallery={activeCanvas.gallery}
-          onClose={closeExpanded}
-          onReveal={enterUnmask}
+          onClose={closeDetail}
+          onReveal={scrollToSheet}
         />
       );
     }
   }
 
-  const scenePinned = mode === "unmask" && !reduce;
-  const fillContainer = mode === "browse";
+  const sceneClassName =
+    mode === "detail"
+      ? `sticky top-0 z-0 ${FEED_SCENE_HEIGHT_CLASS} overflow-hidden bg-paper`
+      : "relative z-0 h-full min-h-0 bg-paper";
 
   return (
-    <div className={fillContainer ? "relative h-full min-h-0" : "relative"}>
-      {/* Scene: carousel, neighbours, and the expanded card. The same elements stay mounted in
-          every mode; during the reveal the scene pins so it stays visible behind the sheet. */}
-      <div
-        ref={sceneRef}
-        className={
-          scenePinned
-            ? "sticky top-0 z-0 min-h-svh overflow-hidden"
-            : fillContainer
-              ? "relative z-0 h-full min-h-0"
-              : "relative z-0"
-        }
-      >
+    <div className={mode === "browse" ? "relative h-full min-h-0" : "relative bg-paper"}>
+      {/* Scene: carousel, neighbours, and the expanded card. Pinned in detail so a normal scroll
+          raises the sheet over it without moving or resizing the carousel. */}
+      <div ref={sceneRef} className={sceneClassName}>
         <FeedCircularGallery
           items={carouselItems}
           activeIndex={safeIndex}
           onActiveIndexChange={handleActiveIndexChange}
-          onCenterClick={mode === "browse" ? openExpanded : undefined}
+          onCenterClick={mode === "browse" ? openDetail : undefined}
           interactive={mode === "browse"}
           fillContainer={fillContainer}
         />
 
-        <AnimatePresence>
-          {mode === "expanded" && activeCanvas && (
-            <>
-              <button
-                type="button"
-                className="fixed inset-0 z-[60] border-0 bg-ink/10 p-0"
-                aria-label="Close expanded view"
-                onClick={closeExpanded}
-              />
-              <div
-                ref={dialogRef}
-                tabIndex={-1}
-                className="pointer-events-none fixed inset-0 z-[70] flex items-center justify-center px-3 py-6 outline-none md:px-4 md:py-8"
-                role="dialog"
-                aria-modal="true"
-                aria-label={`${activeLabel} detail`}
-              >
-                <div className="pointer-events-auto relative w-full max-w-4xl">
-                  {expandedCard}
-                </div>
-              </div>
-            </>
-          )}
-          {mode === "unmask" && activeCanvas && (
-            <div
-              ref={dialogRef}
-              tabIndex={-1}
-              className={`absolute inset-x-0 top-0 z-20 flex ${FEED_CAROUSEL_STAGE_CLASS} pointer-events-none items-center justify-center px-3 py-6 outline-none md:px-4 md:py-8`}
-              role="dialog"
-              aria-modal="true"
-              aria-label={`${activeLabel} detail`}
-            >
-              <div className="pointer-events-auto relative w-full max-w-4xl">
-                {expandedCard}
-              </div>
-            </div>
-          )}
-        </AnimatePresence>
+        {detailOpen && activeCanvas && (
+          <div
+            ref={dialogRef}
+            tabIndex={-1}
+            className={`absolute inset-x-0 top-0 z-[70] flex ${FEED_CAROUSEL_STAGE_CLASS} pointer-events-none items-start justify-center overflow-y-auto px-3 pb-3 pt-2 outline-none md:items-center md:px-4 md:py-8`}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${activeLabel} detail`}
+          >
+            <div className="pointer-events-auto relative w-full max-w-4xl">{expandedCard}</div>
+          </div>
+        )}
       </div>
 
-      {/* Sheet: the full-width detail rising over the pinned scene on scroll (z-index only). */}
-      {mode === "unmask" && activeCanvas && (
-        <div ref={unmaskRef} className="relative z-10">
+      {/* Sheet: full-width detail in normal flow below the pinned scene; scroll drives the reveal. */}
+      {detailOpen && activeOpensDetail && activeCanvas && (
+        <div ref={sheetRef} className="relative z-10 bg-paper">
           <FeedUnmaskReveal>
             {activeCanvas.type === "gallery" ? (
               <GalleryProfileView gallery={activeCanvas.gallery} headingId={sheetHeadingId} />

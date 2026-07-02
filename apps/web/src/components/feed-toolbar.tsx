@@ -97,30 +97,34 @@ export function FeedToolbar({
 
       <AnimatePresence>
         {browseOpen && (
-          <>
-            <button
-              type="button"
-              className="fixed inset-0 z-[55] border-0 bg-ink/10 p-0"
-              aria-label="Close categories"
-              onClick={() => setBrowseOpen(false)}
-            />
-            <div className="pointer-events-none fixed inset-x-0 top-24 z-[65] flex justify-center px-4">
-              <div className="pointer-events-auto w-full max-w-xl">
-                {reduce ? (
-                  panel
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -8, scale: 0.98 }}
-                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    {panel}
-                  </motion.div>
-                )}
-              </div>
+          <button
+            key="feed-categories-backdrop"
+            type="button"
+            className="fixed inset-0 z-[55] border-0 bg-ink/10 p-0"
+            aria-label="Close categories"
+            onClick={() => setBrowseOpen(false)}
+          />
+        )}
+        {browseOpen && (
+          <div
+            key="feed-categories-panel"
+            className="pointer-events-none fixed inset-x-0 top-24 z-[65] flex justify-center px-4"
+          >
+            <div className="pointer-events-auto w-full max-w-xl">
+              {reduce ? (
+                panel
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                  transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {panel}
+                </motion.div>
+              )}
             </div>
-          </>
+          </div>
         )}
       </AnimatePresence>
     </div>

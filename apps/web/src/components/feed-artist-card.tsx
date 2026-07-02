@@ -45,7 +45,7 @@ export function FeedArtistCard({ item, onClose }: FeedArtistCardProps) {
         <FeedPostImage
           imageUrl={imageUrl}
           displayName={displayName}
-          className="mx-auto aspect-[4/5] w-full max-w-sm object-cover object-center"
+          className="mx-auto max-h-[42svh] w-full object-contain sm:aspect-[4/5] sm:max-h-none sm:max-w-sm sm:object-cover sm:object-center"
         />
 
         {images.length > 1 && (
