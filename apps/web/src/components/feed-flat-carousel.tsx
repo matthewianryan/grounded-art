@@ -57,6 +57,34 @@ export function FeedFlatCarousel({
 
   // Detect which card is centered after a native swipe settles, and report it upward.
   useEffect(() => {
+    const activeItem = items[activeIndex];
+    if (!activeItem) return;
+    const img = cardRefs.current.get(activeItem.id)?.querySelector("img");
+    if (!img) return;
+    const style = window.getComputedStyle(img);
+    // #region agent log
+    fetch("http://127.0.0.1:7600/ingest/0f8ab905-2030-4221-a6e1-3ce1dfa4f39e", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "b37c74" },
+      body: JSON.stringify({
+        sessionId: "b37c74",
+        runId: "post-fix",
+        hypothesisId: "B",
+        location: "feed-flat-carousel.tsx:activeImageStyle",
+        message: "active carousel image object position",
+        data: {
+          objectPosition: style.objectPosition,
+          objectFit: style.objectFit,
+          activeIndex,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
+  }, [activeIndex, items]);
+
+  // Detect which card is centered after a native swipe settles, and report it upward.
+  useEffect(() => {
     const track = trackRef.current;
     if (!track || items.length === 0) return;
 
@@ -152,7 +180,7 @@ export function FeedFlatCarousel({
             <FeedPostImage
               imageUrl={item.imageUrl}
               displayName={item.displayName}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover object-top"
             />
           </button>
         );

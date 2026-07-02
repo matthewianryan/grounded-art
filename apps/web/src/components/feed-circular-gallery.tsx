@@ -47,14 +47,60 @@ export function FeedCircularGallery({
   const [centerHovered, setCenterHovered] = useState(false);
 
   useEffect(() => {
-    function syncViewport() {
-      setViewportWidth(window.innerWidth);
+    let cancelled = false;
+
+    function loadGallery() {
+      const width = window.innerWidth;
+      setViewportWidth(width);
+
+      if (reduce || items.length === 0 || width < FEED_CAROUSEL_MD_BREAKPOINT) {
+        setGalleryItems(null);
+        // #region agent log
+        fetch("http://127.0.0.1:7600/ingest/0f8ab905-2030-4221-a6e1-3ce1dfa4f39e", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "b37c74" },
+          body: JSON.stringify({
+            sessionId: "b37c74",
+            runId: "post-fix",
+            hypothesisId: "A",
+            location: "feed-circular-gallery.tsx:loadGallery",
+            message: "gallery skipped",
+            data: { width, isMobile: width < FEED_CAROUSEL_MD_BREAKPOINT, reduce, itemCount: items.length },
+            timestamp: Date.now(),
+          }),
+        }).catch(() => {});
+        // #endregion
+        return;
+      }
+
+      setGalleryItems(null);
+      buildFeedGalleryItems(items, dark).then((built) => {
+        if (!cancelled) setGalleryItems(built);
+      });
+      // #region agent log
+      fetch("http://127.0.0.1:7600/ingest/0f8ab905-2030-4221-a6e1-3ce1dfa4f39e", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "b37c74" },
+        body: JSON.stringify({
+          sessionId: "b37c74",
+          runId: "post-fix",
+          hypothesisId: "A",
+          location: "feed-circular-gallery.tsx:loadGallery",
+          message: "gallery loading desktop textures",
+          data: { width, depCount: 3 },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
     }
 
-    syncViewport();
-    window.addEventListener("resize", syncViewport);
-    return () => window.removeEventListener("resize", syncViewport);
-  }, []);
+    loadGallery();
+    window.addEventListener("resize", loadGallery);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("resize", loadGallery);
+    };
+  }, [items, dark, reduce]);
 
   useEffect(() => {
     function readTheme() {
@@ -77,24 +123,6 @@ export function FeedCircularGallery({
       observer.disconnect();
     };
   }, []);
-
-  useEffect(() => {
-    if (reduce || items.length === 0 || viewportWidth < FEED_CAROUSEL_MD_BREAKPOINT) {
-      setGalleryItems(null);
-      return;
-    }
-
-    let cancelled = false;
-    setGalleryItems(null);
-
-    buildFeedGalleryItems(items, dark).then((built) => {
-      if (!cancelled) setGalleryItems(built);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [items, dark, reduce, viewportWidth]);
 
   const hitStyle = feedCarouselHitStyle(viewportWidth);
 
