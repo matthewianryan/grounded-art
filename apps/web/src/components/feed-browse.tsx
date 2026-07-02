@@ -214,7 +214,7 @@ export function FeedBrowse({
   }
 
   const detailOpen = mode === "detail";
-  const fillContainer = true;
+  const fillContainer = mode === "detail";
 
   let expandedCard: ReactNode = null;
   if (detailOpen && activeCanvas) {
@@ -264,7 +264,7 @@ export function FeedBrowse({
           <div
             ref={dialogRef}
             tabIndex={-1}
-            className={`absolute inset-x-0 top-0 z-[70] flex ${FEED_CAROUSEL_STAGE_CLASS} pointer-events-none items-center justify-center px-3 py-6 outline-none md:px-4 md:py-8`}
+            className={`absolute inset-x-0 top-0 z-[70] flex ${FEED_CAROUSEL_STAGE_CLASS} pointer-events-none items-start justify-center overflow-y-auto px-3 pb-3 pt-2 outline-none md:items-center md:px-4 md:py-8`}
             role="dialog"
             aria-modal="true"
             aria-label={`${activeLabel} detail`}
